@@ -6,44 +6,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contact1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/image_contact"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/android_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorAccent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/name_contact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontWeight="400"
-            android:text="@string/contact_name"
-            android:textAlignment="viewStart"
-            android:textSize="24sp"
-            android:typeface="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/image_contact"
-            app:layout_constraintStart_toEndOf="@+id/image_contact"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/name_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:fontWeight="400"
+        android:text="@string/contact_name"
+        android:textAlignment="viewStart"
+        android:textSize="24sp"
+        android:typeface="normal"
+        app:layout_constraintStart_toEndOf="@+id/image_contact"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/number_contact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/contact_number"
-            android:textAlignment="viewStart"
-            app:layout_constraintEnd_toEndOf="@+id/name_contact"
-            app:layout_constraintTop_toBottomOf="@+id/name_contact" />
-
-        <ImageView
-            android:id="@+id/image_contact"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="0.25"
-            android:src="@drawable/android_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/number_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact_number"
+        android:textAlignment="viewStart"
+        app:layout_constraintStart_toStartOf="@+id/name_contact"
+        app:layout_constraintTop_toBottomOf="@+id/name_contact" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

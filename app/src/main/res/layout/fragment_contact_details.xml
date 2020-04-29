@@ -12,183 +12,140 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/info_contact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
+        <ImageView
+            android:id="@+id/image_contact"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/android_icon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/name_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contact_name"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/image_contact"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/image_contact"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/android_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/numbers_contact"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/name_contact"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/contact_name"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/image_contact"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/number1_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="number 1:"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/number1_contact"
+            app:layout_constraintEnd_toStartOf="@+id/number1_contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/number1_contact" />
+
+        <TextView
+            android:id="@+id/number2_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="number 2:"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/number2_contact"
+            app:layout_constraintEnd_toStartOf="@+id/number2_contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/number2_contact" />
+
+        <EditText
+            android:id="@+id/number1_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/info_contact">
+            android:layout_marginEnd="20dp"
+            android:ems="10"
+            android:inputType="phone"
+            android:text="@string/contact_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_contact" />
 
-            <TextView
-                android:id="@+id/number1_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="number 1:"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/number1_contact"
-                app:layout_constraintEnd_toStartOf="@+id/number1_contact"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/number1_contact" />
-
-            <EditText
-                android:id="@+id/number1_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:inputType="phone"
-                android:text="@string/contact_number"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/number2_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="number 2:"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/number2_contact"
-                app:layout_constraintEnd_toStartOf="@+id/number2_contact"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/number2_contact" />
-
-            <EditText
-                android:id="@+id/number2_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:inputType="phone"
-                android:text="@string/contact_number"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/number1_contact" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/emails_contact"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/number2_contact"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/numbers_contact">
+            android:layout_marginEnd="20dp"
+            android:ems="10"
+            android:inputType="phone"
+            android:text="@string/contact_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/number1_contact" />
 
-            <TextView
-                android:id="@+id/email1_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
-                android:text="e-mail 1:"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/email1_contact"
-                app:layout_constraintEnd_toStartOf="@+id/email1_contact"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/email1_contact" />
-
-            <EditText
-                android:id="@+id/email1_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_weight="0.6"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:text="a65apps@gmail.com"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/email2_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="e-mail 2:"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/email2_contact"
-                app:layout_constraintEnd_toStartOf="@+id/email2_contact"
-                app:layout_constraintHorizontal_bias="0.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/email2_contact" />
-
-            <EditText
-                android:id="@+id/email2_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:text="a65apps@gmail.com"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email1_contact" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/description_contact"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/email2_label"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_gravity="center_vertical"
+            android:text="e-mail 2:"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/email2_contact"
+            app:layout_constraintEnd_toStartOf="@+id/email2_contact"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/emails_contact">
+            app:layout_constraintTop_toTopOf="@+id/email2_contact" />
 
-            <TextView
-                android:id="@+id/description_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Description"
-                android:textAlignment="viewStart"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/email1_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.4"
+            android:text="e-mail 1:"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/email1_contact"
+            app:layout_constraintEnd_toStartOf="@+id/email1_contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/email1_contact" />
+
+        <EditText
+            android:id="@+id/email1_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="0.6"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:text="a65apps@gmail.com"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/number2_contact" />
+
+        <EditText
+            android:id="@+id/email2_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:text="a65apps@gmail.com"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email1_contact" />
+
+        <TextView
+            android:id="@+id/description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Description"
+            android:textAlignment="viewStart"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email2_contact" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

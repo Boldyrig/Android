@@ -33,11 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putInt("ID", view.getId());
-        ContactDetailsFragment contactDetails = (ContactDetailsFragment) ContactDetailsFragment.newInstance();
-        contactDetails.setArguments(bundle);
-        transaction.replace(R.id.fragment_container, contactDetails);
+        transaction.replace(R.id.fragment_container, ContactDetailsFragment.newInstance(view.getId()));
         transaction.addToBackStack(null);
         transaction.commit();
     }

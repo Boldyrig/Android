@@ -29,8 +29,11 @@ public class ContactDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contact_details, container, false);
     }
 
-    public static Fragment newInstance() {
+    public static Fragment newInstance(int id) {
         Fragment contactDetails = new ContactDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("ID", id);
+        contactDetails.setArguments(bundle);
         return contactDetails;
     }
 }
