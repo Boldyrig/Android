@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.gmail.fuskerr63.androidlesson.R;
 
 public class ContactListFragment extends Fragment {
-    public static View.OnClickListener targetElement = null;
+    private View.OnClickListener targetElement = null;
 
     public ContactListFragment() {
 
@@ -25,13 +25,18 @@ public class ContactListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         targetElement = (View.OnClickListener) context;
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        targetElement = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        View contact = view.findViewById(R.id.contact);
+        View contact = view.findViewById(R.id.contact1);
         if(targetElement != null) {
             contact.setOnClickListener(targetElement);
         }

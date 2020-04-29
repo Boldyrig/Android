@@ -13,8 +13,6 @@ import android.widget.TextView;
 import com.gmail.fuskerr63.androidlesson.R;
 
 public class ContactDetailsFragment extends Fragment {
-    private static int id;
-
     public ContactDetailsFragment() {
         // Required empty public constructor
     }
@@ -31,8 +29,7 @@ public class ContactDetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contact_details, container, false);
     }
 
-    public static Fragment newInstance(int contactId) {
-        id = contactId;
+    public static Fragment newInstance() {
         Fragment contactDetails = new ContactDetailsFragment();
         return contactDetails;
     }

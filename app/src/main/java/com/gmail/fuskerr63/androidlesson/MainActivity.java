@@ -13,7 +13,6 @@ import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private Fragment contactListFragment = ContactListFragment.newInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,17 +20,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // добавление toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         // транзакция: добавить фрагмент списка конактов
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.fragment_container, contactListFragment);
-        transaction.commit();
+        if (savedInstanceState == null) {
+            // можно делать транзакцию
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.add(R.id.fragment_container, ContactListFragment.newInstance());
+            transaction.commit();
+        }
     }
 
     @Override
     public void onClick(View view) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragment_container, ContactDetailsFragment.newInstance(view.getId()));
+        Bundle bundle = new Bundle();
+        bundle.putInt("ID", view.getId());
+        ContactDetailsFragment contactDetails = (ContactDetailsFragment) ContactDetailsFragment.newInstance();
+        contactDetails.setArguments(bundle);
+        transaction.replace(R.id.fragment_container, contactDetails);
         transaction.addToBackStack(null);
         transaction.commit();
     }

@@ -1,195 +1,195 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_editor_absoluteX="1dp"
+    tools:layout_editor_absoluteY="516dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1"
-    tools:context="com.gmail.fuskerr63.fragments.ContactDetailsFragment">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contact_details"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        android:background="@color/colorAccent">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:src="@drawable/android_icon" />
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/info_contact"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/contact_name"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:orientation="vertical"
-        android:weightSum="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:background="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/textView8"
-                android:layout_width="0dp"
+                android:id="@+id/name_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contact_name"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/image_contact"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/image_contact"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/android_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/numbers_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/info_contact">
+
+            <TextView
+                android:id="@+id/number1_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
                 android:text="number 1:"
-                android:textSize="14sp" />
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/number1_contact"
+                app:layout_constraintEnd_toStartOf="@+id/number1_contact"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/number1_contact" />
 
             <EditText
-                android:id="@+id/editText2"
-                android:layout_width="0dp"
+                android:id="@+id/number1_contact"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.6"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:ems="10"
                 android:inputType="phone"
-                android:text="@string/contact_number" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:orientation="horizontal"
-            android:weightSum="1">
+                android:text="@string/contact_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
+                android:id="@+id/number2_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
                 android:text="number 2:"
-                android:textSize="14sp" />
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/number2_contact"
+                app:layout_constraintEnd_toStartOf="@+id/number2_contact"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/number2_contact" />
 
             <EditText
-                android:id="@+id/editText"
-                android:layout_width="0dp"
+                android:id="@+id/number2_contact"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.6"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:ems="10"
                 android:inputType="phone"
-                android:text="@string/contact_number" />
+                android:text="@string/contact_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/number1_contact" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.2"
-            android:text="Add"
-            android:textSize="8sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:minHeight="1000dp"
-        android:orientation="vertical"
-        android:weightSum="1">
-
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/emails_contact"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/numbers_contact">
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="0dp"
+                android:id="@+id/email1_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.4"
-                android:text="e-mail 1:" />
+                android:text="e-mail 1:"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/email1_contact"
+                app:layout_constraintEnd_toStartOf="@+id/email1_contact"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/email1_contact" />
 
             <EditText
-                android:id="@+id/editText4"
-                android:layout_width="0dp"
+                android:id="@+id/email1_contact"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="0.6"
                 android:ems="10"
                 android:inputType="textEmailAddress"
-                android:text="a65apps@gmail.com" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.4"
-            android:orientation="horizontal"
-            android:weightSum="1">
+                android:text="a65apps@gmail.com"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView7"
-                android:layout_width="0dp"
+                android:id="@+id/email2_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.4"
-                android:text="e-mail 2:" />
+                android:text="e-mail 2:"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/email2_contact"
+                app:layout_constraintEnd_toStartOf="@+id/email2_contact"
+                app:layout_constraintHorizontal_bias="0.3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/email2_contact" />
 
             <EditText
-                android:id="@+id/editText3"
-                android:layout_width="0dp"
+                android:id="@+id/email2_contact"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.6"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
                 android:ems="10"
                 android:inputType="textEmailAddress"
-                android:text="a65apps@gmail.com" />
+                android:text="a65apps@gmail.com"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/email1_contact" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.2"
-            android:text="Add"
-            android:textSize="8sp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/description_contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emails_contact">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Description"
+                android:textAlignment="viewStart"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1"
-        android:text="Description"
-        android:textAlignment="viewStart"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-</LinearLayout>
+</ScrollView>
