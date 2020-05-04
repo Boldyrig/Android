@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // добавление toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         connection = new ServiceConnection() {
@@ -38,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 FragmentTransaction transaction = manager.beginTransaction();
                 ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag("CONTACT_LIST_FRAGMENT");
                 if(contactListFragment == null) {
-                    contactListFragment = ContactListFragment.newInstance(binder);
+                    contactListFragment = ContactListFragment.newInstance();
+                    contactListFragment.setBinder(binder);
                     transaction.add(R.id.fragment_container, contactListFragment, "CONTACT_LIST_FRAGMENT");
                     transaction.commit();
                 }
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FragmentTransaction transaction = manager.beginTransaction();
         ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag("CONTACT_DETAILS_FRAGMENT");
         if(contactDetailsFragment == null) {
-            contactDetailsFragment = ContactDetailsFragment.newInstance(view.getId(), contactBinder);
+            contactDetailsFragment = ContactDetailsFragment.newInstance(view.getId());
+            contactDetailsFragment.setBinder(contactBinder);
             transaction.replace(R.id.fragment_container, contactDetailsFragment, "CONTACT_DETAILS_FRAGMENT");
             transaction.addToBackStack(null);
             transaction.commit();

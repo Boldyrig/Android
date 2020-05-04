@@ -14,9 +14,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ContactService extends Service {
-    private Contact[] contacts;
     private ContactBinder binder;
     private ExecutorService executor;
+    private Contact[] contacts = new Contact[]{
+            new Contact(R.drawable.android_icon,"Fedor", "443344", "99", "fedor@gmail.com", "fedor@gmail.com"),
+            new Contact(R.drawable.android_icon,"Igor", "668844", "12", "iigorTheBest@yandex.ru", "iigorTheBest@yandex.ru"),
+            new Contact(R.drawable.android_icon,"Leonid", "009863", "55", "leo@mail.ru", "none")
+    };
 
     @Override
     public void onCreate() {
@@ -35,7 +39,6 @@ public class ContactService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        executor.execute(new ContactRunnable());
         return binder;
     }
 
@@ -64,18 +67,6 @@ public class ContactService extends Service {
     public class ContactBinder extends Binder {
         public ContactService getService() {
             return ContactService.this;
-        }
-    }
-
-    class ContactRunnable implements Runnable {
-
-        @Override
-        public void run() {
-            contacts = new Contact[]{
-                    new Contact(R.drawable.android_icon,"Fedor", "443344", "99", "fedor@gmail.com", "fedor@gmail.com"),
-                    new Contact(R.drawable.android_icon,"Igor", "668844", "12", "iigorTheBest@yandex.ru", "iigorTheBest@yandex.ru"),
-                    new Contact(R.drawable.android_icon,"Leonid", "009863", "55", "leo@mail.ru", "none")
-            };
         }
     }
 }

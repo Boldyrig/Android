@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class ContactListFragment extends ListFragment {
     private View.OnClickListener targetElement;
     private ContactService contactService;
+    private IBinder binder;
     private Contact[] contacts;
 
     public ContactListFragment() {
@@ -41,9 +43,7 @@ public class ContactListFragment extends ListFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         targetElement = (View.OnClickListener) context;
-        IBinder binder = getArguments().getBinder("BINDER");
         contactService = ((ContactService.ContactBinder) binder).getService();
-        contacts = contactService.getContacts();
     }
 
     @Override
@@ -58,20 +58,8 @@ public class ContactListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         ((TextView) getActivity().findViewById(R.id.title)).setText("Contact List");
-        final String[] from = new String[]{ "image", "name", "number"};
-        final int[] to = { R.id.image, R.id.name, R.id.number };
-        ArrayList<Map<String, Object>> arrayListContacts = new ArrayList<>();
-        if(contacts != null) {
-            for (Contact contact : contacts) {
-                Map<String, Object> mapContact = new HashMap<>();
-                mapContact.put("image", contact.getImage());
-                mapContact.put("name", contact.getName());
-                mapContact.put("number", contact.getNumber());
-                arrayListContacts.add(mapContact);
-            }
-        }
-        SimpleAdapter sAdapter = new SimpleAdapter(getActivity(), arrayListContacts, R.layout.contact, from, to);
-        setListAdapter(sAdapter);
+        new ContactTask().execute();
+        setRetainInstance(true);
         return view;
     }
 
@@ -84,11 +72,44 @@ public class ContactListFragment extends ListFragment {
         }
     }
 
-    public static ContactListFragment newInstance(IBinder binder) {
+    public static ContactListFragment newInstance() {
         ContactListFragment contactList = new ContactListFragment();
         Bundle bundle = new Bundle();
-        bundle.putBinder("BINDER", binder);
         contactList.setArguments(bundle);
         return contactList;
+    }
+
+    public void setBinder(IBinder binder) {
+        if(binder != null) {
+            this.binder = binder;
+        }
+    }
+
+    class ContactTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            contacts = contactService.getContacts();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            final String[] from = new String[]{ "image", "name", "number"};
+            final int[] to = { R.id.image, R.id.name, R.id.number };
+            ArrayList<Map<String, Object>> arrayListContacts = new ArrayList<>();
+            if(contacts != null) {
+                for (Contact contact : contacts) {
+                    Map<String, Object> mapContact = new HashMap<>();
+                    mapContact.put("image", contact.getImage());
+                    mapContact.put("name", contact.getName());
+                    mapContact.put("number", contact.getNumber());
+                    arrayListContacts.add(mapContact);
+                }
+            }
+            SimpleAdapter sAdapter = new SimpleAdapter(getActivity(), arrayListContacts, R.layout.contact, from, to);
+            setListAdapter(sAdapter);
+
+        }
     }
 }

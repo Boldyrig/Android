@@ -20,6 +20,8 @@ import com.gmail.fuskerr63.service.ContactService;
 
 public class ContactDetailsFragment extends Fragment {
     private ContactService contactService;
+    private View viewDetail;
+    private IBinder binder;
     private Contact contact;
 
     public ContactDetailsFragment() {
@@ -29,10 +31,7 @@ public class ContactDetailsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        IBinder binder = getArguments().getBinder("BINDER");
         contactService = ((ContactService.ContactBinder) binder).getService();
-        int id = getArguments().getInt("ID");
-        contact = contactService.getContactById(id);
     }
 
     @Override
@@ -45,22 +44,50 @@ public class ContactDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_details, container, false);
-        ((TextView) getActivity().findViewById(R.id.title)).setText("Contact Details");
-        ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
-        ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
-        ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
-        ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
-        ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
-        ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+        viewDetail = view;
+        new DetailsTask().execute();
+        setRetainInstance(true);
         return view;
     }
 
-    public static ContactDetailsFragment newInstance(int id, IBinder binder) {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        viewDetail = null;
+    }
+
+    public static ContactDetailsFragment newInstance(int id) {
         ContactDetailsFragment contactDetails = new ContactDetailsFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("ID", id);
-        bundle.putBinder("BINDER", binder);
         contactDetails.setArguments(bundle);
         return contactDetails;
+    }
+
+    public void setBinder(IBinder binder) {
+        if(binder != null) {
+            this.binder = binder;
+        }
+    }
+
+    class DetailsTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            int id = getArguments().getInt("ID");
+            contact = contactService.getContactById(id);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            ((TextView) getActivity().findViewById(R.id.title)).setText("Contact Details");
+            ((ImageView) viewDetail.findViewById(R.id.image)).setImageResource(contact.getImage());
+            ((TextView) viewDetail.findViewById(R.id.name)).setText(contact.getName());
+            ((TextView) viewDetail.findViewById(R.id.number1_contact)).setText(contact.getNumber());
+            ((TextView) viewDetail.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
+            ((TextView) viewDetail.findViewById(R.id.email1_contact)).setText(contact.getEmail());
+            ((TextView) viewDetail.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+        }
     }
 }

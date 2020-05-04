@@ -1,12 +1,12 @@
 package com.gmail.fuskerr63.service;
 
 public class Contact {
-    private int image;
-    private String name;
-    private String number;
-    private String number2;
-    private String email;
-    private String email2;
+    final private int image;
+    final private String name;
+    final private String number;
+    final private String number2;
+    final private String email;
+    final private String email2;
 
     public Contact(int image, String name, String number, String number2, String email, String email2) {
         this.image = image;
