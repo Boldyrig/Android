@@ -3,50 +3,92 @@ package com.gmail.fuskerr63.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 
+import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
+import com.gmail.fuskerr63.service.Contact;
+import com.gmail.fuskerr63.service.ContactService;
 
-public class ContactListFragment extends Fragment {
-    private View.OnClickListener targetElement = null;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ContactListFragment extends ListFragment {
+    private View.OnClickListener targetElement;
+    private ContactService contactService;
+    private Contact[] contacts;
 
     public ContactListFragment() {
+        // Required empty public constructor
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         targetElement = (View.OnClickListener) context;
+        IBinder binder = getArguments().getBinder("BINDER");
+        contactService = ((ContactService.ContactBinder) binder).getService();
+        contacts = contactService.getContacts();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         targetElement = null;
+        contactService = null;
+        contacts = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        View contact = view.findViewById(R.id.contact1);
-        if(targetElement != null) {
-            contact.setOnClickListener(targetElement);
+        ((TextView) getActivity().findViewById(R.id.title)).setText("Contact List");
+        final String[] from = new String[]{ "image", "name", "number"};
+        final int[] to = { R.id.image, R.id.name, R.id.number };
+        ArrayList<Map<String, Object>> arrayListContacts = new ArrayList<>();
+        if(contacts != null) {
+            for (Contact contact : contacts) {
+                Map<String, Object> mapContact = new HashMap<>();
+                mapContact.put("image", contact.getImage());
+                mapContact.put("name", contact.getName());
+                mapContact.put("number", contact.getNumber());
+                arrayListContacts.add(mapContact);
+            }
         }
-        TextView title = getActivity().findViewById(R.id.title);
-        title.setText("Contact List");
+        SimpleAdapter sAdapter = new SimpleAdapter(getActivity(), arrayListContacts, R.layout.contact, from, to);
+        setListAdapter(sAdapter);
         return view;
     }
 
-    public static Fragment newInstance() {
-        Fragment contactList = new ContactListFragment();
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        v.setId((int) id);
+        if(targetElement != null) {
+            targetElement.onClick(v);
+        }
+    }
+
+    public static ContactListFragment newInstance(IBinder binder) {
+        ContactListFragment contactList = new ContactListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBinder("BINDER", binder);
+        contactList.setArguments(bundle);
         return contactList;
     }
 }
