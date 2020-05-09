@@ -10,12 +10,8 @@ import androidx.annotation.Nullable;
 
 import com.gmail.fuskerr63.androidlesson.R;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class ContactService extends Service {
     private ContactBinder binder;
-    private ExecutorService executor;
     private Contact[] contacts = new Contact[]{
             new Contact(R.drawable.android_icon,"Fedor", "443344", "99", "fedor@gmail.com", "fedor@gmail.com"),
             new Contact(R.drawable.android_icon,"Igor", "668844", "12", "iigorTheBest@yandex.ru", "iigorTheBest@yandex.ru"),
@@ -26,14 +22,12 @@ public class ContactService extends Service {
     public void onCreate() {
         super.onCreate();
         binder = new ContactBinder();
-        executor = Executors.newFixedThreadPool(1);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         binder = null;
-        executor = null;
     }
 
     @Nullable
@@ -68,5 +62,10 @@ public class ContactService extends Service {
         public ContactService getService() {
             return ContactService.this;
         }
+    }
+
+    public interface ServiceInterface {
+        public Contact[] getContacts();
+        public Contact getContactById(int id);
     }
 }

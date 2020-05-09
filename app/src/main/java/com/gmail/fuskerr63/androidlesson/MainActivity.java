@@ -15,10 +15,11 @@ import android.view.View;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
+import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private IBinder contactBinder;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ContactService.ServiceInterface {
+    private ContactService contactService;
     private boolean bound = false;
     private ServiceConnection connection;
 
@@ -31,45 +32,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                contactBinder = binder;
+                contactService = ((ContactService.ContactBinder) binder).getService();
                 bound = true;
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag("CONTACT_LIST_FRAGMENT");
                 if(contactListFragment == null) {
                     contactListFragment = ContactListFragment.newInstance();
-                    contactListFragment.setBinder(binder);
                     transaction.add(R.id.fragment_container, contactListFragment, "CONTACT_LIST_FRAGMENT");
                     transaction.commit();
+                } else {
+                    contactListFragment.serviceConnected();
                 }
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 bound = false;
-                contactBinder = null;
+                contactService = null;
             }
         };
+        bindService(new Intent(this, ContactService.class), connection, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(new Intent(this, ContactService.class), connection, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
         if (bound) {
             unbindService(connection);
             bound = false;
-            contactBinder = null;
+            contactService = null;
         }
     }
 
@@ -80,10 +72,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag("CONTACT_DETAILS_FRAGMENT");
         if(contactDetailsFragment == null) {
             contactDetailsFragment = ContactDetailsFragment.newInstance(view.getId());
-            contactDetailsFragment.setBinder(contactBinder);
             transaction.replace(R.id.fragment_container, contactDetailsFragment, "CONTACT_DETAILS_FRAGMENT");
             transaction.addToBackStack(null);
             transaction.commit();
+        } else {
+            contactDetailsFragment.serviceConnected();
         }
+    }
+
+    @Override
+    public Contact[] getContacts() {
+        return contactService.getContacts();
+    }
+
+    @Override
+    public Contact getContactById(int id) {
+        return contactService.getContactById(id);
     }
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +19,15 @@ import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ContactListFragment extends ListFragment {
     private View.OnClickListener targetElement;
-    private ContactService contactService;
-    private IBinder binder;
-    private Contact[] contacts;
+    private ContactService.ServiceInterface contactService;
+    private WeakReference weakContactTask;
 
     public ContactListFragment() {
         // Required empty public constructor
@@ -37,13 +36,20 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState == null) {
+            serviceConnected();
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        targetElement = (View.OnClickListener) context;
-        contactService = ((ContactService.ContactBinder) binder).getService();
+        if(context instanceof View.OnClickListener) {
+            targetElement = (View.OnClickListener) context;
+        }
+        if(context instanceof ContactService.ServiceInterface) {
+            contactService = (ContactService.ServiceInterface) context;
+        }
     }
 
     @Override
@@ -51,16 +57,20 @@ public class ContactListFragment extends ListFragment {
         super.onDetach();
         targetElement = null;
         contactService = null;
-        contacts = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         ((TextView) getActivity().findViewById(R.id.title)).setText("Contact List");
-        new ContactTask().execute();
-        setRetainInstance(true);
         return view;
+    }
+
+    public void serviceConnected() {
+        if(contactService != null) {
+            weakContactTask = new WeakReference(new ContactTask(this));
+            ((ContactTask) weakContactTask.get()).execute(new ContactService.ServiceInterface[]{ contactService });
+        }
     }
 
     @Override
@@ -74,27 +84,24 @@ public class ContactListFragment extends ListFragment {
 
     public static ContactListFragment newInstance() {
         ContactListFragment contactList = new ContactListFragment();
-        Bundle bundle = new Bundle();
-        contactList.setArguments(bundle);
         return contactList;
     }
 
-    public void setBinder(IBinder binder) {
-        if(binder != null) {
-            this.binder = binder;
-        }
-    }
+    private static class ContactTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact[]> {
+        private WeakReference weakFragment;
 
-    class ContactTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            contacts = contactService.getContacts();
-            return null;
+        public ContactTask(ListFragment fragment) {
+            weakFragment = new WeakReference(fragment);
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
+        protected Contact[] doInBackground(ContactService.ServiceInterface... contactServices) {
+            return contactServices[0].getContacts();
+        }
+
+        @Override
+        protected void onPostExecute(Contact[] contacts) {
+            super.onPostExecute(contacts);
             final String[] from = new String[]{ "image", "name", "number"};
             final int[] to = { R.id.image, R.id.name, R.id.number };
             ArrayList<Map<String, Object>> arrayListContacts = new ArrayList<>();
@@ -107,9 +114,8 @@ public class ContactListFragment extends ListFragment {
                     arrayListContacts.add(mapContact);
                 }
             }
-            SimpleAdapter sAdapter = new SimpleAdapter(getActivity(), arrayListContacts, R.layout.contact, from, to);
-            setListAdapter(sAdapter);
-
+            SimpleAdapter sAdapter = new SimpleAdapter(((ListFragment) weakFragment.get()).getContext(), arrayListContacts, R.layout.contact, from, to);
+            ((ListFragment) weakFragment.get()).setListAdapter(sAdapter);
         }
     }
 }

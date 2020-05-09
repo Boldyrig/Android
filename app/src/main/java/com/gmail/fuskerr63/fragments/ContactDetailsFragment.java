@@ -4,9 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,42 +19,50 @@ import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
 
+import java.lang.ref.WeakReference;
+
 public class ContactDetailsFragment extends Fragment {
-    private ContactService contactService;
-    private View viewDetail;
-    private IBinder binder;
-    private Contact contact;
+    private ContactService.ServiceInterface contactService;
+    private WeakReference weakDetailTask;
 
     public ContactDetailsFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState == null) {
+            serviceConnected();
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        contactService = ((ContactService.ContactBinder) binder).getService();
+        if(context instanceof ContactService.ServiceInterface){
+            contactService = (ContactService.ServiceInterface) context;
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        contact = null;
         contactService = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_details, container, false);
-        viewDetail = view;
-        new DetailsTask().execute();
-        setRetainInstance(true);
+        ((TextView) getActivity().findViewById(R.id.title)).setText("Contact Details");
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        viewDetail = null;
+    public void serviceConnected() {
+        if(contactService != null) {
+            weakDetailTask = new WeakReference(new DetailTask(this, getArguments().getInt("ID")));
+            ((DetailTask) weakDetailTask.get()).execute(new ContactService.ServiceInterface[]{ contactService });
+        }
     }
 
     public static ContactDetailsFragment newInstance(int id) {
@@ -64,30 +73,30 @@ public class ContactDetailsFragment extends Fragment {
         return contactDetails;
     }
 
-    public void setBinder(IBinder binder) {
-        if(binder != null) {
-            this.binder = binder;
-        }
-    }
+    private static class DetailTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact> {
+        private WeakReference weakFragment;
+        private int id;
 
-    class DetailsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            int id = getArguments().getInt("ID");
-            contact = contactService.getContactById(id);
-            return null;
+        public DetailTask(Fragment fragment, int id) {
+            weakFragment = new WeakReference(fragment);
+            this.id = id;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            ((TextView) getActivity().findViewById(R.id.title)).setText("Contact Details");
-            ((ImageView) viewDetail.findViewById(R.id.image)).setImageResource(contact.getImage());
-            ((TextView) viewDetail.findViewById(R.id.name)).setText(contact.getName());
-            ((TextView) viewDetail.findViewById(R.id.number1_contact)).setText(contact.getNumber());
-            ((TextView) viewDetail.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
-            ((TextView) viewDetail.findViewById(R.id.email1_contact)).setText(contact.getEmail());
-            ((TextView) viewDetail.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+        protected Contact doInBackground(ContactService.ServiceInterface... contactServices) {
+            return contactServices[0].getContactById(id);
+        }
+
+        @Override
+        protected void onPostExecute(Contact contact) {
+            super.onPostExecute(contact);
+            FragmentActivity fragmentActivity = ((Fragment) weakFragment.get()).getActivity();
+            ((ImageView) fragmentActivity.findViewById(R.id.image)).setImageResource(contact.getImage());
+            ((TextView) fragmentActivity.findViewById(R.id.name)).setText(contact.getName());
+            ((TextView) fragmentActivity.findViewById(R.id.number1_contact)).setText(contact.getNumber());
+            ((TextView) fragmentActivity.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
+            ((TextView) fragmentActivity.findViewById(R.id.email1_contact)).setText(contact.getEmail());
+            ((TextView) fragmentActivity.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
         }
     }
 }
