@@ -23,7 +23,7 @@ import java.lang.ref.WeakReference;
 
 public class ContactDetailsFragment extends Fragment {
     private ContactService.ServiceInterface contactService;
-    private WeakReference weakDetailTask;
+    private DetailTask detailTask;
 
     public ContactDetailsFragment() {
         // Required empty public constructor
@@ -60,8 +60,8 @@ public class ContactDetailsFragment extends Fragment {
 
     public void serviceConnected() {
         if(contactService != null) {
-            weakDetailTask = new WeakReference(new DetailTask(this, getArguments().getInt("ID")));
-            ((DetailTask) weakDetailTask.get()).execute(new ContactService.ServiceInterface[]{ contactService });
+            detailTask = new DetailTask(getView(), getArguments().getInt("ID"));
+            detailTask.execute(new ContactService.ServiceInterface[]{ contactService });
         }
     }
 
@@ -74,11 +74,11 @@ public class ContactDetailsFragment extends Fragment {
     }
 
     private static class DetailTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact> {
-        private WeakReference weakFragment;
+        private WeakReference<View> weakView;
         private int id;
 
-        public DetailTask(Fragment fragment, int id) {
-            weakFragment = new WeakReference(fragment);
+        public DetailTask(View view, int id) {
+            weakView = new WeakReference<View>(view);
             this.id = id;
         }
 
@@ -90,13 +90,13 @@ public class ContactDetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(Contact contact) {
             super.onPostExecute(contact);
-            FragmentActivity fragmentActivity = ((Fragment) weakFragment.get()).getActivity();
-            ((ImageView) fragmentActivity.findViewById(R.id.image)).setImageResource(contact.getImage());
-            ((TextView) fragmentActivity.findViewById(R.id.name)).setText(contact.getName());
-            ((TextView) fragmentActivity.findViewById(R.id.number1_contact)).setText(contact.getNumber());
-            ((TextView) fragmentActivity.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
-            ((TextView) fragmentActivity.findViewById(R.id.email1_contact)).setText(contact.getEmail());
-            ((TextView) fragmentActivity.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            View view = weakView.get();
+            ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
+            ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
+            ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
+            ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
+            ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
+            ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
         }
     }
 }

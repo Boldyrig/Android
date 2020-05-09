@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.util.Log;
@@ -22,12 +23,13 @@ import com.gmail.fuskerr63.service.ContactService;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ContactListFragment extends ListFragment {
     private View.OnClickListener targetElement;
     private ContactService.ServiceInterface contactService;
-    private WeakReference weakContactTask;
+    private ContactTask contactTask;
 
     public ContactListFragment() {
         // Required empty public constructor
@@ -68,8 +70,8 @@ public class ContactListFragment extends ListFragment {
 
     public void serviceConnected() {
         if(contactService != null) {
-            weakContactTask = new WeakReference(new ContactTask(this));
-            ((ContactTask) weakContactTask.get()).execute(new ContactService.ServiceInterface[]{ contactService });
+            contactTask = new ContactTask(this);
+            contactTask.execute(new ContactService.ServiceInterface[]{ contactService });
         }
     }
 
@@ -88,10 +90,10 @@ public class ContactListFragment extends ListFragment {
     }
 
     private static class ContactTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact[]> {
-        private WeakReference weakFragment;
+        private WeakReference<ListFragment> weakFragment;
 
         public ContactTask(ListFragment fragment) {
-            weakFragment = new WeakReference(fragment);
+            weakFragment = new WeakReference<ListFragment>(fragment);
         }
 
         @Override
@@ -114,8 +116,8 @@ public class ContactListFragment extends ListFragment {
                     arrayListContacts.add(mapContact);
                 }
             }
-            SimpleAdapter sAdapter = new SimpleAdapter(((ListFragment) weakFragment.get()).getContext(), arrayListContacts, R.layout.contact, from, to);
-            ((ListFragment) weakFragment.get()).setListAdapter(sAdapter);
+            SimpleAdapter sAdapter = new SimpleAdapter(weakFragment.get().getContext(), arrayListContacts, R.layout.contact, from, to);
+            weakFragment.get().setListAdapter(sAdapter);
         }
     }
 }
