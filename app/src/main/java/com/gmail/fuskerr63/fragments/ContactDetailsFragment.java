@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,12 +90,14 @@ public class ContactDetailsFragment extends Fragment {
         protected void onPostExecute(Contact contact) {
             super.onPostExecute(contact);
             View view = weakView.get();
-            ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
-            ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
-            ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
-            ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
-            ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
-            ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            if(view != null) {
+                ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
+                ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
+                ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
+                ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
+                ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
+                ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            }
         }
     }
 }

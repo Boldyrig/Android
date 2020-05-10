@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.util.Log;
@@ -23,7 +22,6 @@ import com.gmail.fuskerr63.service.ContactService;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ContactListFragment extends ListFragment {
@@ -116,8 +114,11 @@ public class ContactListFragment extends ListFragment {
                     arrayListContacts.add(mapContact);
                 }
             }
-            SimpleAdapter sAdapter = new SimpleAdapter(weakFragment.get().getContext(), arrayListContacts, R.layout.contact, from, to);
-            weakFragment.get().setListAdapter(sAdapter);
+            ListFragment fragment = weakFragment.get();
+            if(fragment != null) {
+                SimpleAdapter sAdapter = new SimpleAdapter(fragment.getContext(), arrayListContacts, R.layout.contact, from, to);
+                fragment.setListAdapter(sAdapter);
+            }
         }
     }
 }
