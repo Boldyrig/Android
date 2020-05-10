@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">AndroidLesson</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="contact_name">Roman Romanov</string>
-    <string name="contact_number">8-888-888-88-88</string>
-    <string name="contact_height">83dp</string>
+    <string name="empty"></string>
+    <string name="description">Description</string>
 </resources>

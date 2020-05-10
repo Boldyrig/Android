@@ -2,30 +2,66 @@ package com.gmail.fuskerr63.androidlesson;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
+import com.gmail.fuskerr63.service.Contact;
+import com.gmail.fuskerr63.service.ContactService;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ContactService.ServiceInterface {
+    private ContactService contactService;
+    private boolean bound = false;
+    private ServiceConnection connection;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // добавление toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        // транзакция: добавить фрагмент списка конактов
-        if (savedInstanceState == null) {
-            // можно делать транзакцию
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.fragment_container, ContactListFragment.newInstance());
-            transaction.commit();
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                contactService = ((ContactService.ContactBinder) binder).getService();
+                bound = true;
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag("CONTACT_LIST_FRAGMENT");
+                if(contactListFragment == null) {
+                    contactListFragment = ContactListFragment.newInstance();
+                    transaction.add(R.id.fragment_container, contactListFragment, "CONTACT_LIST_FRAGMENT");
+                    transaction.commit();
+                } else {
+                    contactListFragment.serviceConnected();
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                bound = false;
+                contactService = null;
+            }
+        };
+        bindService(new Intent(this, ContactService.class), connection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bound) {
+            unbindService(connection);
+            bound = false;
+            contactService = null;
         }
     }
 
@@ -33,8 +69,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.fragment_container, ContactDetailsFragment.newInstance(view.getId()));
-        transaction.addToBackStack(null);
-        transaction.commit();
+        ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag("CONTACT_DETAILS_FRAGMENT");
+        if(contactDetailsFragment == null) {
+            contactDetailsFragment = ContactDetailsFragment.newInstance(view.getId());
+            transaction.replace(R.id.fragment_container, contactDetailsFragment, "CONTACT_DETAILS_FRAGMENT");
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            contactDetailsFragment.serviceConnected();
+        }
+    }
+
+    @Override
+    public Contact[] getContacts() {
+        return contactService.getContacts();
+    }
+
+    @Override
+    public Contact getContactById(int id) {
+        return contactService.getContactById(id);
     }
 }
