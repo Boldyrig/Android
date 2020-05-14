@@ -1,6 +1,8 @@
 package com.gmail.fuskerr63.fragments;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gmail.fuskerr63.androidlesson.MainActivity;
 import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
@@ -67,7 +70,7 @@ public class ContactDetailsFragment extends Fragment {
 
     public void serviceConnected() {
         if(contactService != null) {
-            detailTask = new DetailTask(getView(), getArguments().getInt("ID"), targetElement);
+            detailTask = new DetailTask(getView(), getArguments().getInt("ID"), targetElement, getContext());
             detailTask.execute(new ContactService.ServiceInterface[]{ contactService });
         }
     }
@@ -83,11 +86,13 @@ public class ContactDetailsFragment extends Fragment {
     private static class DetailTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact> {
         private WeakReference<View> weakView;
         private WeakReference<OnClickButtonListener> weakTargetElement;
+        private WeakReference<Context> weakContext;
         private int id;
 
-        public DetailTask(View view, int id, OnClickButtonListener targetElement) {
+        public DetailTask(View view, int id, OnClickButtonListener targetElement, Context context) {
             weakView = new WeakReference<View>(view);
             weakTargetElement = new WeakReference<OnClickButtonListener>(targetElement);
+            weakContext = new WeakReference<Context>(context);
             this.id = id;
         }
 
@@ -99,6 +104,7 @@ public class ContactDetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(final Contact contact) {
             super.onPostExecute(contact);
+            final String ACTION = "com.gmail.fuskerr63.action.notification";
             View view = weakView.get();
             if(view != null) {
                 ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
@@ -110,11 +116,14 @@ public class ContactDetailsFragment extends Fragment {
                 Calendar birthday = contact.getBirthday();
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
                 Button button = (Button) view.findViewById(R.id.birthday_button);
-                if (contact.getAllowNotification()) {
-                    button.setText(R.string.cancel_notification);
-
-                } else {
-                    button.setText(R.string.send_notification);
+                Context context = weakContext.get();
+                if(context != null) {
+                    Boolean alarmIsUp = (PendingIntent.getBroadcast(context, 0, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
+                    if (alarmIsUp) {
+                        button.setText(R.string.cancel_notification);
+                    } else {
+                        button.setText(R.string.send_notification);
+                    }
                 }
                 button.setOnClickListener(new Button.OnClickListener() {
                     @Override

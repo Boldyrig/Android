@@ -24,8 +24,7 @@ public class ContactService extends Service {
                     "99",
                     "fedor@gmail.com",
                     "fedor@gmail.com",
-                    new GregorianCalendar(1998, Calendar.AUGUST, 8),
-                    false),
+                    new GregorianCalendar(1998, Calendar.AUGUST, 8)),
             new Contact(
                     R.drawable.android_icon,
                     "Igor",
@@ -33,8 +32,7 @@ public class ContactService extends Service {
                     "12",
                     "iigorTheBest@yandex.ru",
                     "iigorTheBest@yandex.ru",
-                    new GregorianCalendar(1994, Calendar.APRIL, 24),
-                    false),
+                    new GregorianCalendar(1994, Calendar.APRIL, 24)),
             new Contact(
                     R.drawable.android_icon,
                     "Leonid",
@@ -42,8 +40,7 @@ public class ContactService extends Service {
                     "55",
                     "leo@mail.ru",
                     "none",
-                    new GregorianCalendar(1997, Calendar.MARCH, 1),
-                    false)
+                    new GregorianCalendar(1997, Calendar.MARCH, 1))
     };
 
     @Override

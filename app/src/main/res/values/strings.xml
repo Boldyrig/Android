@@ -15,4 +15,5 @@
     <string name="contact_list_title">Contact List</string>
     <string name="notification_text">Today is the birthday of</string>
     <string name="channel_description">some description</string>
+    <string name="notification_title">Contacts</string>
 </resources>

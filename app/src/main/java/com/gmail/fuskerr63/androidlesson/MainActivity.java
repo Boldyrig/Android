@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(ACTION);
         intent.putExtra(EXTRA_TEXT, getString(R.string.notification_text) + " " + contact.getName());
         intent.putExtra(EXTRA_ID, id);
-        Boolean alarmIsUp = (PendingIntent.getBroadcast(this, 0, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Boolean alarmIsUp = (PendingIntent.getBroadcast(this, id, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if(alarmIsUp) {
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
@@ -135,12 +135,9 @@ public class MainActivity extends AppCompatActivity implements
             if(System.currentTimeMillis() > nextBirthday.getTimeInMillis()) {
                 nextBirthday.add(Calendar.YEAR, 1); // если дата уже была в этом году, то добавляем год
             }
-            boolean yearIsLeap = ((GregorianCalendar) Calendar.getInstance()).isLeapYear(nextBirthday.get(Calendar.YEAR));
-            long yearInMillis = yearIsLeap ? AlarmManager.INTERVAL_DAY * 366 : AlarmManager.INTERVAL_DAY * 365;
-            alarmManager.setInexactRepeating(AlarmManager.RTC, nextBirthday.getTimeInMillis(), yearInMillis, pendingIntent);
+            alarmManager.set(AlarmManager.RTC, nextBirthday.getTimeInMillis(), pendingIntent);
             ((Button) view).setText(R.string.cancel_notification);
         }
-        contact.setAllowNotification(!alarmIsUp);
     }
 
     @Override

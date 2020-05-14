@@ -10,9 +10,8 @@ public class Contact {
     final private String email;
     final private String email2;
     final private Calendar birthday;
-    private Boolean allowNotification;
 
-    public Contact(int image, String name, String number, String number2, String email, String email2, Calendar birthday, Boolean allowNotification) {
+    public Contact(int image, String name, String number, String number2, String email, String email2, Calendar birthday) {
         this.image = image;
         this.name = name;
         this.number = number;
@@ -20,7 +19,6 @@ public class Contact {
         this.email = email;
         this.email2 = email2;
         this.birthday = birthday;
-        this.allowNotification = allowNotification;
     }
 
     public String getName() {
@@ -40,8 +38,4 @@ public class Contact {
     public String getEmail2() { return email2; }
 
     public Calendar getBirthday() { return birthday; }
-
-    public Boolean getAllowNotification() { return allowNotification; }
-
-    public void setAllowNotification(Boolean allowNotification) { this.allowNotification = allowNotification; }
 }
