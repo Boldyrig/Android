@@ -77,7 +77,7 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        v.setId((int) id);
+        v.setId((int)id);
         if(targetElement != null) {
             targetElement.onListItemClick(v);
         }

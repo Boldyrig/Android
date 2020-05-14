@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +22,7 @@ import com.gmail.fuskerr63.service.ContactService;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class ContactDetailsFragment extends Fragment {
     private OnClickButtonListener targetElement;
@@ -67,33 +67,33 @@ public class ContactDetailsFragment extends Fragment {
 
     public void serviceConnected() {
         if(contactService != null) {
-            detailTask = new DetailTask(getView(), getArguments().getLong("ID"), targetElement);
+            detailTask = new DetailTask(getView(), getArguments().getInt("ID"), targetElement);
             detailTask.execute(new ContactService.ServiceInterface[]{ contactService });
         }
     }
 
-    public static ContactDetailsFragment newInstance(long id) {
+    public static ContactDetailsFragment newInstance(int id) {
         ContactDetailsFragment contactDetails = new ContactDetailsFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong("ID", id);
+        bundle.putInt("ID", id);
         contactDetails.setArguments(bundle);
         return contactDetails;
     }
 
     private static class DetailTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact> {
         private WeakReference<View> weakView;
-        private OnClickButtonListener targetElement;
-        private long id;
+        private WeakReference<OnClickButtonListener> weakTargetElement;
+        private int id;
 
-        public DetailTask(View view, long id, OnClickButtonListener targetElement) {
+        public DetailTask(View view, int id, OnClickButtonListener targetElement) {
             weakView = new WeakReference<View>(view);
+            weakTargetElement = new WeakReference<OnClickButtonListener>(targetElement);
             this.id = id;
-            this.targetElement = targetElement;
         }
 
         @Override
         protected Contact doInBackground(ContactService.ServiceInterface... contactServices) {
-            return contactServices[0].getContactById((int) id);
+            return contactServices[0].getContactById(id);
         }
 
         @Override
@@ -108,17 +108,21 @@ public class ContactDetailsFragment extends Fragment {
                 ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
                 ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
                 Calendar birthday = contact.getBirthday();
-                ((DatePicker) view.findViewById(R.id.birthday_contact)).init(birthday.get(Calendar.YEAR), birthday.get(Calendar.MONTH), birthday.get(Calendar.DATE), null);
+                ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
                 Button button = (Button) view.findViewById(R.id.birthday_button);
                 if (contact.getAllowNotification()) {
                     button.setText(R.string.cancel_notification);
+
                 } else {
                     button.setText(R.string.send_notification);
                 }
                 button.setOnClickListener(new Button.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        targetElement.onClickButton(v, id, contact);
+                        OnClickButtonListener targetElement = weakTargetElement.get();
+                        if(targetElement != null) {
+                            targetElement.onClickButton(v, id, contact);
+                        }
                     }
                 });
             }
@@ -126,6 +130,6 @@ public class ContactDetailsFragment extends Fragment {
     }
 
     public interface OnClickButtonListener {
-        public void onClickButton(View v, long id, Contact contact);
+        public void onClickButton(View v, int id, Contact contact);
     }
 }
