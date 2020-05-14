@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ContactListFragment extends ListFragment {
-    private View.OnClickListener targetElement;
+    private OnListItemClickListener targetElement;
     private ContactService.ServiceInterface contactService;
     private ContactTask contactTask;
 
@@ -34,18 +35,10 @@ public class ContactListFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(savedInstanceState == null) {
-            serviceConnected();
-        }
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof View.OnClickListener) {
-            targetElement = (View.OnClickListener) context;
+        if(context instanceof OnListItemClickListener) {
+            targetElement = (OnListItemClickListener) context;
         }
         if(context instanceof ContactService.ServiceInterface) {
             contactService = (ContactService.ServiceInterface) context;
@@ -62,8 +55,16 @@ public class ContactListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        ((TextView) getActivity().findViewById(R.id.title)).setText("Contact List");
+        ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.contact_list_title);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(savedInstanceState == null) {
+            serviceConnected();
+        }
     }
 
     public void serviceConnected() {
@@ -76,9 +77,9 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        v.setId((int) id);
+        v.setId((int)id);
         if(targetElement != null) {
-            targetElement.onClick(v);
+            targetElement.onListItemClick(v);
         }
     }
 
@@ -120,5 +121,9 @@ public class ContactListFragment extends ListFragment {
                 fragment.setListAdapter(sAdapter);
             }
         }
+    }
+
+    public interface OnListItemClickListener {
+        public void onListItemClick(View view);
     }
 }

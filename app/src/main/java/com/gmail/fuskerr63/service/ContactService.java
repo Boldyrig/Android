@@ -10,12 +10,37 @@ import androidx.annotation.Nullable;
 
 import com.gmail.fuskerr63.androidlesson.R;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.concurrent.Callable;
+
 public class ContactService extends Service {
     private ContactBinder binder;
     private Contact[] contacts = new Contact[]{
-            new Contact(R.drawable.android_icon,"Fedor", "443344", "99", "fedor@gmail.com", "fedor@gmail.com"),
-            new Contact(R.drawable.android_icon,"Igor", "668844", "12", "iigorTheBest@yandex.ru", "iigorTheBest@yandex.ru"),
-            new Contact(R.drawable.android_icon,"Leonid", "009863", "55", "leo@mail.ru", "none")
+            new Contact(
+                    R.drawable.android_icon,
+                    "Fedor",
+                    "443344",
+                    "99",
+                    "fedor@gmail.com",
+                    "fedor@gmail.com",
+                    new GregorianCalendar(1998, Calendar.AUGUST, 8)),
+            new Contact(
+                    R.drawable.android_icon,
+                    "Igor",
+                    "668844",
+                    "12",
+                    "iigorTheBest@yandex.ru",
+                    "iigorTheBest@yandex.ru",
+                    new GregorianCalendar(1994, Calendar.APRIL, 24)),
+            new Contact(
+                    R.drawable.android_icon,
+                    "Leonid",
+                    "009863",
+                    "55",
+                    "leo@mail.ru",
+                    "none",
+                    new GregorianCalendar(1997, Calendar.MARCH, 1))
     };
 
     @Override

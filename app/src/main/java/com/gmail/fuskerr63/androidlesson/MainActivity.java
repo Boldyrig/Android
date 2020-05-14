@@ -5,23 +5,41 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ContactService.ServiceInterface {
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class MainActivity extends AppCompatActivity implements
+        ContactDetailsFragment.OnClickButtonListener,
+        ContactService.ServiceInterface,
+        ContactListFragment.OnListItemClickListener {
     private ContactService contactService;
     private boolean bound = false;
     private ServiceConnection connection;
+    private AlarmManager alarmManager;
+    //private ContactReceiver contactReceiver;
+
+    private final String EXTRA_ID = "ID";
+    private final String EXTRA_TEXT = "TEXT";
+    private final String ACTION = "com.gmail.fuskerr63.action.notification";
+    private final String CONTACT_LIST_FRAGMENT_TAG = "CONTACT_LIST_FRAGMENT_TAG";
+    private final String CONTACT_DETAILS_FRAGMENT_TAG = "CONTACT_DETAILS_FRAGMENT_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +54,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bound = true;
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
-                ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag("CONTACT_LIST_FRAGMENT");
+                ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag(CONTACT_LIST_FRAGMENT_TAG);
                 if(contactListFragment == null) {
                     contactListFragment = ContactListFragment.newInstance();
-                    transaction.add(R.id.fragment_container, contactListFragment, "CONTACT_LIST_FRAGMENT");
+                    transaction.add(R.id.fragment_container, contactListFragment, CONTACT_LIST_FRAGMENT_TAG);
                     transaction.commit();
                 } else {
                     contactListFragment.serviceConnected();
+                }
+                ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
+                if(contactDetailsFragment != null) {
+                    contactDetailsFragment.serviceConnected();
+                }
+                Intent intent = getIntent();
+                if(intent != null && intent.hasExtra(EXTRA_ID)) {
+                    int id = intent.getExtras().getInt(EXTRA_ID);
+                    showContactDetails(id);
                 }
             }
 
@@ -53,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         bindService(new Intent(this, ContactService.class), connection, BIND_AUTO_CREATE);
+        alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
@@ -63,20 +91,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             bound = false;
             contactService = null;
         }
+        alarmManager = null;
     }
 
     @Override
-    public void onClick(View view) {
+    public void onListItemClick(View view) {
+        showContactDetails(view.getId());
+    }
+
+    public void showContactDetails(int id) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag("CONTACT_DETAILS_FRAGMENT");
+        ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
         if(contactDetailsFragment == null) {
-            contactDetailsFragment = ContactDetailsFragment.newInstance(view.getId());
-            transaction.replace(R.id.fragment_container, contactDetailsFragment, "CONTACT_DETAILS_FRAGMENT");
+            contactDetailsFragment = ContactDetailsFragment.newInstance(id);
+            transaction.replace(R.id.fragment_container, contactDetailsFragment, CONTACT_DETAILS_FRAGMENT_TAG);
             transaction.addToBackStack(null);
             transaction.commit();
+        }
+    }
+
+    @Override
+    public void onClickButton(View view, int id, Contact contact) {
+        Intent intent = new Intent(ACTION);
+        intent.putExtra(EXTRA_TEXT, getString(R.string.notification_text) + " " + contact.getName());
+        intent.putExtra(EXTRA_ID, id);
+        Boolean alarmIsUp = (PendingIntent.getBroadcast(this, id, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if(alarmIsUp) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+            ((Button) view).setText(R.string.send_notification);
         } else {
-            contactDetailsFragment.serviceConnected();
+            Calendar birthday = contact.getBirthday();
+            Calendar nextBirthday = new GregorianCalendar();
+            nextBirthday.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR)); // текущий год
+            nextBirthday.set(Calendar.MONTH, birthday.get(Calendar.MONTH)); // месяц рождения
+            nextBirthday.set(Calendar.DATE, birthday.get(Calendar.DATE)); // день рождения
+            // обнулить время
+            nextBirthday.set(Calendar.HOUR, 0);
+            nextBirthday.set(Calendar.MINUTE, 0);
+            nextBirthday.set(Calendar.SECOND, 0);
+            if(System.currentTimeMillis() > nextBirthday.getTimeInMillis()) {
+                nextBirthday.add(Calendar.YEAR, 1); // если дата уже была в этом году, то добавляем год
+            }
+            alarmManager.set(AlarmManager.RTC, nextBirthday.getTimeInMillis(), pendingIntent);
+            ((Button) view).setText(R.string.cancel_notification);
         }
     }
 
