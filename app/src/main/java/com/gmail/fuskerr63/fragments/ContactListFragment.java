@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -12,8 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
@@ -22,8 +24,6 @@ import com.gmail.fuskerr63.service.ContactService;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ContactListFragment extends ListFragment {
     private OnListItemClickListener targetElement;
@@ -77,7 +77,6 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        v.setId((int)id);
         if(targetElement != null) {
             targetElement.onListItemClick(v);
         }
@@ -88,7 +87,7 @@ public class ContactListFragment extends ListFragment {
         return contactList;
     }
 
-    private static class ContactTask extends AsyncTask<ContactService.ServiceInterface, Void, Contact[]> {
+    private static class ContactTask extends AsyncTask<ContactService.ServiceInterface, Void, ArrayList<Contact>> {
         private WeakReference<ListFragment> weakFragment;
 
         public ContactTask(ListFragment fragment) {
@@ -96,29 +95,42 @@ public class ContactListFragment extends ListFragment {
         }
 
         @Override
-        protected Contact[] doInBackground(ContactService.ServiceInterface... contactServices) {
+        protected ArrayList<Contact> doInBackground(ContactService.ServiceInterface... contactServices) {
             return contactServices[0].getContacts();
         }
 
         @Override
-        protected void onPostExecute(Contact[] contacts) {
+        protected void onPostExecute(final ArrayList<Contact> contacts) {
             super.onPostExecute(contacts);
-            final String[] from = new String[]{ "image", "name", "number"};
-            final int[] to = { R.id.image, R.id.name, R.id.number };
-            ArrayList<Map<String, Object>> arrayListContacts = new ArrayList<>();
-            if(contacts != null) {
-                for (Contact contact : contacts) {
-                    Map<String, Object> mapContact = new HashMap<>();
-                    mapContact.put("image", contact.getImage());
-                    mapContact.put("name", contact.getName());
-                    mapContact.put("number", contact.getNumber());
-                    arrayListContacts.add(mapContact);
-                }
-            }
-            ListFragment fragment = weakFragment.get();
+            final ListFragment fragment = weakFragment.get();
             if(fragment != null) {
-                SimpleAdapter sAdapter = new SimpleAdapter(fragment.getContext(), arrayListContacts, R.layout.contact, from, to);
-                fragment.setListAdapter(sAdapter);
+                ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(fragment.getContext(), R.layout.contact, contacts) {
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        if(convertView == null) {
+                            convertView = fragment.getLayoutInflater().inflate(R.layout.contact, parent, false);
+                        }
+                        TextView name = (TextView) convertView.findViewById(R.id.name);
+                        TextView number = (TextView) convertView.findViewById(R.id.number);
+                        ImageView image = (ImageView) convertView.findViewById(R.id.image);
+
+                        Contact curContact = contacts.get(position);
+
+                        convertView.setId(curContact.getId());
+
+                        name.setText(curContact.getName());
+                        number.setText(curContact.getNumber());
+                        Uri imageUri = curContact.getImage();
+                        if(imageUri == null) {
+                            image.setImageResource(R.drawable.android_icon);
+                        } else {
+                            image.setImageURI(imageUri);
+                        }
+                        return convertView;
+                    }
+                };
+                fragment.setListAdapter(arrayAdapter);
             }
         }
     }

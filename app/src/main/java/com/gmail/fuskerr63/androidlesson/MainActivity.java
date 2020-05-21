@@ -1,27 +1,34 @@
 package com.gmail.fuskerr63.androidlesson;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -33,13 +40,13 @@ public class MainActivity extends AppCompatActivity implements
     private boolean bound = false;
     private ServiceConnection connection;
     private AlarmManager alarmManager;
-    //private ContactReceiver contactReceiver;
 
     private final String EXTRA_ID = "ID";
     private final String EXTRA_TEXT = "TEXT";
     private final String ACTION = "com.gmail.fuskerr63.action.notification";
     private final String CONTACT_LIST_FRAGMENT_TAG = "CONTACT_LIST_FRAGMENT_TAG";
     private final String CONTACT_DETAILS_FRAGMENT_TAG = "CONTACT_DETAILS_FRAGMENT_TAG";
+    private final int PERMISSIONS_REQUEST = 5050;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,14 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         // добавление toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.READ_CONTACTS }, PERMISSIONS_REQUEST);
+        } else {
+            permissionGranted();
+        }
+    }
+
+    private void permissionGranted() {
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -92,6 +107,21 @@ public class MainActivity extends AppCompatActivity implements
             contactService = null;
         }
         alarmManager = null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode) {
+            case PERMISSIONS_REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionGranted();
+                    return;
+                }
+            default: {
+                Toast.makeText(getApplicationContext(), "Application closed", Toast.LENGTH_SHORT);
+                finish();
+            }
+        }
     }
 
     @Override
@@ -141,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public Contact[] getContacts() {
+    public ArrayList<Contact> getContacts() {
         return contactService.getContacts();
     }
 

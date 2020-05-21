@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gmail.fuskerr63.androidlesson.MainActivity;
 import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.service.Contact;
 import com.gmail.fuskerr63.service.ContactService;
@@ -107,14 +106,16 @@ public class ContactDetailsFragment extends Fragment {
             final String ACTION = "com.gmail.fuskerr63.action.notification";
             View view = weakView.get();
             if(view != null) {
-                ((ImageView) view.findViewById(R.id.image)).setImageResource(contact.getImage());
+                ((ImageView) view.findViewById(R.id.image)).setImageURI(contact.getImage());
                 ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
                 ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
                 ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
                 ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
                 ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
                 Calendar birthday = contact.getBirthday();
-                ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
+                if(birthday != null) {
+                    ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
+                }
                 Button button = (Button) view.findViewById(R.id.birthday_button);
                 Context context = weakContext.get();
                 if(context != null) {
