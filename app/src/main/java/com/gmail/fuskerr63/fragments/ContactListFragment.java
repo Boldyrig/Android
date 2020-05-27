@@ -19,16 +19,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
-import com.gmail.fuskerr63.service.Contact;
-import com.gmail.fuskerr63.service.ContactService;
+import com.gmail.fuskerr63.repository.Contact;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ContactListFragment extends ListFragment {
     private OnListItemClickListener targetElement;
-    private ContactService.ServiceInterface contactService;
-    private ContactTask contactTask;
+    private OnLoadListener loadListener;
 
     public ContactListFragment() {
         // Required empty public constructor
@@ -40,8 +37,8 @@ public class ContactListFragment extends ListFragment {
         if(context instanceof OnListItemClickListener) {
             targetElement = (OnListItemClickListener) context;
         }
-        if(context instanceof ContactService.ServiceInterface) {
-            contactService = (ContactService.ServiceInterface) context;
+        if(context instanceof OnLoadListener) {
+            loadListener = (OnLoadListener) context;
         }
     }
 
@@ -49,7 +46,7 @@ public class ContactListFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         targetElement = null;
-        contactService = null;
+        loadListener = null;
     }
 
     @Override
@@ -62,16 +59,37 @@ public class ContactListFragment extends ListFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(savedInstanceState == null) {
-            serviceConnected();
-        }
+        loadListener.onLoadListFragment();
     }
 
-    public void serviceConnected() {
-        if(contactService != null) {
-            contactTask = new ContactTask(this);
-            contactTask.execute(new ContactService.ServiceInterface[]{ contactService });
-        }
+    public void updateList(final ArrayList<Contact> contacts) {
+        ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(getContext(), R.layout.contact, contacts) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                if(convertView == null) {
+                    convertView = getLayoutInflater().inflate(R.layout.contact, parent, false);
+                }
+                TextView name = (TextView) convertView.findViewById(R.id.name);
+                TextView number = (TextView) convertView.findViewById(R.id.number);
+                ImageView image = (ImageView) convertView.findViewById(R.id.image);
+
+                Contact curContact = contacts.get(position);
+
+                convertView.setId(curContact.getId());
+
+                name.setText(curContact.getName());
+                number.setText(curContact.getNumber());
+                Uri imageUri = curContact.getImage();
+                if(imageUri == null) {
+                    image.setImageResource(R.drawable.android_icon);
+                } else {
+                    image.setImageURI(imageUri);
+                }
+                return convertView;
+            }
+        };
+        setListAdapter(arrayAdapter);
     }
 
     @Override
@@ -87,55 +105,11 @@ public class ContactListFragment extends ListFragment {
         return contactList;
     }
 
-    private static class ContactTask extends AsyncTask<ContactService.ServiceInterface, Void, ArrayList<Contact>> {
-        private WeakReference<ListFragment> weakFragment;
-
-        public ContactTask(ListFragment fragment) {
-            weakFragment = new WeakReference<ListFragment>(fragment);
-        }
-
-        @Override
-        protected ArrayList<Contact> doInBackground(ContactService.ServiceInterface... contactServices) {
-            return contactServices[0].getContacts();
-        }
-
-        @Override
-        protected void onPostExecute(final ArrayList<Contact> contacts) {
-            super.onPostExecute(contacts);
-            final ListFragment fragment = weakFragment.get();
-            if(fragment != null) {
-                ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(fragment.getContext(), R.layout.contact, contacts) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if(convertView == null) {
-                            convertView = fragment.getLayoutInflater().inflate(R.layout.contact, parent, false);
-                        }
-                        TextView name = (TextView) convertView.findViewById(R.id.name);
-                        TextView number = (TextView) convertView.findViewById(R.id.number);
-                        ImageView image = (ImageView) convertView.findViewById(R.id.image);
-
-                        Contact curContact = contacts.get(position);
-
-                        convertView.setId(curContact.getId());
-
-                        name.setText(curContact.getName());
-                        number.setText(curContact.getNumber());
-                        Uri imageUri = curContact.getImage();
-                        if(imageUri == null) {
-                            image.setImageResource(R.drawable.android_icon);
-                        } else {
-                            image.setImageURI(imageUri);
-                        }
-                        return convertView;
-                    }
-                };
-                fragment.setListAdapter(arrayAdapter);
-            }
-        }
-    }
-
     public interface OnListItemClickListener {
         public void onListItemClick(View view);
+    }
+
+    public interface OnLoadListener {
+        public void onLoadListFragment();
     }
 }

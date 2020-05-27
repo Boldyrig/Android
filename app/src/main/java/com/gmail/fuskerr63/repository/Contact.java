@@ -1,4 +1,4 @@
-package com.gmail.fuskerr63.service;
+package com.gmail.fuskerr63.repository;
 
 import android.net.Uri;
 
@@ -13,6 +13,17 @@ public class Contact {
     final private String email;
     final private String email2;
     final private Calendar birthday;
+
+    public Contact() {
+        this.id = -1;
+        this.image = null;
+        this.name = null;
+        this.number = null;
+        this.number2 = null;
+        this.email = null;
+        this.email2 = null;
+        this.birthday = null;
+    }
 
     public Contact(int id, Uri image, String name, String number) {
         this.id = id;
