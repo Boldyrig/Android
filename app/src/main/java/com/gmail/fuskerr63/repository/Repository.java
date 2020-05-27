@@ -5,7 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import com.gmail.fuskerr63.presenter.ContactPresenter;
+import com.gmail.fuskerr63.presenter.ContactListPresenter;
+import com.gmail.fuskerr63.presenter.DetailsPresenter;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -22,7 +23,7 @@ public class Repository {
         weakContentResolver = new WeakReference(contentResolver);
     }
 
-    public void getContacts(final ContactPresenter.ListResultListener listResultListener) {
+    public void getContacts(final ContactListPresenter.ListResultListener listResultListener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -96,7 +97,7 @@ public class Repository {
         }).start();
     }
 
-    public void getContactById(final int id, final ContactPresenter.DetailsResultListener resultListener) {
+    public void getContactById(final int id, final DetailsPresenter.DetailsResultListener resultListener) {
         new Thread(new Runnable() {
             @Override
             public void run() {

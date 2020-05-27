@@ -3,12 +3,7 @@ package com.gmail.fuskerr63.fragments;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +13,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
+import com.gmail.fuskerr63.presenter.DetailsPresenter;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ContactDetailsFragment extends Fragment {
+import moxy.MvpAppCompatFragment;
+import moxy.presenter.InjectPresenter;
+import moxy.presenter.ProvidePresenter;
+
+public class ContactDetailsFragment extends MvpAppCompatFragment implements DetailsView {
     private OnClickButtonListener targetElement;
-    private OnLoadListener loadListener;
+
+    @InjectPresenter
+    DetailsPresenter detailsPresenter;
+
+    @ProvidePresenter
+    DetailsPresenter provideDetailsPresenter() {
+        return new DetailsPresenter(getContext().getContentResolver(), getArguments().getInt("ID"));
+    }
 
     public ContactDetailsFragment() {
         // Required empty public constructor
@@ -37,16 +44,12 @@ public class ContactDetailsFragment extends Fragment {
         if(context instanceof OnClickButtonListener) {
             targetElement = (OnClickButtonListener) context;
         }
-        if(context instanceof OnLoadListener) {
-            loadListener = (OnLoadListener) context;
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         targetElement = null;
-        loadListener = null;
     }
 
     @Override
@@ -57,11 +60,6 @@ public class ContactDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadListener.onLoadDetailsFragment(getArguments().getInt("ID"));
-    }
-
     public void updateDetails(final Contact contact) {
         final String ACTION = "com.gmail.fuskerr63.action.notification";
         View view = getView();
@@ -107,9 +105,5 @@ public class ContactDetailsFragment extends Fragment {
 
     public interface OnClickButtonListener {
         public void onClickButton(View v, Contact contact);
-    }
-
-    public interface OnLoadListener {
-        public void onLoadDetailsFragment(int id);
     }
 }
