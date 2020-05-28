@@ -78,41 +78,42 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void updateList(final ArrayList<Contact> contacts) {
-        ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(getContext(), R.layout.contact, contacts) {
-            @NonNull
+        if(handler == null) return;
+        handler.post(new Runnable() {
             @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if(convertView == null) {
-                    convertView = getLayoutInflater().inflate(R.layout.contact, parent, false);
-                }
-                TextView name = (TextView) convertView.findViewById(R.id.name);
-                TextView number = (TextView) convertView.findViewById(R.id.number);
-                ImageView image = (ImageView) convertView.findViewById(R.id.image);
+            public void run() {
+                ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(getContext(), R.layout.contact, contacts) {
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        if(convertView == null) {
+                            convertView = getLayoutInflater().inflate(R.layout.contact, parent, false);
+                        }
+                        TextView name = (TextView) convertView.findViewById(R.id.name);
+                        TextView number = (TextView) convertView.findViewById(R.id.number);
+                        ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-                Contact curContact = contacts.get(position);
+                        Contact curContact = contacts.get(position);
 
-                convertView.setId(curContact.getId());
+                        convertView.setId(curContact.getId());
 
-                name.setText(curContact.getName());
-                number.setText(curContact.getNumber());
-                Uri imageUri = curContact.getImage();
-                if(imageUri == null) {
-                    image.setImageResource(R.drawable.android_icon);
-                } else {
-                    image.setImageURI(imageUri);
-                }
-                return convertView;
-            }
-        };
-        if(listView != null) {
-            listView.setOnItemClickListener(targetElement);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
+                        name.setText(curContact.getName());
+                        number.setText(curContact.getNumber());
+                        Uri imageUri = curContact.getImage();
+                        if(imageUri == null) {
+                            image.setImageResource(R.drawable.android_icon);
+                        } else {
+                            image.setImageURI(imageUri);
+                        }
+                        return convertView;
+                    }
+                };
+                if(listView != null) {
+                    listView.setOnItemClickListener(targetElement);
                     listView.setAdapter(arrayAdapter);
                 }
-            });
-        }
+            }
+        });
     }
 
     public static ContactListFragment newInstance() {
