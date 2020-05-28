@@ -11,34 +11,27 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
-import com.gmail.fuskerr63.service.Contact;
-import com.gmail.fuskerr63.service.ContactService;
+import com.gmail.fuskerr63.repository.Contact;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements
         ContactDetailsFragment.OnClickButtonListener,
-        ContactService.ServiceInterface,
-        ContactListFragment.OnListItemClickListener {
-    private ContactService contactService;
-    private boolean bound = false;
-    private ServiceConnection connection;
+        ListView.OnItemClickListener {
     private AlarmManager alarmManager;
 
     private final String EXTRA_ID = "ID";
@@ -52,60 +45,33 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // добавление toolbar
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[] { Manifest.permission.READ_CONTACTS }, PERMISSIONS_REQUEST);
-        } else {
-            permissionGranted();
         }
-    }
-
-    private void permissionGranted() {
-        connection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                contactService = ((ContactService.ContactBinder) binder).getService();
-                bound = true;
+        Intent intent = getIntent();
+        if(intent != null && intent.getExtras() != null) {
+            showDetails(intent.getExtras().getInt(EXTRA_ID));
+        } else {
+            if(savedInstanceState == null) {
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 ContactListFragment contactListFragment = (ContactListFragment) manager.findFragmentByTag(CONTACT_LIST_FRAGMENT_TAG);
                 if(contactListFragment == null) {
                     contactListFragment = ContactListFragment.newInstance();
-                    transaction.add(R.id.fragment_container, contactListFragment, CONTACT_LIST_FRAGMENT_TAG);
+                    transaction.replace(R.id.fragment_container, contactListFragment, CONTACT_LIST_FRAGMENT_TAG);
                     transaction.commit();
-                } else {
-                    contactListFragment.serviceConnected();
-                }
-                ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
-                if(contactDetailsFragment != null) {
-                    contactDetailsFragment.serviceConnected();
-                }
-                Intent intent = getIntent();
-                if(intent != null && intent.hasExtra(EXTRA_ID)) {
-                    int id = intent.getExtras().getInt(EXTRA_ID);
-                    showContactDetails(id);
                 }
             }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                bound = false;
-                contactService = null;
-            }
-        };
-        bindService(new Intent(this, ContactService.class), connection, BIND_AUTO_CREATE);
-        alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bound) {
-            unbindService(connection);
-            bound = false;
-            contactService = null;
-        }
         alarmManager = null;
     }
 
@@ -114,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements
         switch(requestCode) {
             case PERMISSIONS_REQUEST:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    permissionGranted();
                     return;
                 }
             default: {
@@ -125,24 +90,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListItemClick(View view) {
-        showContactDetails(view.getId());
-    }
-
-    public void showContactDetails(int id) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
-        if(contactDetailsFragment == null) {
-            contactDetailsFragment = ContactDetailsFragment.newInstance(id);
-            transaction.replace(R.id.fragment_container, contactDetailsFragment, CONTACT_DETAILS_FRAGMENT_TAG);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-    }
-
-    @Override
-    public void onClickButton(View view, int id, Contact contact) {
+    public void onClickButton(View view, Contact contact) {
+        int id = contact.getId();
         Intent intent = new Intent(ACTION);
         intent.putExtra(EXTRA_TEXT, getString(R.string.notification_text) + " " + contact.getName());
         intent.putExtra(EXTRA_ID, id);
@@ -170,13 +119,20 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public ArrayList<Contact> getContacts() {
-        return contactService.getContacts();
+    public void showDetails(int id) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        ContactDetailsFragment contactDetailsFragment = (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
+        if(contactDetailsFragment == null) {
+            contactDetailsFragment = ContactDetailsFragment.newInstance(id);
+            transaction.replace(R.id.fragment_container, contactDetailsFragment, CONTACT_DETAILS_FRAGMENT_TAG);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
     }
 
     @Override
-    public Contact getContactById(int id) {
-        return contactService.getContactById(id);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        showDetails(view.getId());
     }
 }
