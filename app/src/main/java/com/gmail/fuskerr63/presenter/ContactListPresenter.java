@@ -2,6 +2,8 @@ package com.gmail.fuskerr63.presenter;
 
 import android.content.ContentResolver;
 
+import androidx.annotation.Nullable;
+
 import com.gmail.fuskerr63.fragments.ContactListView;
 import com.gmail.fuskerr63.repository.Contact;
 import com.gmail.fuskerr63.repository.Repository;
@@ -19,7 +21,11 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
 
     public ContactListPresenter(ContentResolver contentResolver) {
         repository = new Repository(contentResolver);
-        repository.getContacts(listResultListener);
+        updateList(null);
+    }
+
+    public void updateList(@Nullable String selector) {
+        repository.getContacts(listResultListener, selector);
     }
 
     private ListResultListener listResultListener = new ListResultListener() {

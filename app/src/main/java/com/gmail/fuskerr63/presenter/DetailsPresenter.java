@@ -11,8 +11,6 @@ import moxy.MvpPresenter;
 public class DetailsPresenter extends MvpPresenter<DetailsView> {
     Repository repository;
 
-    private final String EXTRA_ID = "ID";
-
     public DetailsPresenter(ContentResolver contentResolver, int id) {
         repository = new Repository(contentResolver);
         repository.getContactById(id, detailsResultListener);
