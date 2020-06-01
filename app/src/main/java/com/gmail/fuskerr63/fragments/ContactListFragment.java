@@ -1,25 +1,26 @@
 package com.gmail.fuskerr63.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.presenter.ContactListPresenter;
+import com.gmail.fuskerr63.recyclerview.ContactAdapter;
+import com.gmail.fuskerr63.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.ArrayList;
@@ -29,9 +30,9 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
-    private ListView.OnItemClickListener targetElement;
+    private View.OnClickListener targetElement;
     private Handler handler;
-    private ListView listView;
+    private ContactAdapter contactAdapter;
     @InjectPresenter
     ContactListPresenter contactPresenter;
 
@@ -40,8 +41,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         return new ContactListPresenter(getContext().getContentResolver());
     }
 
-    private final String CONTACT_LIST_FRAGMENT_TAG = "CONTACT_LIST_FRAGMENT_TAG";
-
     public ContactListFragment() {
         // Required empty public constructor
     }
@@ -49,8 +48,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ListView.OnItemClickListener) {
-            targetElement = (ListView.OnItemClickListener) context;
+        if(context instanceof View.OnClickListener) {
+            targetElement = (View.OnClickListener) context;
         }
     }
 
@@ -64,16 +63,44 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.contact_list_title);
-        listView = view.findViewById(R.id.contact_list);
         handler = new Handler(Looper.getMainLooper());
+        contactAdapter = new ContactAdapter(targetElement);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(contactAdapter);
+        recyclerView.addItemDecoration(new ContactDecorator((int) pxFromDp(10)));
+
+        setHasOptionsMenu(true);
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        listView = null;
         handler = null;
+        contactAdapter = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint(getResources().getString(R.string.search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactPresenter.updateList(newText.equals("") ? null : newText);
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -82,38 +109,18 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(getContext(), R.layout.contact, contacts) {
-                    @NonNull
-                    @Override
-                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                        if(convertView == null) {
-                            convertView = getLayoutInflater().inflate(R.layout.contact, parent, false);
-                        }
-                        TextView name = (TextView) convertView.findViewById(R.id.name);
-                        TextView number = (TextView) convertView.findViewById(R.id.number);
-                        ImageView image = (ImageView) convertView.findViewById(R.id.image);
-
-                        Contact curContact = contacts.get(position);
-
-                        convertView.setId(curContact.getId());
-
-                        name.setText(curContact.getName());
-                        number.setText(curContact.getNumber());
-                        Uri imageUri = curContact.getImage();
-                        if(imageUri == null) {
-                            image.setImageResource(R.drawable.android_icon);
-                        } else {
-                            image.setImageURI(imageUri);
-                        }
-                        return convertView;
-                    }
-                };
-                if(listView != null) {
-                    listView.setOnItemClickListener(targetElement);
-                    listView.setAdapter(arrayAdapter);
+                if(contactAdapter != null) {
+                    contactAdapter.setContacts(contacts);
                 }
             }
         });
+    }
+
+    private float pxFromDp(int dp) {
+        return dp * getContext().getApplicationContext()
+                .getResources()
+                .getDisplayMetrics()
+                .density;
     }
 
     public static ContactListFragment newInstance() {

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import androidx.annotation.Nullable;
+
 import com.gmail.fuskerr63.presenter.ContactListPresenter;
 import com.gmail.fuskerr63.presenter.DetailsPresenter;
 
@@ -23,12 +25,16 @@ public class Repository {
         weakContentResolver = new WeakReference(contentResolver);
     }
 
-    public void getContacts(final ContactListPresenter.ListResultListener listResultListener) {
+    public void getContacts(final ContactListPresenter.ListResultListener listResultListener, @Nullable final String selector) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 ContentResolver contentResolver = weakContentResolver.get();
                 if(contentResolver == null) return;
+                String selection = null;
+                if(selector != null && !selector.equals("")) {
+                    selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE \'%" + selector + "%\'";
+                }
                 Cursor cursorContact = contentResolver.query(
                         ContactsContract.Contacts.CONTENT_URI,
                         new String[] {
@@ -37,7 +43,7 @@ public class Repository {
                                 ContactsContract.Contacts.DISPLAY_NAME,
                                 ContactsContract.Contacts.HAS_PHONE_NUMBER
                         },
-                        null,
+                        selection,
                         null,
                         ContactsContract.Contacts.DISPLAY_NAME + " ASC");
                 ArrayList<Contact> contacts = new ArrayList();

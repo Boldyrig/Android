@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidLesson</string>
+    <string name="app_name">Contact List App</string>
 
     <string name="empty"></string>
     <string name="description">Description</string>
@@ -16,4 +16,5 @@
     <string name="notification_text">Today is the birthday of</string>
     <string name="channel_description">some description</string>
     <string name="notification_title">Contacts</string>
+    <string name="search">Search</string>
 </resources>

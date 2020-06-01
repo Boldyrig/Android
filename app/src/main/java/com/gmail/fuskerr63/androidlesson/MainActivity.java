@@ -17,9 +17,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
@@ -31,7 +29,7 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements
         ContactDetailsFragment.OnClickButtonListener,
-        ListView.OnItemClickListener {
+        View.OnClickListener {
     private AlarmManager alarmManager;
 
     private final String EXTRA_ID = "ID";
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.empty);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onClick(View view) {
         showDetails(view.getId());
     }
 }
