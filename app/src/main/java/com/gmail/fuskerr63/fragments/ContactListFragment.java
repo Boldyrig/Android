@@ -68,7 +68,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(contactAdapter);
-        recyclerView.addItemDecoration(new ContactDecorator(15));
+        recyclerView.addItemDecoration(new ContactDecorator((int) pxFromDp(10)));
 
         setHasOptionsMenu(true);
         return view;
@@ -78,6 +78,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public void onDestroyView() {
         super.onDestroyView();
         handler = null;
+        contactAdapter = null;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         inflater.inflate(R.menu.menu, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Search");
+        searchView.setQueryHint(getResources().getString(R.string.search));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -108,9 +109,18 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         handler.post(new Runnable() {
             @Override
             public void run() {
-                contactAdapter.setContacts(contacts);
+                if(contactAdapter != null) {
+                    contactAdapter.setContacts(contacts);
+                }
             }
         });
+    }
+
+    private float pxFromDp(int dp) {
+        return dp * getContext().getApplicationContext()
+                .getResources()
+                .getDisplayMetrics()
+                .density;
     }
 
     public static ContactListFragment newInstance() {

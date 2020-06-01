@@ -12,17 +12,15 @@ import androidx.recyclerview.widget.ListAdapter;
 import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.repository.Contact;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
-    private ArrayList<Contact> contacts;
-    private WeakReference<View.OnClickListener> onClickListener;
+    private View.OnClickListener onClickListener;
 
 
     public ContactAdapter(View.OnClickListener onClickListener) {
         super(DIFF_CALLBACK);
-        this.onClickListener = new WeakReference<View.OnClickListener>(onClickListener);
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -31,9 +29,8 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.contact, parent, false);
         ContactViewHolder contactViewHolder = new ContactViewHolder(view);
-        View.OnClickListener listener = onClickListener.get();
-        if(listener != null){
-            contactViewHolder.itemView.setOnClickListener(listener);
+        if(onClickListener != null){
+            contactViewHolder.itemView.setOnClickListener(onClickListener);
         }
         return contactViewHolder;
     }
@@ -44,8 +41,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
     }
 
     public void setContacts(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
-        submitList(this.contacts);
+        submitList(contacts);
     }
 
     public static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
@@ -56,7 +52,9 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
-            return oldItem.getNumber().equals(newItem.getNumber());
+            return oldItem.getNumber().equals(newItem.getNumber()) &&
+                    oldItem.getName().equals(newItem.getName()) &&
+                    oldItem.getImage().equals(newItem.getImage());
         }
     };
 }
