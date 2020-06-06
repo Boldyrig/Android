@@ -1,23 +1,24 @@
 package com.gmail.fuskerr63.presenter;
 
 import android.content.ContentResolver;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.gmail.fuskerr63.fragments.ContactListView;
-import com.gmail.fuskerr63.repository.Contact;
 import com.gmail.fuskerr63.repository.Repository;
 
-import java.util.ArrayList;
-
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    Repository repository;
+    private Repository repository;
 
-    private final String EXTRA_ID = "ID";
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     public ContactListPresenter(ContentResolver contentResolver) {
         repository = new Repository(contentResolver);
@@ -25,23 +26,18 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
     }
 
     public void updateList(@Nullable String selector) {
-        repository.getContacts(listResultListener, selector);
-    }
-
-    private ListResultListener listResultListener = new ListResultListener() {
-        @Override
-        public void onComplete(ArrayList<Contact> contacts) {
-            getViewState().updateList(contacts);
-        }
-    };
-
-    public interface ListResultListener {
-        void onComplete(ArrayList<Contact> contacts);
+        disposable.add(repository.getContacts(selector)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> getViewState().showLoading())
+                .doFinally(() -> getViewState().hideLoading())
+                .subscribe(contacts -> getViewState().updateList(contacts)));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         repository = null;
+        disposable.dispose();
     }
 }
