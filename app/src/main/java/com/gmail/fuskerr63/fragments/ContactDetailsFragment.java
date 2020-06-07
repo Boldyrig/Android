@@ -101,13 +101,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
     }
 
     @Override
-    public void showLoading() {
-        getView().findViewById(R.id.progress_bar_details).setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        getView().findViewById(R.id.progress_bar_details).setVisibility(View.GONE);
+    public void loadingStatus(boolean show) {
+        int status = show ? View.VISIBLE : View.GONE;
+        getView().findViewById(R.id.progress_bar_details).setVisibility(status);
     }
 
     public static ContactDetailsFragment newInstance(int id) {

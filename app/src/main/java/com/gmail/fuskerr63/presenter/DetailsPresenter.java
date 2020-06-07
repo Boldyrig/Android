@@ -20,8 +20,8 @@ public class DetailsPresenter extends MvpPresenter<DetailsView> {
         disposable.add(repository.getContactById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> getViewState().showLoading())
-                .doFinally(() -> getViewState().hideLoading())
+                .doOnSubscribe(d -> getViewState().loadingStatus(true))
+                .doFinally(() -> getViewState().loadingStatus(false))
                 .subscribe(contact -> getViewState().updateDetails(contact)));
     }
 

@@ -39,7 +39,7 @@ public class Repository {
         return Single.fromCallable(() -> loadContactById(id));
     };
 
-    public ArrayList<Contact> loadContacts(@Nullable final String selector) {
+    private ArrayList<Contact> loadContacts(@Nullable final String selector) {
         ContentResolver contentResolver = weakContentResolver.get();
         if(contentResolver == null) return null;
         String selection = null;
@@ -107,7 +107,7 @@ public class Repository {
         return contacts;
     }
 
-    public Contact loadContactById(final int id) {
+    private Contact loadContactById(final int id) {
         ContentResolver contentResolver = weakContentResolver.get();
         if(contentResolver == null) return null;
         Cursor cursorContact = contentResolver.query(

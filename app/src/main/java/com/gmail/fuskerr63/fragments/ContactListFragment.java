@@ -23,12 +23,7 @@ import com.gmail.fuskerr63.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableOnSubscribe;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
@@ -92,29 +87,18 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search));
 
-        Observable<String> observable = Observable.create((ObservableOnSubscribe<String>) emitter -> {
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    emitter.onNext(query);
-                    searchView.clearFocus();
-                    return false;
-                }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    emitter.onNext(newText);
-                    return false;
-                }
-            });
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactPresenter.onTextChange(newText);
+                return false;
+            }
         });
-
-        observable.map(text -> text.trim())
-                .subscribeOn(Schedulers.io())
-                .debounce(300, TimeUnit.MILLISECONDS)
-                .filter(text -> !text.isEmpty())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(text -> contactPresenter.updateList(text), error -> Log.d(TAG, error.getMessage()));
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -126,12 +110,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void showLoading() {
-        getView().findViewById(R.id.progress_bar_list).setVisibility(View.VISIBLE);
-    }
-
-    public void hideLoading() {
-        getView().findViewById(R.id.progress_bar_list).setVisibility(View.GONE);
+    public void loadingStatus(boolean show) {
+        int status = show ? View.VISIBLE : View.GONE;
+        getView().findViewById(R.id.progress_bar_list).setVisibility(status);
     }
 
     private float pxFromDp(int dp) {
