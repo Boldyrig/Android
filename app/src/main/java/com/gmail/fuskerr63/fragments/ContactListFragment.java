@@ -95,7 +95,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                contactPresenter.onTextChange(newText);
+                contactPresenter.updateList(newText);
                 return false;
             }
         });

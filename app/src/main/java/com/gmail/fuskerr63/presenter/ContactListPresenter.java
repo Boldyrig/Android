@@ -22,25 +22,27 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
     private final CompositeDisposable disposable = new CompositeDisposable();
     private final PublishSubject<String> publishSubject = PublishSubject.create();
 
+    private final String TAG = "TAG";
+
     public ContactListPresenter(ContentResolver contentResolver) {
         repository = new Repository(contentResolver);
         disposable.add(
-                publishSubject.switchMapSingle(selector -> repository.getContacts(selector).subscribeOn(Schedulers.io()))
+                publishSubject.switchMapSingle(
+                            selector -> repository.getContacts(selector)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnSubscribe(d -> getViewState().loadingStatus(true))
+                                    .doFinally(() -> getViewState().loadingStatus(false))
+                        )
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe(d -> getViewState().loadingStatus(true))
-                        .doFinally(() -> getViewState().loadingStatus(false))
-                        .subscribe(contacts -> getViewState().updateList(contacts))
+                        .subscribe(
+                                contacts -> getViewState().updateList(contacts),
+                                error -> Log.d(TAG, error.getMessage()))
         );
         updateList("");
     }
 
-    public void updateList(@Nullable String selector) {
-        publishSubject.onNext(selector);
-    }
-
-    public void onTextChange(String newText) {
-        updateList(newText);
-    }
+    public void updateList(@Nullable String selector) { publishSubject.onNext(selector); }
 
     @Override
     public void onDestroy() {
