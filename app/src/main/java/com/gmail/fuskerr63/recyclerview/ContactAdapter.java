@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.recyclerview;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,17 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
-            return oldItem.getNumber().equals(newItem.getNumber()) &&
-                    oldItem.getName().equals(newItem.getName()) &&
-                    oldItem.getImage().equals(newItem.getImage());
+            final String oldNumber = oldItem.getNumber();
+            final String newNumber = newItem.getNumber();
+            final String oldName = oldItem.getName();
+            final String newName = newItem.getName();
+            final Uri oldImage = oldItem.getImage();
+            final Uri newImage = newItem.getImage();
+            final boolean oldImageIsNull = oldImage == null;
+            final boolean newImageIsNull = newImage == null;
+            return oldNumber.equals(newNumber) &&
+                    oldName.equals(newName) &&
+                    !oldImageIsNull ? oldImage.equals(newImage) : newImageIsNull ? true : false;
         }
     };
 }
