@@ -7,8 +7,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,8 +30,10 @@ import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private View.OnClickListener targetElement;
-    private Handler handler;
     private ContactAdapter contactAdapter;
+
+    private final String TAG = "TAG";
+
     @InjectPresenter
     ContactListPresenter contactPresenter;
 
@@ -63,7 +64,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.contact_list_title);
-        handler = new Handler(Looper.getMainLooper());
         contactAdapter = new ContactAdapter(targetElement);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,7 +77,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        handler = null;
         contactAdapter = null;
     }
 
@@ -87,8 +86,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -96,8 +95,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                contactPresenter.updateList(newText.equals("") ? null : newText);
-                return true;
+                contactPresenter.updateList(newText);
+                return false;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
@@ -105,15 +104,15 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void updateList(final ArrayList<Contact> contacts) {
-        if(handler == null) return;
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(contactAdapter != null) {
-                    contactAdapter.setContacts(contacts);
-                }
-            }
-        });
+        if(contactAdapter != null) {
+            contactAdapter.setContacts(contacts);
+        }
+    }
+
+    @Override
+    public void loadingStatus(boolean show) {
+        int status = show ? View.VISIBLE : View.GONE;
+        getView().findViewById(R.id.progress_bar_list).setVisibility(status);
     }
 
     private float pxFromDp(int dp) {

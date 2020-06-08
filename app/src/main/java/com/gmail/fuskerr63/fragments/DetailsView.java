@@ -9,4 +9,6 @@ import moxy.viewstate.strategy.StateStrategyType;
 public interface DetailsView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
     void updateDetails(Contact contact);
+    @StateStrategyType(SingleStateStrategy.class)
+    void loadingStatus(boolean show);
 }

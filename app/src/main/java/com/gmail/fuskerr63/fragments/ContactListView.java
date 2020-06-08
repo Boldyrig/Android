@@ -11,4 +11,6 @@ import moxy.viewstate.strategy.StateStrategyType;
 public interface ContactListView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
     void updateList(ArrayList<Contact> contacts);
+    @StateStrategyType(SingleStateStrategy.class)
+    void loadingStatus(boolean show);
 }

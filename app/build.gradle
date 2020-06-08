@@ -38,6 +38,10 @@ dependencies {
     annotationProcessor "com.github.moxy-community:moxy-compiler:2.1.2"
     implementation "com.github.moxy-community:moxy-app-compat:2.1.2"
 
+    //RxJava
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
+
     //noinspection GradleCompatible
     implementation "com.android.support:support-compat:28.0.0"
     testImplementation 'junit:junit:4.12'
