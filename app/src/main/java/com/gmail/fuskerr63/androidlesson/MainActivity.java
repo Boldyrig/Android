@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.androidlesson;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
 import com.gmail.fuskerr63.fragments.ContactListFragment;
+import com.gmail.fuskerr63.fragments.MapFragment;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.Calendar;
@@ -29,7 +31,9 @@ import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements
         ContactDetailsFragment.OnClickButtonListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        ContactListFragment.onMenuItemClickContacts,
+        ContactDetailsFragment.onMenuItemClickDetails{
     private AlarmManager alarmManager;
 
     private final String EXTRA_ID = "ID";
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements
     private final String ACTION = "com.gmail.fuskerr63.action.notification";
     private final String CONTACT_LIST_FRAGMENT_TAG = "CONTACT_LIST_FRAGMENT_TAG";
     private final String CONTACT_DETAILS_FRAGMENT_TAG = "CONTACT_DETAILS_FRAGMENT_TAG";
+    private final String MAP_FRAGMENT_TAG = "MAP_FRAGMENT_TAG";
     private final int PERMISSIONS_REQUEST = 5050;
 
     @Override
@@ -130,8 +135,24 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        showDetails(view.getId());
+    public void showMap(int id) {
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            MapFragment mapFragment = (MapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
+            if(mapFragment == null){
+                mapFragment = MapFragment.newInstance(id);
+                transaction.replace(R.id.fragment_container, mapFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
     }
+
+    @Override
+    public void onClick(View view) { showDetails(view.getId()); }
+
+    @Override
+    public void onMenuItemClickContacts() { showMap(-1); }
+
+    @Override
+    public void onMenuItemClickDetails(int id) { showMap(id); }
 }

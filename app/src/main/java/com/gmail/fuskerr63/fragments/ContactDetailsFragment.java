@@ -6,11 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.presenter.DetailsPresenter;
@@ -25,17 +30,43 @@ import moxy.presenter.ProvidePresenter;
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements DetailsView {
     private OnClickButtonListener targetElement;
+    private onMenuItemClickDetails menuItemClickListener;
+
+    private final String EXTRA_ID = "ID";
 
     @InjectPresenter
     DetailsPresenter detailsPresenter;
 
     @ProvidePresenter
     DetailsPresenter provideDetailsPresenter() {
-        return new DetailsPresenter(getContext().getContentResolver(), getArguments().getInt("ID"));
+        return new DetailsPresenter(getContext().getContentResolver(), getArguments().getInt(EXTRA_ID));
     }
 
     public ContactDetailsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_details, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.app_bar_map_details:
+                menuItemClickListener.onMenuItemClickDetails(getArguments().getInt(EXTRA_ID));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -44,12 +75,16 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
         if(context instanceof OnClickButtonListener) {
             targetElement = (OnClickButtonListener) context;
         }
+        if(context instanceof onMenuItemClickDetails) {
+            menuItemClickListener = (onMenuItemClickDetails) context;
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         targetElement = null;
+        menuItemClickListener = null;
     }
 
     @Override
@@ -114,7 +149,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
         return contactDetails;
     }
 
-    public interface OnClickButtonListener {
-        public void onClickButton(View v, Contact contact);
-    }
+    public interface OnClickButtonListener { public void onClickButton(View v, Contact contact); }
+
+    public interface onMenuItemClickDetails { public void onMenuItemClickDetails(int id); }
 }

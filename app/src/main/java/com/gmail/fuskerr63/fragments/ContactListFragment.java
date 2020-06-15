@@ -3,6 +3,7 @@ package com.gmail.fuskerr63.fragments;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,7 @@ import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private View.OnClickListener targetElement;
+    private onMenuItemClickContacts menuItemClickListener;
     private ContactAdapter contactAdapter;
 
     private final String TAG = "TAG";
@@ -51,6 +53,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         super.onAttach(context);
         if(context instanceof View.OnClickListener) {
             targetElement = (View.OnClickListener) context;
+        }
+        if(context instanceof onMenuItemClickContacts) {
+            menuItemClickListener = (onMenuItemClickContacts) context;
         }
     }
 
@@ -83,8 +88,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        MenuItem menuItemSearch = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) menuItemSearch.getActionView();
         searchView.setQueryHint(getResources().getString(R.string.search));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -100,6 +106,17 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.app_bar_map:
+                menuItemClickListener.onMenuItemClickContacts();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -125,5 +142,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public static ContactListFragment newInstance() {
         ContactListFragment contactList = new ContactListFragment();
         return contactList;
+    }
+
+    public interface onMenuItemClickContacts {
+        void onMenuItemClickContacts();
     }
 }

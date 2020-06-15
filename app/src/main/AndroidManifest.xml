@@ -3,6 +3,10 @@
     package="com.gmail.fuskerr63.androidlesson">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +31,10 @@
                 <action android:name="com.gmail.fuskerr63.action.notification"/>
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key"/>
     </application>
 
 </manifest>
