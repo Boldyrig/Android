@@ -1,12 +1,13 @@
 package com.gmail.fuskerr63.presenter;
 
-import android.content.ContentResolver;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.gmail.fuskerr63.fragments.ContactListView;
 import com.gmail.fuskerr63.repository.Repository;
+
+import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -24,11 +25,12 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
 
     private final String TAG = "TAG";
 
-    public ContactListPresenter(ContentResolver contentResolver) {
-        repository = new Repository(contentResolver);
+    @Inject
+    public ContactListPresenter(Repository repository) {
+        this.repository = repository;
         disposable.add(
                 publishSubject.switchMapSingle(
-                            selector -> repository.getContacts(selector)
+                            selector -> this.repository.getContacts(selector)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .doOnSubscribe(d -> getViewState().loadingStatus(true))

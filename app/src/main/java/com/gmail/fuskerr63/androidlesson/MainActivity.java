@@ -30,6 +30,7 @@ import java.util.GregorianCalendar;
 public class MainActivity extends AppCompatActivity implements
         ContactDetailsFragment.OnClickButtonListener,
         View.OnClickListener {
+
     private AlarmManager alarmManager;
 
     private final String EXTRA_ID = "ID";
