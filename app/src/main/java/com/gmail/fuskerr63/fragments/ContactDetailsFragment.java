@@ -18,11 +18,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.gmail.fuskerr63.androidlesson.R;
+import com.gmail.fuskerr63.app.ContactApplication;
+import com.gmail.fuskerr63.di.app.AppComponent;
+import com.gmail.fuskerr63.di.contact.ContactComponent;
+import com.gmail.fuskerr63.di.contact.ContactModule;
 import com.gmail.fuskerr63.presenter.DetailsPresenter;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.Calendar;
 import java.util.Locale;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
@@ -37,9 +44,12 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
     @InjectPresenter
     DetailsPresenter detailsPresenter;
 
+    @Inject
+    Provider<DetailsPresenter> presenterProvider;
+
     @ProvidePresenter
     DetailsPresenter provideDetailsPresenter() {
-        return new DetailsPresenter(getContext().getContentResolver(), getArguments().getInt(EXTRA_ID));
+        return presenterProvider.get();
     }
 
     public ContactDetailsFragment() {
@@ -78,6 +88,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
         if(context instanceof onMenuItemClickDetails) {
             menuItemClickListener = (onMenuItemClickDetails) context;
         }
+        AppComponent appComponent = ((ContactApplication) getActivity().getApplication()).getAppComponent();
+        ContactComponent contactComponent = appComponent.plusContactComponent(new ContactModule(getArguments().getInt("ID")));
+        contactComponent.inject(this);
     }
 
     @Override
