@@ -1,9 +1,9 @@
 package com.gmail.fuskerr63.presenter;
 
-import android.content.ContentResolver;
-
 import com.gmail.fuskerr63.fragments.DetailsView;
 import com.gmail.fuskerr63.repository.Repository;
+
+import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
@@ -15,8 +15,9 @@ public class DetailsPresenter extends MvpPresenter<DetailsView> {
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
-    public DetailsPresenter(ContentResolver contentResolver, int id) {
-        repository = new Repository(contentResolver);
+    @Inject
+    public DetailsPresenter(Repository repository, int id) {
+        this.repository = repository;
         disposable.add(repository.getContactById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

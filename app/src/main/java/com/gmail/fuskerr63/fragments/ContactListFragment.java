@@ -17,12 +17,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gmail.fuskerr63.androidlesson.R;
+import com.gmail.fuskerr63.app.ContactApplication;
+import com.gmail.fuskerr63.di.app.AppComponent;
+import com.gmail.fuskerr63.di.app.DaggerAppComponent;
+import com.gmail.fuskerr63.di.app.RepositoryModule;
+import com.gmail.fuskerr63.di.contacts.ContactsComponent;
+import com.gmail.fuskerr63.di.contacts.ContactsModule;
 import com.gmail.fuskerr63.presenter.ContactListPresenter;
 import com.gmail.fuskerr63.recyclerview.ContactAdapter;
 import com.gmail.fuskerr63.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
@@ -37,9 +46,12 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @InjectPresenter
     ContactListPresenter contactPresenter;
 
+    @Inject
+    Provider<ContactListPresenter> presenterProvider;
+
     @ProvidePresenter
     ContactListPresenter provideContactPresenter() {
-        return new ContactListPresenter(getContext().getContentResolver());
+        return presenterProvider.get();
     }
 
     public ContactListFragment() {
@@ -52,6 +64,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         if(context instanceof View.OnClickListener) {
             targetElement = (View.OnClickListener) context;
         }
+        AppComponent appComponent = ((ContactApplication) getActivity().getApplication()).getAppComponent();
+        ContactsComponent contactsComponent = appComponent.plusContactsComponent(new ContactsModule());
+        contactsComponent.inject(this);
     }
 
     @Override
