@@ -19,7 +19,6 @@ public class ContactApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .repositoryModule(new RepositoryModule(getApplicationContext()))
                 .build();
-        appComponent.inject(this);
     }
 
     public AppComponent getAppComponent() {

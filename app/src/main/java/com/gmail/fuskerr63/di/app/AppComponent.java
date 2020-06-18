@@ -18,6 +18,4 @@ public interface AppComponent {
     //subcomponents
     ContactsComponent plusContactsComponent(ContactsModule contactsModule);
     ContactComponent plusContactComponent(ContactModule contactModule);
-
-    void inject(ContactApplication contactApplication);
 }
