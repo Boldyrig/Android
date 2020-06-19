@@ -1,7 +1,6 @@
 package com.gmail.fuskerr63.androidlesson;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -16,14 +15,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.gmail.fuskerr63.fragments.ContactDetailsFragment;
-import com.gmail.fuskerr63.fragments.ContactListFragment;
-import com.gmail.fuskerr63.fragments.MapFragment;
+import com.gmail.fuskerr63.fragments.contact.ContactDetailsFragment;
+import com.gmail.fuskerr63.fragments.contacts.ContactListFragment;
+import com.gmail.fuskerr63.fragments.map.ContactMapFragment;
+import com.gmail.fuskerr63.fragments.map.ContactsMapFragment;
 import com.gmail.fuskerr63.repository.Contact;
 
 import java.util.Calendar;
@@ -135,24 +134,36 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void showMap(int id) {
+    public void showContactsMap() {
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            MapFragment mapFragment = (MapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
+            ContactsMapFragment mapFragment = (ContactsMapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
             if(mapFragment == null){
-                mapFragment = MapFragment.newInstance(id);
+                mapFragment = ContactsMapFragment.newInstance();
                 transaction.replace(R.id.fragment_container, mapFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
     }
 
+    public void showContactMap(int id) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        ContactMapFragment mapFragment = (ContactMapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
+        if(mapFragment == null){
+            mapFragment = ContactMapFragment.newInstance(id);
+            transaction.replace(R.id.fragment_container, mapFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    }
+
     @Override
     public void onClick(View view) { showDetails(view.getId()); }
 
     @Override
-    public void onMenuItemClickContacts() { showMap(-1); }
+    public void onMenuItemClickContacts() { showContactsMap(); }
 
     @Override
-    public void onMenuItemClickDetails(int id) { showMap(id); }
+    public void onMenuItemClickDetails(int id) { showContactMap(id); }
 }

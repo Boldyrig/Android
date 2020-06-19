@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.gmail.fuskerr63.fragments.ContactListView;
+import com.gmail.fuskerr63.fragments.contacts.ContactListView;
 import com.gmail.fuskerr63.repository.Repository;
 
 import javax.inject.Inject;

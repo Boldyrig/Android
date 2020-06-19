@@ -1,4 +1,4 @@
-package com.gmail.fuskerr63.fragments;
+package com.gmail.fuskerr63.fragments.contact;
 
 import com.gmail.fuskerr63.repository.Contact;
 

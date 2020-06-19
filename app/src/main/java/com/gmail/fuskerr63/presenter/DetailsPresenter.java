@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.presenter;
 
-import com.gmail.fuskerr63.fragments.DetailsView;
+import com.gmail.fuskerr63.fragments.contact.DetailsView;
 import com.gmail.fuskerr63.repository.Repository;
 
 import javax.inject.Inject;

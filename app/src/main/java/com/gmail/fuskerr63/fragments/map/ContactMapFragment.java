@@ -1,9 +1,9 @@
-package com.gmail.fuskerr63.fragments;
+package com.gmail.fuskerr63.fragments.map;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +16,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.gmail.fuskerr63.androidlesson.R;
-import com.gmail.fuskerr63.database.User;
-import com.gmail.fuskerr63.presenter.MapPresenter;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import com.gmail.fuskerr63.app.ContactApplication;
+import com.gmail.fuskerr63.di.app.AppComponent;
+import com.gmail.fuskerr63.di.map.MapComponent;
+import com.gmail.fuskerr63.di.map.MapModule;
+import com.gmail.fuskerr63.presenter.ContactMapPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -27,37 +28,27 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-public class MapFragment extends MvpAppCompatFragment implements GoogleMapView, OnMapReadyCallback {
+public class ContactMapFragment extends MvpAppCompatFragment implements ContactMapView, OnMapReadyCallback {
     private MapView mapView;
 
+    @Inject
+    Provider<ContactMapPresenter> presenterProvider;
+
     @InjectPresenter
-    MapPresenter mapPresenter;
+    ContactMapPresenter contactMapPresenter;
 
     private Location lastKnownLocation;
     private CameraPosition cameraPosition;
 
-    private PlacesClient placesClient;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-
     private GoogleMap googleMap;
-
-    List<Place.Field> placeFields = Arrays.asList(
-            Place.Field.LAT_LNG);
 
     private final String KEY_CAMERA_POSITION = "CAMERA_POSITION";
     private final String KEY_LOCATION = "LOCATION";
@@ -65,8 +56,16 @@ public class MapFragment extends MvpAppCompatFragment implements GoogleMapView, 
     private final int PERMISSIONS_REQUEST = 9090;
 
     @ProvidePresenter
-    MapPresenter provideMapPresenter() {
-        return new MapPresenter(getActivity().getApplicationContext(), getArguments().getInt("ID"));
+    ContactMapPresenter provideMapPresenter() {
+        return presenterProvider.get();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        AppComponent appComponent = ((ContactApplication) getActivity().getApplication()).getAppComponent();
+        MapComponent mapComponent = appComponent.plusMapComponent(new MapModule(context.getApplicationContext(), getArguments().getInt("ID")));
+        mapComponent.inject(this);
     }
 
     @Override
@@ -76,42 +75,13 @@ public class MapFragment extends MvpAppCompatFragment implements GoogleMapView, 
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
         }
 
-        Places.initialize(getActivity().getApplicationContext(), getString(R.string.api_key));
-        placesClient = Places.createClient(getContext());
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-
         if (savedInstanceState != null) {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
     }
 
-    public void showCurrentLocation() {
-        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.builder(placeFields).build();
-        Task<FindCurrentPlaceResponse> responseTask = placesClient.findCurrentPlace(request);
-        responseTask.addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                FindCurrentPlaceResponse response = task.getResult();
-                if(response != null) {
-                    PlaceLikelihood place = response.getPlaceLikelihoods().get(0);
-                    moveTo(place.getPlace().getLatLng());
-                }
-            }
-        }).addOnFailureListener(error -> {
-            Log.d("TAG", error.getMessage());
-        });
-    }
-
-    public void printMarkers(List<User> users) {
-        googleMap.clear();
-        for(User user : users) {
-            LatLng postition = new LatLng(user.latitude, user.longitude);
-            googleMap.addMarker(new MarkerOptions().position(postition).title(String.valueOf(user.contactId)));
-        }
-    }
-
-    private void moveTo(LatLng latLng) {
+    public void moveTo(LatLng latLng) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(latLng.latitude,
                         latLng.longitude), DEFAULT_ZOOM));
@@ -181,8 +151,8 @@ public class MapFragment extends MvpAppCompatFragment implements GoogleMapView, 
         mapView.onLowMemory();
     }
 
-    public static MapFragment newInstance(int id) {
-        MapFragment mapFragment = new MapFragment();
+    public static ContactMapFragment newInstance(int id) {
+        ContactMapFragment mapFragment = new ContactMapFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("ID", id);
         mapFragment.setArguments(bundle);
@@ -192,18 +162,11 @@ public class MapFragment extends MvpAppCompatFragment implements GoogleMapView, 
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
-        if(getArguments() != null) {
-            googleMap.setOnMapClickListener(click -> {
-                googleMap.clear();
-                googleMap.addMarker(new MarkerOptions().position(click).title(String.valueOf(getArguments().getInt("ID"))));
-                mapPresenter.onMapClick(click);
-            });
-        }
-//        googleMap.setMapStyle(GoogleMap.MAP_TYPE_NORMAL);
-//        LatLng sydney = new LatLng(-34, 151);
-//        googleMap.addMarker(new MarkerOptions().position(sydney).title("HELLO"));
-//        googleMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-//        CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.setOnMapClickListener(click -> {
+            googleMap.clear();
+            googleMap.addMarker(new MarkerOptions().position(click).title(String.valueOf(getArguments().getInt("ID"))));
+            contactMapPresenter.onMapClick(click);
+        });
+        contactMapPresenter.onMapReady();
     }
 }

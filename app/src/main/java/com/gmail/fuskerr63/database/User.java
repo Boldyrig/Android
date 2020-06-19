@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class User {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     public int id;
 
     @ColumnInfo(name = "contact_id")
@@ -17,4 +17,7 @@ public class User {
 
     @ColumnInfo(name = "longitude")
     public double longitude;
+
+    @ColumnInfo(name = "address")
+    public String address;
 }

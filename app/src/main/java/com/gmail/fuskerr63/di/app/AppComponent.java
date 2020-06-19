@@ -1,10 +1,11 @@
 package com.gmail.fuskerr63.di.app;
 
-import com.gmail.fuskerr63.app.ContactApplication;
 import com.gmail.fuskerr63.di.contact.ContactComponent;
 import com.gmail.fuskerr63.di.contact.ContactModule;
 import com.gmail.fuskerr63.di.contacts.ContactsComponent;
 import com.gmail.fuskerr63.di.contacts.ContactsModule;
+import com.gmail.fuskerr63.di.map.MapComponent;
+import com.gmail.fuskerr63.di.map.MapModule;
 import com.gmail.fuskerr63.repository.Repository;
 
 import javax.inject.Singleton;
@@ -18,4 +19,5 @@ public interface AppComponent {
     //subcomponents
     ContactsComponent plusContactsComponent(ContactsModule contactsModule);
     ContactComponent plusContactComponent(ContactModule contactModule);
+    MapComponent plusMapComponent(MapModule mapModule);
 }
