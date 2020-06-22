@@ -146,12 +146,12 @@ public class MainActivity extends AppCompatActivity implements
             }
     }
 
-    public void showContactMap(int id) {
+    public void showContactMap(int id, String name) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         ContactMapFragment mapFragment = (ContactMapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
         if(mapFragment == null){
-            mapFragment = ContactMapFragment.newInstance(id);
+            mapFragment = ContactMapFragment.newInstance(id, name);
             transaction.replace(R.id.fragment_container, mapFragment);
             transaction.addToBackStack(null);
             transaction.commit();
@@ -165,5 +165,5 @@ public class MainActivity extends AppCompatActivity implements
     public void onMenuItemClickContacts() { showContactsMap(); }
 
     @Override
-    public void onMenuItemClickDetails(int id) { showContactMap(id); }
+    public void onMenuItemClickDetails(int id, String name) { showContactMap(id, name); }
 }

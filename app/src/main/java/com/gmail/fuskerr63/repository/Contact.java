@@ -13,6 +13,7 @@ public class Contact {
     final private String email;
     final private String email2;
     final private Calendar birthday;
+    private String address;
 
     public Contact() {
         this.id = -1;
@@ -47,17 +48,11 @@ public class Contact {
         this.birthday = birthday;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public String getNumber() {
-        return number;
-    }
+    public String getNumber() { return number; }
 
     public Uri getImage() { return image;}
 
@@ -68,4 +63,8 @@ public class Contact {
     public String getEmail2() { return email2; }
 
     public Calendar getBirthday() { return birthday; }
+
+    public String getAddress() { return address; }
+
+    public void setAddress(String address) { this.address = address; }
 }

@@ -1,36 +1,42 @@
 package com.gmail.fuskerr63.presenter;
 
-import android.content.Context;
 import android.util.Log;
-
-import androidx.room.Room;
 
 import com.gmail.fuskerr63.database.AppDatabase;
 import com.gmail.fuskerr63.fragments.map.ContactsMapView;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-
     private AppDatabase db;
-    private final String DATABASE_NAME = "user_address";
 
-    public ContactsMapPresenter(Context applicationContext) {
-        db = Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
+    private final CompositeDisposable disposable = new CompositeDisposable();
+
+    @Inject
+    public ContactsMapPresenter(AppDatabase db) {
+        this.db = db;
     }
 
     public void onMapReady() {
-        showAllMarkers();
-    }
-
-    private void showAllMarkers() {
-        db.userDao().getAll()
+        disposable.add(db.userDao().getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(t -> {
-                    getViewState().printMarkers(t);
-                });
+                .doOnSubscribe(response -> getViewState().setProgressStatus(true))
+                .doFinally(() -> getViewState().setProgressStatus(false))
+                .subscribe(
+                        users -> getViewState().printMarkers(users),
+                        error -> Log.d("TAG", error.getMessage())));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
+        db = null;
     }
 }

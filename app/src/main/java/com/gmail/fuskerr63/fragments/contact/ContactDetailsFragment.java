@@ -41,6 +41,8 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
 
     private final String EXTRA_ID = "ID";
 
+    private String name;
+
     @InjectPresenter
     DetailsPresenter detailsPresenter;
 
@@ -72,7 +74,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.app_bar_map_details:
-                menuItemClickListener.onMenuItemClickDetails(getArguments().getInt(EXTRA_ID));
+                menuItemClickListener.onMenuItemClickDetails(getArguments().getInt(EXTRA_ID), name);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -114,6 +116,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
 
     @Override
     public void updateDetails(final Contact contact) {
+        name = contact.getName();
         final String ACTION = "com.gmail.fuskerr63.action.notification";
         View view = getView();
         if(view != null) {
@@ -123,6 +126,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
             ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
             ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
             ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            String address = contact.getAddress();
+            if(address != null) {
+                ((TextView) view.findViewById(R.id.address_contact)).setText(address);
+            }
             Calendar birthday = contact.getBirthday();
             if(birthday != null) {
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
@@ -164,5 +171,5 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Deta
 
     public interface OnClickButtonListener { public void onClickButton(View v, Contact contact); }
 
-    public interface onMenuItemClickDetails { public void onMenuItemClickDetails(int id); }
+    public interface onMenuItemClickDetails { public void onMenuItemClickDetails(int id, String name); }
 }

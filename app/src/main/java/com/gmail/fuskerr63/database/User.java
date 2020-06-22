@@ -6,11 +6,12 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class User {
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
+    @PrimaryKey
     @ColumnInfo(name = "contact_id")
     public int contactId;
+
+    @ColumnInfo(name = "name")
+    public String name;
 
     @ColumnInfo(name = "latitude")
     public double latitude;

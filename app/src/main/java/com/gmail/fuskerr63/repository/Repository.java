@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.Single;
 
 public class Repository {
     WeakReference<ContentResolver> weakContentResolver;

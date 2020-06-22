@@ -1,27 +1,16 @@
 package com.gmail.fuskerr63.presenter;
 
-import android.content.Context;
 import android.util.Log;
 
-import androidx.room.Room;
-
-import com.gmail.fuskerr63.androidlesson.R;
 import com.gmail.fuskerr63.database.AppDatabase;
 import com.gmail.fuskerr63.database.User;
 import com.gmail.fuskerr63.fragments.map.ContactMapView;
 import com.gmail.fuskerr63.network.GeoCodeRetrofit;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.inject.Inject;
 
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -31,37 +20,30 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     private AppDatabase db;
     private GeoCodeRetrofit retrofit;
 
-    private final String DATABASE_NAME = "user_address";
-
     private final int CONTACT_ID;
+    private final String NAME;
 
-    private final List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
-    private PlacesClient placesClient;
-
-    public ContactMapPresenter(Context applicationContext, int id) {
+    @Inject
+    public ContactMapPresenter(int id, String name, AppDatabase db, GeoCodeRetrofit retrofit) {
         CONTACT_ID = id;
-        db = Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
-        retrofit = new GeoCodeRetrofit();
-
-        Places.initialize(applicationContext, applicationContext.getString(R.string.api_key));
-        placesClient = Places.createClient(applicationContext);
+        NAME = name;
+        this.db = db;
+        this.retrofit = retrofit;
     }
 
     private void showCurrentLocation() {
-        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.builder(placeFields).build();
-        Task<FindCurrentPlaceResponse> responseTask = placesClient.findCurrentPlace(request);
-        responseTask.addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                FindCurrentPlaceResponse response = task.getResult();
-                if(response != null) {
-                    PlaceLikelihood place = response.getPlaceLikelihoods().get(0);
-                    getViewState().moveTo(place.getPlace().getLatLng());
-                }
-            }
-        }).addOnFailureListener(error -> {
-            Log.d("TAG", error.getMessage());
-        });
+        disposable.add(db.userDao().getUserByContactId(CONTACT_ID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(contact -> {
+                    if(contact != null) {
+                        LatLng latLng = new LatLng(contact.latitude, contact.longitude);
+                        getViewState().moveTo(latLng);
+                        getViewState().replaceMarker(latLng, contact.name);
+                    }
+                }, error -> Log.d("TAG", error.getMessage())));
     }
 
     public void onMapReady() {
@@ -69,24 +51,40 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     }
 
     public void onMapClick(LatLng position) {
+        getViewState().replaceMarker(position, NAME);
         User user = new User();
         user.contactId = CONTACT_ID;
+        user.name = NAME;
         user.latitude = position.latitude;
         user.longitude = position.longitude;
-        retrofit.loadAddress(position)
+        disposable.add(retrofit.loadAddress(position)
                 .subscribeOn(Schedulers.io())
+                .map(response -> {
+                    try {
+                        user.address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
+                    } catch (IndexOutOfBoundsException e) {
+                        Log.d("TAG", e.getMessage());
+                    }
+                    return user;
+                })
+                .flatMap(response -> db.userDao().insert(response).toSingleDefault(true))
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(response -> getViewState().setProgressStatus(true))
+                .doFinally(() -> getViewState().setProgressStatus(false))
                 .subscribe(response -> {
-                    String address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
-                    user.address = address;
-                    insertDB(user);
-                });
+                    if(response) {
+                        Log.d("TAG", "WRITE DB DONE");
+                    }
+                }, error -> {
+                    Log.d("TAG", error.getMessage());
+                }));
     }
 
-    private void insertDB(User user) {
-        db.userDao().insert(user)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> Log.d("TAG", "WRITE DB DONE"));
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disposable.dispose();
+        db = null;
+        retrofit = null;
     }
 }
