@@ -5,15 +5,15 @@ import android.net.Uri;
 import java.util.Calendar;
 
 public class Contact {
-    final private int id;
-    final private Uri image;
-    final private String name;
-    final private String number;
-    final private String number2;
-    final private String email;
-    final private String email2;
-    final private Calendar birthday;
-    private String address;
+    private final int id;
+    private final Uri image;
+    private final String name;
+    private final String number;
+    private final String number2;
+    private final String email;
+    private final String email2;
+    private final Calendar birthday;
+    private final String address;
 
     public Contact() {
         this.id = -1;
@@ -24,6 +24,7 @@ public class Contact {
         this.email = null;
         this.email2 = null;
         this.birthday = null;
+        this.address = null;
     }
 
     public Contact(int id, Uri image, String name, String number) {
@@ -35,6 +36,7 @@ public class Contact {
         this.email = null;
         this.email2 = null;
         this.birthday = null;
+        this.address = null;
     }
 
     public Contact(int id, Uri image, String name, String number, String number2, String email, String email2, Calendar birthday) {
@@ -46,6 +48,19 @@ public class Contact {
         this.email = email;
         this.email2 = email2;
         this.birthday = birthday;
+        this.address = null;
+    }
+
+    public Contact(int id, Uri image, String name, String number, String number2, String email, String email2, Calendar birthday, String address) {
+        this.id = id;
+        this.image = image;
+        this.name = name;
+        this.number = number;
+        this.number2 = number2;
+        this.email = email;
+        this.email2 = email2;
+        this.birthday = birthday;
+        this.address = address;
     }
 
     public int getId() { return id; }
@@ -65,6 +80,4 @@ public class Contact {
     public Calendar getBirthday() { return birthday; }
 
     public String getAddress() { return address; }
-
-    public void setAddress(String address) { this.address = address; }
 }

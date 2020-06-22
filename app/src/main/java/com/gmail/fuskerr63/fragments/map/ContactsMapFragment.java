@@ -95,9 +95,16 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mapView.onDestroy();
         mapView = null;
         progressBar = null;
         googleMap = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
     }
 
     @Override

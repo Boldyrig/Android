@@ -4,10 +4,12 @@ import android.util.Log;
 
 import com.gmail.fuskerr63.database.AppDatabase;
 import com.gmail.fuskerr63.fragments.contact.DetailsView;
+import com.gmail.fuskerr63.repository.Contact;
 import com.gmail.fuskerr63.repository.Repository;
 
 import javax.inject.Inject;
 
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -25,13 +27,21 @@ public class DetailsPresenter extends MvpPresenter<DetailsView> {
         this.db = db;
         disposable.add(repository.getContactById(id)
                 .subscribeOn(Schedulers.io())
-                .map(contact -> {
-                    db.userDao().getUserByContactId(contact.getId())
-                            .subscribe(user -> {
-                                contact.setAddress(user.address);
-                            }, error -> Log.d("TAG", error.getMessage()));
-                    return contact;
-                })
+                .flatMap(contact -> db.userDao().getUserByContactId(contact.getId())
+                        .flatMap(user -> {
+                            Contact newContact = new Contact(
+                                    contact.getId(),
+                                    contact.getImage(),
+                                    contact.getName(),
+                                    contact.getNumber(),
+                                    contact.getNumber2(),
+                                    contact.getEmail(),
+                                    contact.getEmail2(),
+                                    contact.getBirthday(),
+                                    user.address
+                            );
+                            return Single.just(newContact);
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
                 .doFinally(() -> getViewState().loadingStatus(false))

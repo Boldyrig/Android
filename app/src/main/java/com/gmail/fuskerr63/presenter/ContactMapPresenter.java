@@ -2,6 +2,8 @@ package com.gmail.fuskerr63.presenter;
 
 import android.util.Log;
 
+import androidx.core.util.Pair;
+
 import com.gmail.fuskerr63.database.AppDatabase;
 import com.gmail.fuskerr63.database.User;
 import com.gmail.fuskerr63.fragments.map.ContactMapView;
@@ -36,13 +38,11 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     private void showCurrentLocation() {
         disposable.add(db.userDao().getUserByContactId(CONTACT_ID)
                 .subscribeOn(Schedulers.io())
+                .map(contact -> new Pair<String, LatLng>(contact.name, new LatLng(contact.latitude, contact.longitude)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(contact -> {
-                    if(contact != null) {
-                        LatLng latLng = new LatLng(contact.latitude, contact.longitude);
-                        getViewState().moveTo(latLng);
-                        getViewState().replaceMarker(latLng, contact.name);
-                    }
+                .subscribe(pair -> {
+                    getViewState().moveTo(pair.second);
+                    getViewState().replaceMarker(pair.second, pair.first);
                 }, error -> Log.d("TAG", error.getMessage())));
     }
 
@@ -52,39 +52,32 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
 
     public void onMapClick(LatLng position) {
         getViewState().replaceMarker(position, NAME);
-        User user = new User();
-        user.contactId = CONTACT_ID;
-        user.name = NAME;
-        user.latitude = position.latitude;
-        user.longitude = position.longitude;
         disposable.add(retrofit.loadAddress(position)
                 .subscribeOn(Schedulers.io())
-                .map(response -> {
+                .flatMapCompletable(response -> {
+                    String address = "";
                     try {
-                        user.address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
-                    } catch (IndexOutOfBoundsException e) {
+                        address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
+                    } catch(IndexOutOfBoundsException e) {
                         Log.d("TAG", e.getMessage());
                     }
-                    return user;
+                    User user = new User();
+                    user.contactId = CONTACT_ID;
+                    user.name = NAME;
+                    user.latitude = position.latitude;
+                    user.longitude = position.longitude;
+                    user.address = address;
+                    return db.userDao().insert(user);
                 })
-                .flatMap(response -> db.userDao().insert(response).toSingleDefault(true))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))
-                .subscribe(response -> {
-                    if(response) {
-                        Log.d("TAG", "WRITE DB DONE");
-                    }
-                }, error -> {
-                    Log.d("TAG", error.getMessage());
-                }));
+                .subscribe(() -> Log.d("TAG", "Success"), error -> Log.d("TAG", error.getMessage())));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         disposable.dispose();
-        db = null;
-        retrofit = null;
     }
 }

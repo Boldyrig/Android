@@ -37,6 +37,5 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
     public void onDestroy() {
         super.onDestroy();
         disposable.dispose();
-        db = null;
     }
 }
