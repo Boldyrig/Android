@@ -8,17 +8,53 @@ import androidx.room.PrimaryKey;
 public class User {
     @PrimaryKey
     @ColumnInfo(name = "contact_id")
-    public int contactId;
+    private final int contactId;
 
     @ColumnInfo(name = "name")
-    public String name;
+    private final String name;
 
     @ColumnInfo(name = "latitude")
-    public double latitude;
+    private final double latitude;
 
     @ColumnInfo(name = "longitude")
-    public double longitude;
+    private final double longitude;
 
     @ColumnInfo(name = "address")
-    public String address;
+    private final String address;
+
+    public User(int contactId, String name, double latitude, double longitude) {
+        this.contactId = contactId;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = null;
+    }
+
+    public User(int contactId, String name, double latitude, double longitude, String address) {
+        this.contactId = contactId;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+    }
+
+    public int getContactId() {
+        return contactId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
 }

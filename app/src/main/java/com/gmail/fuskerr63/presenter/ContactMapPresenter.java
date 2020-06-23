@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;
 
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,23 +23,23 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     private AppDatabase db;
     private GeoCodeRetrofit retrofit;
 
-    private final int CONTACT_ID;
-    private final String NAME;
+    private int contactId;
+    private String contactName;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactMapPresenter(int id, String name, AppDatabase db, GeoCodeRetrofit retrofit) {
-        CONTACT_ID = id;
-        NAME = name;
+        contactId = id;
+        contactName = name;
         this.db = db;
         this.retrofit = retrofit;
     }
 
     private void showCurrentLocation() {
-        disposable.add(db.userDao().getUserByContactId(CONTACT_ID)
+        disposable.add(db.userDao().getUserByContactId(contactId)
                 .subscribeOn(Schedulers.io())
-                .map(contact -> new Pair<String, LatLng>(contact.name, new LatLng(contact.latitude, contact.longitude)))
+                .map(user -> new Pair<String, LatLng>(user.getName(), new LatLng(user.getLatitude(), user.getLongitude())))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     getViewState().moveTo(pair.second);
@@ -51,24 +52,20 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     }
 
     public void onMapClick(LatLng position) {
-        getViewState().replaceMarker(position, NAME);
-        disposable.add(retrofit.loadAddress(position)
+        getViewState().replaceMarker(position, contactName);
+        disposable.add(Single.just(new User(contactId, contactName, position.latitude, position.longitude))
+                .flatMap(user -> retrofit.loadAddress(position)
+                        .map(response -> {
+                            String address = "";
+                            try{
+                                address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.d("TAG", e.getMessage());
+                            }
+                            return new User(user.getContactId(), user.getName(), user.getLatitude(), user.getLongitude(), address);
+                        }))
                 .subscribeOn(Schedulers.io())
-                .flatMapCompletable(response -> {
-                    String address = "";
-                    try {
-                        address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
-                    } catch(IndexOutOfBoundsException e) {
-                        Log.d("TAG", e.getMessage());
-                    }
-                    User user = new User();
-                    user.contactId = CONTACT_ID;
-                    user.name = NAME;
-                    user.latitude = position.latitude;
-                    user.longitude = position.longitude;
-                    user.address = address;
-                    return db.userDao().insert(user);
-                })
+                .flatMapCompletable(user -> db.userDao().insert(user))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))

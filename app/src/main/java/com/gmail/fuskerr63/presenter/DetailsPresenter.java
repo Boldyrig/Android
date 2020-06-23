@@ -28,7 +28,7 @@ public class DetailsPresenter extends MvpPresenter<DetailsView> {
         disposable.add(repository.getContactById(id)
                 .subscribeOn(Schedulers.io())
                 .flatMap(contact -> db.userDao().getUserByContactId(contact.getId())
-                        .flatMap(user -> {
+                        .map(user -> {
                             Contact newContact = new Contact(
                                     contact.getId(),
                                     contact.getImage(),
@@ -38,9 +38,9 @@ public class DetailsPresenter extends MvpPresenter<DetailsView> {
                                     contact.getEmail(),
                                     contact.getEmail2(),
                                     contact.getBirthday(),
-                                    user.address
+                                    user.getAddress()
                             );
-                            return Single.just(newContact);
+                            return newContact;
                         }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
