@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -22,6 +23,7 @@ public class User {
     @ColumnInfo(name = "address")
     private final String address;
 
+    @Ignore
     public User(int contactId, String name, double latitude, double longitude) {
         this.contactId = contactId;
         this.name = name;

@@ -70,9 +70,9 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
             googleMap.clear();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(User user : users) {
-                LatLng postition = new LatLng(user.latitude, user.longitude);
+                LatLng postition = new LatLng(user.getLatitude(), user.getLongitude());
                 builder.include(postition);
-                googleMap.addMarker(new MarkerOptions().position(postition).title(user.name));
+                googleMap.addMarker(new MarkerOptions().position(postition).title(user.getName()));
             }
             LatLngBounds bounds = builder.build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, PADDING);
