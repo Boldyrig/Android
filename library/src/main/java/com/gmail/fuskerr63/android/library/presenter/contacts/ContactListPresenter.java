@@ -3,7 +3,7 @@ package com.gmail.fuskerr63.android.library.presenter.contacts;
 import android.util.Log;
 
 import com.gmail.fuskerr63.android.library.view.ContactListView;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import javax.inject.Inject;
 
@@ -17,7 +17,7 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private ContactRepository repository;
+    private ContactInteractor interactor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
     private final PublishSubject<String> publishSubject = PublishSubject.create();
@@ -25,11 +25,11 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
     private final String TAG = "TAG";
 
     @Inject
-    public ContactListPresenter(ContactRepository repository) {
-        this.repository = repository;
+    public ContactListPresenter(ContactInteractor interactor) {
+        this.interactor = interactor;
         disposable.add(
                 publishSubject.switchMapSingle(
-                        selector -> this.repository.getContacts(selector)
+                        selector -> this.interactor.getContacts(selector)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
@@ -48,7 +48,7 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        repository = null;
+        interactor = null;
         disposable.dispose();
     }
 }

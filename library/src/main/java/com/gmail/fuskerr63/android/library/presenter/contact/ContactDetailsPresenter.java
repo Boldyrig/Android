@@ -1,7 +1,7 @@
 package com.gmail.fuskerr63.android.library.presenter.contact;
 
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
-import com.gmail.fuskerr63.java.interactor.ContactModel;
+import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import javax.inject.Inject;
 
@@ -11,12 +11,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    ContactModel interactor;
+    private ContactInteractor interactor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactModel interactor) {
+    public ContactDetailsPresenter(ContactInteractor interactor) {
         this.interactor = interactor;
     }
 

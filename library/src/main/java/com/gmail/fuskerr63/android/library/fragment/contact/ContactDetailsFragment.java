@@ -1,5 +1,6 @@
 package com.gmail.fuskerr63.android.library.fragment.contact;
 
+import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -54,9 +55,12 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         if(context instanceof OnClickButtonListener) {
             targetElement = (OnClickButtonListener) context;
         }
-        AppContainer appContainer = ((ContactApplicationContainer) getActivity().getApplication()).getAppComponent();
-        ContactComponentContainer contactComponent = appContainer.plusContactComponent();
-        contactComponent.inject(this);
+        Application app = getActivity().getApplication();
+        if(app instanceof ContactApplicationContainer) {
+            AppContainer appContainer = ((ContactApplicationContainer) app).getAppComponent();
+            ContactComponentContainer contactComponent = appContainer.plusContactComponent();
+            contactComponent.inject(this);
+        }
     }
 
     @Override
