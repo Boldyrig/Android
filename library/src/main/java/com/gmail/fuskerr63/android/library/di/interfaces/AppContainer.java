@@ -1,4 +1,6 @@
 package com.gmail.fuskerr63.android.library.di.interfaces;
 
-public interface AppComponent {
+public interface AppContainer {
+    ContactsComponentContainer plusContactsComponent();
+    ContactComponentContainer plusContactComponent();
 }
