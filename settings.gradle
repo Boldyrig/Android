@@ -1,2 +1,4 @@
 rootProject.name='AndroidLesson'
-include ':app'
+include ':java'
+include ':library'
+include ':application'

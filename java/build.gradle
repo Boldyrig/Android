@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
+
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
