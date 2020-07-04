@@ -1,0 +1,45 @@
+<<<<<<< HEAD:app/src/main/res/values/strings.xml
+<resources>
+    <string name="app_name">Contact List App</string>
+    <string name="api_key">AIzaSyDgPFwLs_rqm2OU3pIiPXpKD_qebYZJ4T0</string>
+
+    <string name="empty"></string>
+    <string name="description">Description</string>
+    <string name="e_mail1">e-mail 1:</string>
+    <string name="e_mail2">e-mail 2:</string>
+    <string name="number1">number 1:</string>
+    <string name="number2">number 2:</string>
+    <string name="send_notification">Send notification</string>
+    <string name="cancel_notification">Сancel notification</string>
+    <string name="autofill"></string>
+    <string name="birthday">birthday :</string>
+    <string name="contact_details_title">Contact Details</string>
+    <string name="contact_list_title">Contact List</string>
+    <string name="notification_text">Today is the birthday of</string>
+    <string name="channel_description">some description</string>
+    <string name="notification_title">Contacts</string>
+    <string name="search">Search</string>
+    <string name="map_title">Map</string>
+</resources>
+=======
+<resources>
+    <string name="app_name">Contact List App</string>
+
+    <string name="empty"></string>
+    <string name="description">Description</string>
+    <string name="e_mail1">e-mail 1:</string>
+    <string name="e_mail2">e-mail 2:</string>
+    <string name="number1">number 1:</string>
+    <string name="number2">number 2:</string>
+    <string name="send_notification">Send notification</string>
+    <string name="cancel_notification">Сancel notification</string>
+    <string name="autofill"></string>
+    <string name="birthday">birthday :</string>
+    <string name="contact_details_title">Contact Details</string>
+    <string name="contact_list_title">Contact List</string>
+    <string name="notification_text">Today is the birthday of</string>
+    <string name="channel_description">some description</string>
+    <string name="notification_title">Contacts</string>
+    <string name="search">Search</string>
+</resources>
+>>>>>>> clean-architecture:library/src/main/res/values/strings.xml
