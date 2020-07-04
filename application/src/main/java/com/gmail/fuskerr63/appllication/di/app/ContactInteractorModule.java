@@ -1,5 +1,6 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
+import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.ContactModel;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
@@ -9,10 +10,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class ContactModelModule {
+public class ContactInteractorModule {
     @Singleton
     @Provides
-    public ContactModel provideContactModel(ContactRepository repository) {
+    public ContactInteractor provideContactModel(ContactRepository repository) {
         return new ContactModel(repository);
     }
 }

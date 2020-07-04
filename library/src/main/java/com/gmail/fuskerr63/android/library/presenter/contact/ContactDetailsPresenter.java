@@ -1,50 +1,31 @@
 package com.gmail.fuskerr63.android.library.presenter.contact;
 
-<<<<<<< HEAD:app/src/main/java/com/gmail/fuskerr63/presenter/DetailsPresenter.java
-import android.util.Log;
-
-import com.gmail.fuskerr63.database.AppDatabase;
-import com.gmail.fuskerr63.fragments.contact.DetailsView;
-import com.gmail.fuskerr63.repository.Contact;
-import com.gmail.fuskerr63.repository.Repository;
-=======
+import com.gmail.fuskerr63.android.library.database.AppDatabase;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
+import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
->>>>>>> clean-architecture:library/src/main/java/com/gmail/fuskerr63/android/library/presenter/contact/ContactDetailsPresenter.java
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
-<<<<<<< HEAD:app/src/main/java/com/gmail/fuskerr63/presenter/DetailsPresenter.java
-public class DetailsPresenter extends MvpPresenter<DetailsView> {
-    Repository repository;
-    AppDatabase db;
-=======
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactInteractor interactor;
->>>>>>> clean-architecture:library/src/main/java/com/gmail/fuskerr63/android/library/presenter/contact/ContactDetailsPresenter.java
+    AppDatabase db;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-<<<<<<< HEAD:app/src/main/java/com/gmail/fuskerr63/presenter/DetailsPresenter.java
-    public DetailsPresenter(Repository repository, int id, AppDatabase db) {
-        this.repository = repository;
-        this.db = db;
-        disposable.add(repository.getContactById(id)
-=======
-    public ContactDetailsPresenter(ContactInteractor interactor) {
+    public ContactDetailsPresenter(ContactInteractor interactor, AppDatabase db) {
         this.interactor = interactor;
+        this.db = db;
     }
 
     public void showDetails(int id) {
         disposable.add(interactor.getContactById(id)
->>>>>>> clean-architecture:library/src/main/java/com/gmail/fuskerr63/android/library/presenter/contact/ContactDetailsPresenter.java
                 .subscribeOn(Schedulers.io())
                 .flatMap(contact -> db.userDao().getUserByContactId(contact.getId())
                         .map(user -> {

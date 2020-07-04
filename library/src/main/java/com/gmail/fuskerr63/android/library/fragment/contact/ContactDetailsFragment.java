@@ -138,6 +138,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     }
 
     public interface OnClickButtonListener {
-        public void onClickButton(View v, Contact contact);
+        void onClickButton(View v, Contact contact);
+    }
+
+    public interface onMenuItemClickDetails {
+        void onMenuItemClickDetails(int id, String name);
     }
 }

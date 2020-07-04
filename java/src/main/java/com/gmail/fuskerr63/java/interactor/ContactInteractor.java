@@ -4,8 +4,8 @@ import com.gmail.fuskerr63.java.Contact;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.annotations.Nullable;
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.Single;
+import io.reactivex.annotations.Nullable;
 
 public interface ContactInteractor {
     Single<List<Contact>> getContacts(@Nullable final String selector);

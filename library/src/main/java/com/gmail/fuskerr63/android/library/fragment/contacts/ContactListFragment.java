@@ -139,4 +139,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         ContactListFragment contactList = new ContactListFragment();
         return contactList;
     }
+
+    public interface onMenuItemClickContacts {
+        void onMenuItemClickContacts();
+    }
 }
