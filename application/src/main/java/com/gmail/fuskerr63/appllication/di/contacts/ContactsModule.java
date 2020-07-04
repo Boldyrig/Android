@@ -2,7 +2,7 @@ package com.gmail.fuskerr63.appllication.di.contacts;
 
 import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresenter;
 import com.gmail.fuskerr63.appllication.di.scope.ContactsListScope;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -11,7 +11,7 @@ import dagger.Provides;
 public class ContactsModule {
     @ContactsListScope
     @Provides
-    ContactListPresenter provideContactListPresenter(ContactRepository repository) {
-        return new ContactListPresenter(repository);
+    ContactListPresenter provideContactListPresenter(ContactInteractor interactor) {
+        return new ContactListPresenter(interactor);
     }
 }

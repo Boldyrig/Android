@@ -11,4 +11,6 @@ public interface ContactDetailsView extends MvpView {
     void updateDetails(Contact contact);
     @StateStrategyType(SingleStateStrategy.class)
     void loadingStatus(boolean show);
+    @StateStrategyType(SingleStateStrategy.class)
+    void setTextButton(String text);
 }

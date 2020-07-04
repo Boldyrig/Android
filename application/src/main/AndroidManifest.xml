@@ -25,6 +25,7 @@
                 <action android:name="com.gmail.fuskerr63.action.notification"/>
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>
