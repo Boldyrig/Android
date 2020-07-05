@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.appllication.di.app;
 
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl;
+import com.gmail.fuskerr63.java.interactor.NotificationRepository;
 import com.gmail.fuskerr63.java.interactor.NotificationTime;
 
 import javax.inject.Singleton;
@@ -13,7 +14,7 @@ import dagger.Provides;
 public class NotificationInteractorModule {
     @Singleton
     @Provides
-    public NotificationInteractor provideNorificationInteractor(NotificationTime notificationTime) {
-        return new NotificationInteractorImpl(notificationTime);
+    public NotificationInteractor provideNorificationInteractor(NotificationTime notificationTime, NotificationRepository notificationRepository) {
+        return new NotificationInteractorImpl(notificationTime, notificationRepository);
     }
 }

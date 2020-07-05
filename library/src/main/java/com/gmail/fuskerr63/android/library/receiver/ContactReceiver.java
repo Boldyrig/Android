@@ -21,13 +21,16 @@ public class ContactReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ((ContactApplicationContainer) context.getApplicationContext()).getAppComponent().inject(this);
+        Context appContext = context.getApplicationContext();
+        if(appContext instanceof ContactApplicationContainer) {
+            ((ContactApplicationContainer) appContext).getAppComponent().inject(this);
+        }
         Bundle extras = intent.getExtras();
         if(extras != null) {
             String text = extras.getString(EXTRA_TEXT);
             int id = extras.getInt(EXTRA_ID);
-            birthdayNotification.notifyNorification(context, id, text);
-            birthdayNotification.setBirthdayAlarm(context, id, new GregorianCalendar(), text);
+            birthdayNotification.notifyNorification(id, text);
+            birthdayNotification.setBirthdayAlarm(id, new GregorianCalendar(), text);
         }
     }
 }

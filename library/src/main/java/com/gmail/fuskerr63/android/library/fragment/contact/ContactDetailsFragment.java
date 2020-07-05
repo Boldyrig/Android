@@ -46,6 +46,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         return presenterProvider.get();
     }
 
+    private String notificationText;
+    private String notificatinCancel;
+    private String notificationSend;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -55,6 +59,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
             ContactComponentContainer contactComponent = appContainer.plusContactComponent();
             contactComponent.inject(this);
         }
+        notificationText = context.getString(R.string.notification_text);
+        notificatinCancel = context.getString(R.string.cancel_notification);
+        notificationSend = context.getString(R.string.send_notification);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        detailsPresenter.showDetails(getArguments().getInt("ID"), getContext());
+        detailsPresenter.showDetails(getArguments().getInt("ID"), notificationText, notificatinCancel, notificationSend);
     }
 
     @Override
@@ -93,7 +100,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
                 Button button = (Button) view.findViewById(R.id.birthday_button);
                 button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(getContext(), contact));
+                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(contact, notificationText, notificatinCancel, notificationSend));
             }
         }
     }

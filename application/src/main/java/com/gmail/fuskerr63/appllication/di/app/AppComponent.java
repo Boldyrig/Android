@@ -1,14 +1,18 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.content.Context;
+
 import com.gmail.fuskerr63.android.library.birthday.BirthdayNotification;
 import com.gmail.fuskerr63.android.library.birthday.IntentManager;
-import com.gmail.fuskerr63.android.library.birthday.NotificationRepository;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
+import com.gmail.fuskerr63.java.interactor.NotificationRepository;
 import com.gmail.fuskerr63.java.interactor.NotificationTime;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
@@ -24,7 +28,10 @@ import dagger.Component;
         NotificationInteractorModule.class,
         NotificationRepositoryModule.class,
         BirthdayNotificationModule.class,
-        IntentManagerModule.class
+        IntentManagerModule.class,
+        ContextModule.class,
+        AlarmManagerModule.class,
+        NotificationManagerModule.class
 })
 public interface AppComponent extends AppContainer {
     ContactRepository provideRepository();
@@ -34,6 +41,9 @@ public interface AppComponent extends AppContainer {
     NotificationRepository provideNotificationRepository();
     BirthdayNotification provideBirthdayNorification();
     IntentManager provideIntentManager();
+    Context provideContext();
+    AlarmManager provideAlarmManager();
+    NotificationManager provideNotificationManager();
     //subcomponents
     @Override
     ContactsComponent plusContactsComponent();
