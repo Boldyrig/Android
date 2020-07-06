@@ -5,6 +5,6 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface DirectionService {
-    @GET(".")
+    @GET("json")
     Single<DirectionResponse> loadDirection(@Query("origin") String latLngFrom, @Query("destination") String latLngTo, @Query("key") String apiKey);
 }

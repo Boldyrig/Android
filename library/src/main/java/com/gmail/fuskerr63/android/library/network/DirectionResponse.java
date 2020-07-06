@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class DirectionResponse {
-
     @SerializedName("routes")
     private List<Route> routes;
 
@@ -15,11 +14,11 @@ public class DirectionResponse {
 
     public static class Route {
         @SerializedName("bounds")
-        private List<Bound> bounds;
+        private Bound bounds;
         @SerializedName("overview_polyline")
         private OverviewPolyline overviewPolyline;
 
-        public List<Bound> getBounds() {
+        public Bound getBounds() {
             return bounds;
         }
 

@@ -2,12 +2,14 @@ package com.gmail.fuskerr63.android.library.fragment.map;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +18,6 @@ import com.gmail.fuskerr63.android.library.database.User;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
-import com.gmail.fuskerr63.android.library.network.DirectionResponse;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +49,8 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     private PolylineOptions polylineOptions;
 
     private final int PADDING = 100;
+
+    List<Polyline> polylines = new ArrayList<Polyline>();
 
     @Inject
     Provider<ContactsMapPresenter> presenterProvider;
@@ -152,14 +156,32 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void clearDirection() {
-
+        if(polylines != null) {
+            for(Polyline polyline : polylines) {
+                polyline.remove();
+            }
+        }
     }
 
     @Override
-    public void prindDirection(DirectionResponse.Route.Bound bound, String points) {
-        polylineOptions = new PolylineOptions();
-        polylineOptions.width(10F);
+    public void showErrorToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void prindDirection(List<LatLng> points, List<LatLng> bounds) {
+        if(googleMap != null) {
+            // Нарисовать линию
+            polylineOptions = new PolylineOptions().width(10F).color((Color.BLUE)).addAll(points);
+            polylines.add(googleMap.addPolyline(polylineOptions));
+            // Передвинуть камеру
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for(LatLng bound : bounds) {
+                builder.include(bound);
+            }
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING);
+            googleMap.animateCamera(cameraUpdate);
+        }
     }
 
     @Override

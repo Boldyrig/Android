@@ -10,6 +10,10 @@ import com.gmail.fuskerr63.android.library.network.DirectionRetrofit;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.maps.android.PolyUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,7 +59,7 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                         String points = "";
                         DirectionResponse.Route.Bound bound = null;
                         try{
-                            bound = directionResponse.getRoutes().get(0).getBounds().get(0);
+                            bound = directionResponse.getRoutes().get(0).getBounds();
                             points = directionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
                         } catch (IndexOutOfBoundsException e) {
                             Log.d("TAG", e.getMessage());
@@ -66,11 +70,19 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                     .doFinally(() -> getViewState().setProgressStatus(false))
                     .subscribe(
-                            pair -> getViewState().prindDirection(pair.first, pair.second),
-                            error -> Log.d("TAG", error.getMessage())
+                            pair -> {
+                                LatLng boundNorthEast = new LatLng(pair.first.getNorthEast().getLat(), pair.first.getNorthEast().getLng());
+                                LatLng boundSouthWest = new LatLng(pair.first.getSouthWest().getLat(), pair.first.getSouthWest().getLng());
+                                List<LatLng> bounds = new ArrayList<LatLng>();
+                                bounds.add(boundNorthEast);
+                                bounds.add(boundSouthWest);
+                                List<LatLng> points = PolyUtil.decode(pair.second);
+                                getViewState().prindDirection(points, bounds);
+                            },
+                            error -> getViewState().showErrorToast("Не удалось проложить путь")
                     ));
         } else {
-            latLngFrom = null;
+            latLngFrom = marker.getPosition();
             latLngTo = null;
             getViewState().clearDirection();
         }

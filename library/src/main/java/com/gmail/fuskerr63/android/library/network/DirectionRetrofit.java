@@ -8,7 +8,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DirectionRetrofit {
-    final String URL = "https://maps.googleapis.com/maps/api/directions/json/";
+    final String URL = "https://maps.googleapis.com/maps/api/directions/";
     final String API_KEY = "AIzaSyDgPFwLs_rqm2OU3pIiPXpKD_qebYZJ4T0";
     private DirectionService service;
 
