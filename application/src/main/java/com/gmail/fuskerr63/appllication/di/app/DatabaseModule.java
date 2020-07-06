@@ -13,17 +13,11 @@ import dagger.Provides;
 
 @Module
 public class DatabaseModule {
-    private AppDatabase db;
-
     private final String DATABASE_NAME = "user_address";
-
-    public DatabaseModule(Context applicationContext) {
-        db = Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
-    }
 
     @Singleton
     @Provides
-    public AppDatabase provideDatabase() {
-        return db;
+    public AppDatabase provideDatabase(Context applicationContext) {
+        return Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
     }
 }

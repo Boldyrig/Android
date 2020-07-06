@@ -21,23 +21,18 @@ import moxy.MvpPresenter;
 
 public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     private AppDatabase db;
-    private GeoCodeRetrofit retrofit;
-
-    private int contactId;
-    private String contactName;
+    private GeoCodeRetrofit geoCodeRetrofit;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactMapPresenter(int id, String name, AppDatabase db, GeoCodeRetrofit retrofit) {
-        contactId = id;
-        contactName = name;
+    public ContactMapPresenter(AppDatabase db, GeoCodeRetrofit geoCodeRetrofit) {
         this.db = db;
-        this.retrofit = retrofit;
+        this.geoCodeRetrofit = geoCodeRetrofit;
     }
 
-    private void showCurrentLocation() {
-        disposable.add(db.userDao().getUserByContactId(contactId)
+    public void showCurrentLocation(int id, String name) {
+        disposable.add(db.userDao().getUserByContactId(id)
                 .subscribeOn(Schedulers.io())
                 .map(user -> new Pair<String, LatLng>(user.getName(), new LatLng(user.getLatitude(), user.getLongitude())))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -47,14 +42,10 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 }, error -> Log.d("TAG", error.getMessage())));
     }
 
-    public void onMapReady() {
-        showCurrentLocation();
-    }
-
-    public void onMapClick(LatLng position) {
-        getViewState().replaceMarker(position, contactName);
-        disposable.add(Single.just(new User(contactId, contactName, position.latitude, position.longitude))
-                .flatMap(user -> retrofit.loadAddress(position)
+    public void onMapClick(LatLng position, int id, String name) {
+        getViewState().replaceMarker(position, name);
+        disposable.add(Single.just(new User(id, name, position.latitude, position.longitude))
+                .flatMap(user -> geoCodeRetrofit.loadAddress(position)
                         .map(response -> {
                             String address = "";
                             try{

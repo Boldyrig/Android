@@ -1,7 +1,10 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
+import android.content.Context;
+
 import com.gmail.fuskerr63.android.library.database.AppDatabase;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
+import com.gmail.fuskerr63.android.library.network.DirectionRetrofit;
 import com.gmail.fuskerr63.android.library.network.GeoCodeRetrofit;
 import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
@@ -19,13 +22,17 @@ import dagger.Component;
         RepositoryModule.class,
         ContactInteractorModule.class,
         RetrofitModule.class,
-        DatabaseModule.class
+        DatabaseModule.class,
+        ContextModule.class,
+        DirectionRetrofitModule.class
 })
 public interface AppComponent extends AppContainer {
     ContactRepository provideContactRepository();
     ContactInteractor provideContactInteractor();
     AppDatabase provideAppDatabase();
     GeoCodeRetrofit provideGeoCodeRetrofit();
+    DirectionRetrofit provideDirectionRetrofit();
+    Context provideContext();
 
     //subcomponents
     @Override

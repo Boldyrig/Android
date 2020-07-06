@@ -32,12 +32,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.annotations.NonNull;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private View.OnClickListener targetElement;
+    private onMenuItemClickContacts onMenuItemClickListener;
     private ContactAdapter contactAdapter;
 
     private final String TAG = "TAG";
@@ -58,6 +60,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         super.onAttach(context);
         if(context instanceof View.OnClickListener) {
             targetElement = (View.OnClickListener) context;
+        }
+        if(context instanceof onMenuItemClickContacts) {
+            onMenuItemClickListener = (onMenuItemClickContacts) context;
         }
         Application app = getActivity().getApplication();
         if(app instanceof ContactApplicationContainer) {
@@ -115,6 +120,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.app_bar_map) {
+            onMenuItemClickListener.onMenuItemClickContacts();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void updateList(final List<Contact> contacts) {
         if(contactAdapter != null) {
@@ -142,5 +157,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     public interface onMenuItemClickContacts {
         void onMenuItemClickContacts();
+    }
+
+    public interface OnClickContact {
+        void onClickContact(int id, String name);
     }
 }

@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.android.library.view;
 
 import com.gmail.fuskerr63.android.library.database.User;
+import com.gmail.fuskerr63.android.library.network.DirectionResponse;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface ContactsMapView extends MvpView {
     void printMarkers(List<User> users);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setProgressStatus(boolean show);
+    @StateStrategyType(SingleStateStrategy.class)
+    void clearDirection();
+    @StateStrategyType(SingleStateStrategy.class)
+    void prindDirection(DirectionResponse.Route.Bound bound, String points);
 }

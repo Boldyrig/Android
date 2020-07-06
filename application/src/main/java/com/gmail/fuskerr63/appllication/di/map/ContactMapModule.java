@@ -10,17 +10,9 @@ import dagger.Provides;
 
 @Module
 public class ContactMapModule {
-    private int id;
-    private String name;
-
-    public ContactMapModule(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     @ContactMapScope
     @Provides
-    ContactMapPresenter provideContactPresenter(AppDatabase db, GeoCodeRetrofit retrofit) {
-        return new ContactMapPresenter(id, name, db, retrofit);
+    public ContactMapPresenter provideContactPresenter(AppDatabase db, GeoCodeRetrofit retrofit) {
+        return new ContactMapPresenter(db, retrofit);
     }
 }

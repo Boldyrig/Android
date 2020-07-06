@@ -16,6 +16,7 @@ import com.gmail.fuskerr63.android.library.database.User;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
+import com.gmail.fuskerr63.android.library.network.DirectionResponse;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
@@ -26,7 +27,10 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 
@@ -37,9 +41,10 @@ import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-public class ContactsMapFragment extends MvpAppCompatFragment implements ContactsMapView, OnMapReadyCallback {
+public class ContactsMapFragment extends MvpAppCompatFragment implements ContactsMapView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private MapView mapView;
     private ProgressBar progressBar;
+    private PolylineOptions polylineOptions;
 
     private final int PADDING = 100;
 
@@ -69,7 +74,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void printMarkers(List<User> users) {
-        if(googleMap != null) {
+        if(googleMap != null && users != null && !users.isEmpty()) {
             googleMap.clear();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for(User user : users) {
@@ -135,6 +140,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
+        googleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         contactsMapPresenter.onMapReady();
     }
 
@@ -142,6 +148,24 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     public void setProgressStatus(boolean show) {
         int status = show ? View.VISIBLE : View.GONE;
         progressBar.setVisibility(status);
+    }
+
+    @Override
+    public void clearDirection() {
+
+    }
+
+    @Override
+    public void prindDirection(DirectionResponse.Route.Bound bound, String points) {
+        polylineOptions = new PolylineOptions();
+        polylineOptions.width(10F);
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        contactsMapPresenter.onMarkerClick(marker);
+        return false;
     }
 }
 

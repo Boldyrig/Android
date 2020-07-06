@@ -28,13 +28,13 @@ import com.gmail.fuskerr63.java.Contact;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.annotations.NonNull;
 
 public class MainActivity extends AppCompatActivity implements
         ContactDetailsFragment.OnClickButtonListener,
         View.OnClickListener,
         ContactListFragment.onMenuItemClickContacts,
-        ContactDetailsFragment.onMenuItemClickDetails{
+        ContactDetailsFragment.OnMenuItemClickDetails{
 
     private AlarmManager alarmManager;
 
@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onMenuItemClickContacts() { showContactsMap(); }
+    public void onMenuItemClickDetails(int id, String name) { showContactMap(id, name); }
 
     @Override
-    public void onMenuItemClickDetails(int id, String name) { showContactMap(id, name); }
+    public void onMenuItemClickContacts() { showContactsMap(); }
 }

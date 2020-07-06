@@ -140,10 +140,12 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     @Override
     public void onMapReady(GoogleMap map) {
         googleMap = map;
+        int id = getArguments().getInt("ID");
+        String name = getArguments().getString("NAME");
         googleMap.setOnMapClickListener(click -> {
-            contactMapPresenter.onMapClick(click);
+            contactMapPresenter.onMapClick(click, id, name);
         });
-        contactMapPresenter.onMapReady();
+        contactMapPresenter.showCurrentLocation(id, name);
     }
 
     @Override
