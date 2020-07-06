@@ -169,7 +169,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void prindDirection(List<LatLng> points, List<LatLng> bounds) {
+    public void printDirection(List<LatLng> points, List<LatLng> bounds) {
         if(googleMap != null) {
             // Нарисовать линию
             polylineOptions = new PolylineOptions().width(10F).color((Color.BLUE)).addAll(points);

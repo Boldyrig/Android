@@ -18,7 +18,7 @@ public interface ContactsMapView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
     void clearDirection();
     @StateStrategyType(SingleStateStrategy.class)
-    void prindDirection(List<LatLng> points, List<LatLng> bounds);
+    void printDirection(List<LatLng> points, List<LatLng> bounds);
     @StateStrategyType(SingleStateStrategy.class)
     void showErrorToast(String message);
 }

@@ -77,7 +77,7 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                                 bounds.add(boundNorthEast);
                                 bounds.add(boundSouthWest);
                                 List<LatLng> points = PolyUtil.decode(pair.second);
-                                getViewState().prindDirection(points, bounds);
+                                getViewState().printDirection(points, bounds);
                             },
                             error -> getViewState().showErrorToast("Не удалось проложить путь")
                     ));
