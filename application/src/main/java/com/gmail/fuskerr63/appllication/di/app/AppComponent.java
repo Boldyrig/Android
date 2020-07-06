@@ -27,13 +27,6 @@ import dagger.Component;
         DirectionRetrofitModule.class
 })
 public interface AppComponent extends AppContainer {
-    ContactRepository provideContactRepository();
-    ContactInteractor provideContactInteractor();
-    AppDatabase provideAppDatabase();
-    GeoCodeRetrofit provideGeoCodeRetrofit();
-    DirectionRetrofit provideDirectionRetrofit();
-    Context provideContext();
-
     //subcomponents
     @Override
     ContactsComponent plusContactsComponent();
