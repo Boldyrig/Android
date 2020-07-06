@@ -34,17 +34,6 @@ import dagger.Component;
         NotificationManagerModule.class
 })
 public interface AppComponent extends AppContainer {
-    ContactRepository provideRepository();
-    ContactInteractor provideContactModel();
-    NotificationTime provideNotificationTime();
-    NotificationInteractor provideNorificationInteractor();
-    NotificationRepository provideNotificationRepository();
-    BirthdayNotification provideBirthdayNorification();
-    IntentManager provideIntentManager();
-    Context provideContext();
-    AlarmManager provideAlarmManager();
-    NotificationManager provideNotificationManager();
-    //subcomponents
     @Override
     ContactsComponent plusContactsComponent();
     @Override

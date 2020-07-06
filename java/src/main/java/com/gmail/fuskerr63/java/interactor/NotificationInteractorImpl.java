@@ -1,5 +1,7 @@
 package com.gmail.fuskerr63.java.interactor;
 
+import com.gmail.fuskerr63.java.Contact;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -14,13 +16,19 @@ public class NotificationInteractorImpl implements NotificationInteractor {
     private final static int MINUTE = Calendar.MINUTE;
     private final static int SECOND = Calendar.SECOND;
 
-    public NotificationInteractorImpl(NotificationTime time, NotificationRepository notificationRepository) {
+    private final String textNotification;
+    private final int flagNoCreate;
+    private final int flagUpdateCurrent;
+
+    public NotificationInteractorImpl(NotificationTime time, NotificationRepository notificationRepository, String textNotification, int flagNoCreate, int flagUpdateCurrent) {
         this.time = time;
         this.notificationRepository = notificationRepository;
+        this.textNotification = textNotification;
+        this.flagNoCreate = flagNoCreate;
+        this.flagUpdateCurrent = flagUpdateCurrent;
     }
 
-    @Override
-    public void setAlarm(Calendar birthday, int id, String text, int flag) {
+    public void setAlarm(Calendar birthday, int id, String text) {
         notificationRepository.setAlarm(
                 birthday.get(YEAR),
                 birthday.get(MONTH),
@@ -30,43 +38,22 @@ public class NotificationInteractorImpl implements NotificationInteractor {
                 birthday.get(SECOND),
                 id,
                 text,
-                flag);
+                flagUpdateCurrent);
     }
 
-    @Override
-    public void cancelAlarm(int id, String text, int flag) {
-        notificationRepository.cancelAlarm(id, text, flag);
+    public void cancelAlarm(int id, String text) {
+        notificationRepository.cancelAlarm(id, text, flagUpdateCurrent);
     }
 
-    @Override
     public void notifyNotification(int id, String text, int flag, String channelId, int priority) {
         notificationRepository.notifyNotification(id, text, flag, channelId, priority);
     }
 
-    @Override
-    public boolean alarmIsUp(int id, String text, int flag) {
-        return notificationRepository.alarmIsUp(id, text, flag);
+    public boolean alarmIsUp(int id, String text) {
+        return notificationRepository.alarmIsUp(id, text, flagNoCreate);
     }
 
-    @Override
-    public void changeAlarmStatus(int id, String text, Calendar birthday, int flagUpdateCurrent, int flagNoCreate) {
-        if(alarmIsUp(id, text, flagNoCreate)) {
-            cancelAlarm(id, text, flagUpdateCurrent);
-        } else {
-            setAlarm(getNextBirthday(birthday), id, text, flagUpdateCurrent);
-        }
-    }
-
-    @Override
-    public String getButtonText(int id, String text, String send, String cancel, int flag) {
-        if(alarmIsUp(id, text, flag)) {
-            return cancel;
-        }
-        return send;
-    }
-
-    @Override
-    public Calendar getNextBirthday(Calendar birthday) {
+    private Calendar getNextBirthday(Calendar birthday) {
         int month = birthday.get(MONTH);
         int day = birthday.get(DATE);
         Calendar nextBirthday = new GregorianCalendar();
@@ -97,5 +84,22 @@ public class NotificationInteractorImpl implements NotificationInteractor {
             nextYear++;
         }
         return nextYear;
+    }
+
+    @Override
+    public NotificationStatus toggleNotificationForContact(Contact contact) {
+        String text = textNotification + contact.getName();
+        if(alarmIsUp(contact.getId(), text)) {
+            cancelAlarm(contact.getId(), text);
+        } else {
+            setAlarm(getNextBirthday(contact.getBirthday()), contact.getId(), text);
+        }
+        return getNotificationStatusForContact(contact);
+    }
+
+    @Override
+    public NotificationStatus getNotificationStatusForContact(Contact contact) {
+        String text = textNotification + contact.getName();
+        return new NotificationStatus(alarmIsUp(contact.getId(), text));
     }
 }

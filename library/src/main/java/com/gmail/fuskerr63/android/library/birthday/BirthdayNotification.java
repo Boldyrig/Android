@@ -31,7 +31,6 @@ public class BirthdayNotification {
 
     public void setBirthdayAlarm(int id, Calendar birthday, String text) {
         Calendar nextBirthday = notificationInteractor.getNextBirthday(birthday);
-        //PendingIntent pendingIntent = getPendingIntent(context, id, intentManager.getIntent(id, text), FLAG_UPDATE_CURRENT);
         notificationInteractor.setAlarm(nextBirthday, id, text, FLAG_UPDATE_CURRENT);
     }
 
