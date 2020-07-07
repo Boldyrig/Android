@@ -28,7 +28,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         this.flagUpdateCurrent = flagUpdateCurrent;
     }
 
-    public void setAlarm(Calendar birthday, int id, String text) {
+    private void setAlarm(Calendar birthday, int id, String text) {
         notificationRepository.setAlarm(
                 birthday.get(YEAR),
                 birthday.get(MONTH),
@@ -41,15 +41,11 @@ public class NotificationInteractorImpl implements NotificationInteractor {
                 flagUpdateCurrent);
     }
 
-    public void cancelAlarm(int id, String text) {
+    private void cancelAlarm(int id, String text) {
         notificationRepository.cancelAlarm(id, text, flagUpdateCurrent);
     }
 
-    public void notifyNotification(int id, String text, int flag, String channelId, int priority) {
-        notificationRepository.notifyNotification(id, text, flag, channelId, priority);
-    }
-
-    public boolean alarmIsUp(int id, String text) {
+    private boolean alarmIsUp(int id, String text) {
         return notificationRepository.alarmIsUp(id, text, flagNoCreate);
     }
 

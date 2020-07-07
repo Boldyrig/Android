@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.gmail.fuskerr63.android.library.birthday.BirthdayNotification;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
+import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
+import com.gmail.fuskerr63.java.interactor.NotifyNotificationManager;
 
 import java.util.GregorianCalendar;
 
@@ -14,10 +16,13 @@ import javax.inject.Inject;
 
 public class ContactReceiver extends BroadcastReceiver {
     private final String EXTRA_ID = "ID";
+    private final String EXTRA_NAME = "NAME";
     private final String EXTRA_TEXT = "TEXT";
 
     @Inject
-    BirthdayNotification birthdayNotification;
+    NotificationInteractor notificationInteractor;
+    @Inject
+    NotifyNotificationManager notificationManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -29,8 +34,9 @@ public class ContactReceiver extends BroadcastReceiver {
         if(extras != null) {
             String text = extras.getString(EXTRA_TEXT);
             int id = extras.getInt(EXTRA_ID);
-            birthdayNotification.notifyNorification(id, text);
-            birthdayNotification.setBirthdayAlarm(id, new GregorianCalendar(), text);
+            String name = extras.getString(EXTRA_NAME);
+            notificationManager.notifyNotification(id, text);
+            notificationInteractor.toggleNotificationForContact(new Contact(id, name, new GregorianCalendar()));
         }
     }
 }

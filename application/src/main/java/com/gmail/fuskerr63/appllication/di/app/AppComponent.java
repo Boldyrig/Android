@@ -1,20 +1,9 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
-import android.app.AlarmManager;
-import android.app.NotificationManager;
-import android.content.Context;
-
-import com.gmail.fuskerr63.android.library.birthday.BirthdayNotification;
-import com.gmail.fuskerr63.android.library.birthday.IntentManager;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
-import com.gmail.fuskerr63.java.interactor.ContactInteractor;
-import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
-import com.gmail.fuskerr63.java.interactor.NotificationRepository;
-import com.gmail.fuskerr63.java.interactor.NotificationTime;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
 
 import javax.inject.Singleton;
 
@@ -23,11 +12,11 @@ import dagger.Component;
 @Singleton
 @Component(modules = {
         RepositoryModule.class,
-        ContactModelModule.class,
+        ContactInteractorModule.class,
         NotificationTimeModule.class,
         NotificationInteractorModule.class,
         NotificationRepositoryModule.class,
-        BirthdayNotificationModule.class,
+        NotifyNotificationManagerModule.class,
         IntentManagerModule.class,
         ContextModule.class,
         AlarmManagerModule.class,

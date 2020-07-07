@@ -10,10 +10,10 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class ContactModelModule {
+public class ContactInteractorModule {
     @Singleton
     @Provides
-    public ContactInteractor provideContactModel(ContactRepository repository) {
+    public ContactInteractor provideContactInteractor(ContactRepository repository) {
         return new ContactModel(repository);
     }
 }

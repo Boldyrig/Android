@@ -1,6 +1,5 @@
 package com.gmail.fuskerr63.android.library.instrumentedTest;
 
-import com.gmail.fuskerr63.android.library.birthday.BirthdayNotification;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
@@ -26,7 +25,6 @@ import java.util.GregorianCalendar;
 @RunWith(MockitoJUnitRunner.class)
 public class BirthdayInstrumentedTest {
     private ContactDetailsPresenter presenter;
-    private BirthdayNotification birthdayNotification;
     private NotificationInteractor notificationInteractor;
     private ContactInteractor contactInteractor;
     private Contact contact;;
@@ -52,12 +50,11 @@ public class BirthdayInstrumentedTest {
     @Before
     public void init() {
         notificationInteractor = new NotificationInteractorImpl(notificationTime, notificationRepository, textNotification, FLAG_NO_CREATE, FLAG_UPDATE_CURRENT);
-        birthdayNotification = new BirthdayNotification(notificationInteractor);
         contactInteractor = new ContactModel(contactRepository);
 
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 
-        presenter = new ContactDetailsPresenter(contactInteractor, birthdayNotification);
+        presenter = new ContactDetailsPresenter(contactInteractor, notificationInteractor);
     }
 
     @Test
@@ -70,7 +67,7 @@ public class BirthdayInstrumentedTest {
 
         contact = new Contact(contactId, null, contactName, null, null, null, null, birthday);
 
-        presenter.onClickBirthday(contact, textNotification, cancelNotification, sendNotification);
+        presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         verify(notificationRepository).setAlarm(nextBirthday.get(Calendar.YEAR),
                 nextBirthday.get(Calendar.MONTH),
                 nextBirthday.get(Calendar.DATE),
@@ -78,7 +75,7 @@ public class BirthdayInstrumentedTest {
                 nextBirthday.get(Calendar.MINUTE),
                 nextBirthday.get(Calendar.SECOND),
                 contactId,
-                textNotification + " " + contactName,
+                textNotification + contactName,
                 FLAG_UPDATE_CURRENT);
     }
 
@@ -92,7 +89,7 @@ public class BirthdayInstrumentedTest {
 
         contact = new Contact(contactId, null, contactName, null, null, null, null, birthday);
 
-        presenter.onClickBirthday(contact, textNotification, cancelNotification, sendNotification);
+        presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         verify(notificationRepository).setAlarm(nextBirthday.get(Calendar.YEAR),
                 nextBirthday.get(Calendar.MONTH),
                 nextBirthday.get(Calendar.DATE),
@@ -100,21 +97,21 @@ public class BirthdayInstrumentedTest {
                 nextBirthday.get(Calendar.MINUTE),
                 nextBirthday.get(Calendar.SECOND),
                 contact.getId(),
-                textNotification + " " + contactName,
+                textNotification + contactName,
                 FLAG_UPDATE_CURRENT);
     }
 
     @Test
     public void testNotificationInteractor_if_alarmIsUp_then_cancelAlarm() {
-        when(notificationRepository.alarmIsUp(contactId, textNotification + " " + contactName, FLAG_NO_CREATE)).thenReturn(true);
+        when(notificationRepository.alarmIsUp(contactId, textNotification + contactName, FLAG_NO_CREATE)).thenReturn(true);
 
         birthday.set(1990, Calendar.SEPTEMBER, 8);
         currentCalendar.set(1999, Calendar.SEPTEMBER, 7);
 
         contact = new Contact(contactId, null, contactName, null, null, null, null, birthday);
 
-        presenter.onClickBirthday(contact, textNotification, cancelNotification, sendNotification);
-        verify(notificationRepository).cancelAlarm(contactId, textNotification + " " + contactName, FLAG_UPDATE_CURRENT);
+        presenter.onClickBirthday(contact, cancelNotification, sendNotification);
+        verify(notificationRepository).cancelAlarm(contactId, textNotification + contactName, FLAG_UPDATE_CURRENT);
     }
 
     @Test
@@ -127,7 +124,7 @@ public class BirthdayInstrumentedTest {
 
         contact = new Contact(contactId, null, contactName, null, null, null, null, birthday);
 
-        presenter.onClickBirthday(contact, textNotification, cancelNotification, sendNotification);
+        presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         verify(notificationRepository).setAlarm(nextBirthday.get(Calendar.YEAR),
                 nextBirthday.get(Calendar.MONTH),
                 nextBirthday.get(Calendar.DATE),
@@ -135,7 +132,7 @@ public class BirthdayInstrumentedTest {
                 nextBirthday.get(Calendar.MINUTE),
                 nextBirthday.get(Calendar.SECOND),
                 contact.getId(),
-                textNotification + " " + contactName,
+                textNotification + contactName,
                 FLAG_UPDATE_CURRENT);
     }
 
@@ -149,7 +146,7 @@ public class BirthdayInstrumentedTest {
 
         contact = new Contact(contactId, null, contactName, null, null, null, null, birthday);
 
-        presenter.onClickBirthday(contact, textNotification, cancelNotification, sendNotification);
+        presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         verify(notificationRepository).setAlarm(nextBirthday.get(Calendar.YEAR),
                 nextBirthday.get(Calendar.MONTH),
                 nextBirthday.get(Calendar.DATE),
@@ -157,7 +154,7 @@ public class BirthdayInstrumentedTest {
                 nextBirthday.get(Calendar.MINUTE),
                 nextBirthday.get(Calendar.SECOND),
                 contactId,
-                textNotification + " " + contactName,
+                textNotification + contactName,
                 FLAG_UPDATE_CURRENT);
     }
 }

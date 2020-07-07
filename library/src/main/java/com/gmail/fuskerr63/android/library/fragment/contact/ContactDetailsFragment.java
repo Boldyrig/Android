@@ -100,7 +100,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
                 Button button = (Button) view.findViewById(R.id.birthday_button);
                 button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(contact, notificationText, notificatinCancel, notificationSend));
+                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(contact, notificatinCancel, notificationSend));
             }
         }
     }

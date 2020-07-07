@@ -1,9 +1,9 @@
 package com.gmail.fuskerr63.android.library.presenter.contact;
 
-import com.gmail.fuskerr63.android.library.birthday.BirthdayNotification;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
+import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 
 import javax.inject.Inject;
 
@@ -14,14 +14,14 @@ import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactInteractor interactor;
-    private BirthdayNotification birthdayNotification;
+    private NotificationInteractor notificationInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactInteractor interactor, BirthdayNotification birthdayNotification) {
+    public ContactDetailsPresenter(ContactInteractor interactor, NotificationInteractor notificationInteractor) {
         this.interactor = interactor;
-        this.birthdayNotification = birthdayNotification;
+        this.notificationInteractor = notificationInteractor;
     }
 
     public void showDetails(int id, String notificationText, String notificationCancel, String notificationSend) {
@@ -34,15 +34,20 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                     getViewState().updateDetails(contact);
                     String text = notificationText + " " + contact.getName();
                     int contactId = contact.getId();
-                    getViewState().setTextButton(birthdayNotification.getButtonText(contactId, text, notificationSend, notificationCancel));
+                    if(notificationInteractor.getNotificationStatusForContact(contact).alarmIsUp()) {
+                        getViewState().setTextButton(notificationCancel);
+                    } else {
+                        getViewState().setTextButton(notificationSend);
+                    }
                 }));
     }
 
-    public void onClickBirthday(Contact contact, String notificationText, String notificationCancel, String notificationSend) {
-        String text = notificationText + " " + contact.getName();
-        int id = contact.getId();
-        birthdayNotification.changeAlarmStatus(id, text, contact.getBirthday());
-        getViewState().setTextButton(birthdayNotification.getButtonText(id, text, notificationSend, notificationCancel));
+    public void onClickBirthday(Contact contact, String notificationCancel, String notificationSend) {
+        if(notificationInteractor.toggleNotificationForContact(contact).alarmIsUp()) {
+            getViewState().setTextButton(notificationCancel);
+        } else {
+            getViewState().setTextButton(notificationSend);
+        }
     }
 
     @Override

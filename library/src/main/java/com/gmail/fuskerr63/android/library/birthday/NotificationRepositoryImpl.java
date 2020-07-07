@@ -9,9 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class NotificationRepositoryImpl implements NotificationRepository {
-    private final AlarmManager alarmManager;
-    private final NotificationManager notificationManager;
-    private final IntentManager intentManager;
+    private AlarmManager alarmManager;
+    private NotificationManager notificationManager;
+    private IntentManager intentManager;
 
     public NotificationRepositoryImpl(AlarmManager alarmManager, NotificationManager notificationManager, IntentManager intentManager) {
         this.alarmManager = alarmManager;
@@ -22,13 +22,13 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     @Override
     public void setAlarm(int year, int month, int day, int hour, int minute, int second, int id, String text, int flag) {
         Calendar birthday = new GregorianCalendar(year, month, day, hour, minute, second);
-        alarmManager.set(alarmManager.RTC, birthday.getTimeInMillis(), intentManager.getPendingIntent(id, text, flag));
+        alarmManager.set(alarmManager.RTC, birthday.getTimeInMillis(), intentManager.getPendingIntent(id, intentManager.getIntent(id, null, text), flag));
     }
 
     @Override
     public void cancelAlarm(int id, String text, int flag) {
-        alarmManager.cancel(intentManager.getPendingIntent(id, text, flag));
-        intentManager.getPendingIntent(id, text, flag).cancel();
+        alarmManager.cancel(intentManager.getPendingIntent(id, intentManager.getIntent(id, null, text), flag));
+        intentManager.getPendingIntent(id, intentManager.getIntent(id, null, text), flag).cancel();
     }
 
     @Override
@@ -38,6 +38,6 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public boolean alarmIsUp(int id, String text, int flag) {
-        return intentManager.getPendingIntent(id, text, flag) != null;
+        return intentManager.getPendingIntent(id, intentManager.getIntent(id, null, text), flag) != null;
     }
 }
