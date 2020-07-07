@@ -21,10 +21,13 @@ import dagger.Component;
 @Component(modules = {
         RepositoryModule.class,
         ContactInteractorModule.class,
-        RetrofitModule.class,
+        GeoCodeRetrofitModule.class,
+        GeoCodeInteractorModule.class,
         DatabaseModule.class,
+        DatabaseInteractorModule.class,
         ContextModule.class,
-        DirectionRetrofitModule.class
+        DirectionRetrofitModule.class,
+        DirectionInteractorModule.class
 })
 public interface AppComponent extends AppContainer {
     //subcomponents

@@ -4,9 +4,9 @@ import android.util.Log;
 
 import androidx.core.util.Pair;
 
-import com.gmail.fuskerr63.android.library.database.AppDatabase;
+import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.database.User;
-import com.gmail.fuskerr63.android.library.network.GeoCodeRetrofit;
+import com.gmail.fuskerr63.android.library.network.interactor.GeoCodeInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactMapView;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -20,19 +20,19 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import moxy.MvpPresenter;
 
 public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
-    private AppDatabase db;
-    private GeoCodeRetrofit geoCodeRetrofit;
+    private DatabaseInteractor databaseInteractor;
+    private GeoCodeInteractor geoCodeInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactMapPresenter(AppDatabase db, GeoCodeRetrofit geoCodeRetrofit) {
-        this.db = db;
-        this.geoCodeRetrofit = geoCodeRetrofit;
+    public ContactMapPresenter(DatabaseInteractor databaseInteractor, GeoCodeInteractor geoCodeInteractor) {
+        this.databaseInteractor = databaseInteractor;
+        this.geoCodeInteractor = geoCodeInteractor;
     }
 
     public void showCurrentLocation(int id, String name) {
-        disposable.add(db.userDao().getUserByContactId(id)
+        disposable.add(databaseInteractor.getUserByContactId(id)
                 .subscribeOn(Schedulers.io())
                 .map(user -> new Pair<String, LatLng>(user.getName(), new LatLng(user.getLatitude(), user.getLongitude())))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,7 +45,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     public void onMapClick(LatLng position, int id, String name) {
         getViewState().replaceMarker(position, name);
         disposable.add(Single.just(new User(id, name, position.latitude, position.longitude))
-                .flatMap(user -> geoCodeRetrofit.loadAddress(position)
+                .flatMap(user -> geoCodeInteractor.loadAddress(position)
                         .map(response -> {
                             String address = "";
                             try{
@@ -56,7 +56,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                             return new User(user.getContactId(), user.getName(), user.getLatitude(), user.getLongitude(), address);
                         }))
                 .subscribeOn(Schedulers.io())
-                .flatMapCompletable(user -> db.userDao().insert(user))
+                .flatMapCompletable(user -> databaseInteractor.insert(user))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))

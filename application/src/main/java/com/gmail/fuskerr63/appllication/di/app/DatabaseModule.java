@@ -17,7 +17,7 @@ public class DatabaseModule {
 
     @Singleton
     @Provides
-    public AppDatabase provideDatabase(Context applicationContext) {
+    public AppDatabase provideAppDatabase(Context applicationContext) {
         return Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
     }
 }

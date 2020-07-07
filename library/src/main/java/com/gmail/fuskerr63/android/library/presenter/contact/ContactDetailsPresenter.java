@@ -2,7 +2,7 @@ package com.gmail.fuskerr63.android.library.presenter.contact;
 
 import android.util.Log;
 
-import com.gmail.fuskerr63.android.library.database.AppDatabase;
+import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
@@ -15,21 +15,21 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private ContactInteractor interactor;
-    AppDatabase db;
+    private ContactInteractor contactInteractor;
+    private DatabaseInteractor databaseInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactInteractor interactor, AppDatabase db) {
-        this.interactor = interactor;
-        this.db = db;
+    public ContactDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor) {
+        this.contactInteractor = contactInteractor;
+        this.databaseInteractor = databaseInteractor;
     }
 
     public void showDetails(int id) {
-        disposable.add(interactor.getContactById(id)
+        disposable.add(contactInteractor.getContactById(id)
                 .subscribeOn(Schedulers.io())
-                .flatMap(contact -> db.userDao().getUserByContactId(contact.getId())
+                .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
                         .map(user -> {
                             Contact newContact = new Contact(
                                     contact.getId(),
@@ -53,7 +53,8 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        interactor = null;
+        contactInteractor = null;
+        databaseInteractor = null;
         disposable.dispose();
     }
 }

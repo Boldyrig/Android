@@ -2,18 +2,10 @@ package com.gmail.fuskerr63.android.library.presenter.map;
 
 import android.util.Log;
 
-import androidx.core.util.Pair;
-
-import com.gmail.fuskerr63.android.library.database.AppDatabase;
-import com.gmail.fuskerr63.android.library.network.DirectionResponse;
-import com.gmail.fuskerr63.android.library.network.DirectionRetrofit;
+import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
+import com.gmail.fuskerr63.android.library.network.interactor.DirectionInteractor;
+import com.gmail.fuskerr63.android.library.object.Position;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.maps.android.PolyUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,22 +15,22 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private AppDatabase db;
-    private DirectionRetrofit directionRetrofit;
+    private DatabaseInteractor databaseInteractor;
+    private DirectionInteractor directionInteractor;
 
-    private LatLng latLngFrom;
-    private LatLng latLngTo;
+    private Position latLngFrom;
+    private Position latLngTo;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactsMapPresenter(AppDatabase db, DirectionRetrofit directionRetrofit) {
-        this.db = db;
-        this.directionRetrofit = directionRetrofit;
+    public ContactsMapPresenter(DatabaseInteractor databaseInteractor, DirectionInteractor directionInteractor) {
+        this.databaseInteractor = databaseInteractor;
+        this.directionInteractor = directionInteractor;
     }
 
     public void onMapReady() {
-        disposable.add(db.userDao().getAll()
+        disposable.add(databaseInteractor.getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
@@ -48,41 +40,22 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                         error -> Log.d("TAG", error.getMessage())));
     }
 
-    public void onMarkerClick(Marker marker) {
+    public void onMarkerClick(Position position) {
         if(latLngFrom == null) {
-            latLngFrom = marker.getPosition();
+            latLngFrom = position;
         } else if(latLngTo == null) {
-            latLngTo = marker.getPosition();
-            disposable.add(directionRetrofit.loadDirection(latLngFrom, latLngTo)
+            latLngTo = position;
+            disposable.add(directionInteractor.loadDirection(latLngFrom, latLngTo)
                     .subscribeOn(Schedulers.io())
-                    .map(directionResponse -> {
-                        String points = "";
-                        DirectionResponse.Route.Bound bound = null;
-                        try{
-                            bound = directionResponse.getRoutes().get(0).getBounds();
-                            points = directionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
-                        } catch (IndexOutOfBoundsException e) {
-                            Log.d("TAG", e.getMessage());
-                        }
-                        return new Pair<DirectionResponse.Route.Bound, String>(bound, points);
-                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                     .doFinally(() -> getViewState().setProgressStatus(false))
                     .subscribe(
-                            pair -> {
-                                LatLng boundNorthEast = new LatLng(pair.first.getNorthEast().getLat(), pair.first.getNorthEast().getLng());
-                                LatLng boundSouthWest = new LatLng(pair.first.getSouthWest().getLat(), pair.first.getSouthWest().getLng());
-                                List<LatLng> bounds = new ArrayList<LatLng>();
-                                bounds.add(boundNorthEast);
-                                bounds.add(boundSouthWest);
-                                List<LatLng> points = PolyUtil.decode(pair.second);
-                                getViewState().printDirection(points, bounds);
-                            },
+                            directionStatus -> getViewState().printDirection(directionStatus.getPoints(), directionStatus.getBounds()),
                             error -> getViewState().showErrorToast("Не удалось проложить путь")
                     ));
         } else {
-            latLngFrom = marker.getPosition();
+            latLngFrom = position;
             latLngTo = null;
             getViewState().clearDirection();
         }

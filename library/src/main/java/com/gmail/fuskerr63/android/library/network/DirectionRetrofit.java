@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.android.library.network;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.gmail.fuskerr63.android.library.object.Position;
 
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -21,9 +21,9 @@ public class DirectionRetrofit {
         service = retrofit.create(DirectionService.class);
     }
 
-    public Single<DirectionResponse> loadDirection(LatLng latLngFrom, LatLng latLngTo) {
-        String stringFrom = latLngFrom.latitude + "," + latLngFrom.longitude;
-        String stringTo = latLngTo.latitude + "," + latLngTo.longitude;
+    public Single<DirectionResponse> loadDirection(Position latLngFrom, Position latLngTo) {
+        String stringFrom = latLngFrom.getLatitude() + "," + latLngFrom.getLongitude();
+        String stringTo = latLngTo.getLatitude() + "," + latLngTo.getLongitude();
         return service.loadDirection(stringFrom, stringTo, API_KEY);
     }
 }

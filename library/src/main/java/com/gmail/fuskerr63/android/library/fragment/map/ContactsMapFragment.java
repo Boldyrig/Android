@@ -18,6 +18,7 @@ import com.gmail.fuskerr63.android.library.database.User;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
+import com.gmail.fuskerr63.android.library.object.Position;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
@@ -186,7 +187,8 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        contactsMapPresenter.onMarkerClick(marker);
+        LatLng latLng = marker.getPosition();
+        contactsMapPresenter.onMarkerClick(new Position(latLng.latitude, latLng.longitude));
         return false;
     }
 }

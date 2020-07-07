@@ -8,7 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class RetrofitModule {
+public class GeoCodeRetrofitModule {
     @Singleton
     @Provides
     public GeoCodeRetrofit provideRetrofit() {
