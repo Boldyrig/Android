@@ -11,17 +11,17 @@ import dagger.Provides;
 
 @Module
 public class NotifyNotificationManagerModule {
-    private final int FLAG_UPDATE_CURRENT;
-    private final int PRIORTY;
+    private final int flagUpdateCurrent;
+    private final int priority;
 
-    public NotifyNotificationManagerModule(int FLAG_UPDATE_CURRENT, int PRIORTY) {
-        this.FLAG_UPDATE_CURRENT = FLAG_UPDATE_CURRENT;
-        this.PRIORTY = PRIORTY;
+    public NotifyNotificationManagerModule(int flagUpdateCurrent, int priority) {
+        this.flagUpdateCurrent = flagUpdateCurrent;
+        this.priority = priority;
     }
 
     @Singleton
     @Provides
     public NotifyNotificationManager provideNotifyNotificationManager(NotificationRepository notificationRepository) {
-        return new NotifyNotificationManagerImpl(notificationRepository, FLAG_UPDATE_CURRENT, PRIORTY);
+        return new NotifyNotificationManagerImpl(notificationRepository, flagUpdateCurrent, priority);
     }
 }
