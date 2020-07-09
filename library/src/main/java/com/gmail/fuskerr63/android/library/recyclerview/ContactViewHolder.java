@@ -8,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
 import java.net.URI;
 

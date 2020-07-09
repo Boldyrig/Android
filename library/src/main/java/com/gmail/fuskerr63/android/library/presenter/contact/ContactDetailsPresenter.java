@@ -2,9 +2,9 @@ package com.gmail.fuskerr63.android.library.presenter.contact;
 
 import android.util.Log;
 
-import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
+import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
-import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import javax.inject.Inject;

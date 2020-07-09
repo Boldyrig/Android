@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.java.interactor;
 
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 
 import java.util.List;
 

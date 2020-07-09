@@ -4,10 +4,11 @@ import android.util.Log;
 
 import androidx.core.util.Pair;
 
-import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
-import com.gmail.fuskerr63.android.library.database.User;
-import com.gmail.fuskerr63.android.library.network.interactor.GeoCodeInteractor;
+import com.gmail.fuskerr63.java.entity.ContactLocation;
+import com.gmail.fuskerr63.java.entity.Position;
+import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactMapView;
+import com.gmail.fuskerr63.java.interactor.GeoCodeInteractor;
 import com.google.android.gms.maps.model.LatLng;
 
 import javax.inject.Inject;
@@ -34,7 +35,12 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     public void showCurrentLocation(int id, String name) {
         disposable.add(databaseInteractor.getUserByContactId(id)
                 .subscribeOn(Schedulers.io())
-                .map(user -> new Pair<String, LatLng>(user.getName(), new LatLng(user.getLatitude(), user.getLongitude())))
+                .map(contactLocation -> {
+                    LatLng latLng = new LatLng(
+                            contactLocation.getPosition().getLatitude(),
+                            contactLocation.getPosition().getLongitude());
+                    return new Pair<String, LatLng>(contactLocation.getName(), latLng);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     getViewState().moveTo(pair.second);
@@ -44,19 +50,17 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
 
     public void onMapClick(LatLng position, int id, String name) {
         getViewState().replaceMarker(position, name);
-        disposable.add(Single.just(new User(id, name, position.latitude, position.longitude))
-                .flatMap(user -> geoCodeInteractor.loadAddress(position)
-                        .map(response -> {
-                            String address = "";
-                            try{
-                                address = response.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getMetaDataProperty().getGeocoderMetaData().getText();
-                            } catch (IndexOutOfBoundsException e) {
-                                Log.d("TAG", e.getMessage());
-                            }
-                            return new User(user.getContactId(), user.getName(), user.getLatitude(), user.getLongitude(), address);
-                        }))
+        disposable.add(Single.just(new ContactLocation(id, name, new Position(position.latitude, position.longitude), null))
+                .flatMap(contactLocation -> geoCodeInteractor.loadAddress(new Position(position.latitude, position.longitude))
+                        .map(geoCodeAddress ->
+                                new ContactLocation(
+                                    contactLocation.getId(),
+                                    contactLocation.getName(),
+                                    contactLocation.getPosition(),
+                                    geoCodeAddress.getAddress()))
+                )
                 .subscribeOn(Schedulers.io())
-                .flatMapCompletable(user -> databaseInteractor.insert(user))
+                .flatMapCompletable(contactLocation -> databaseInteractor.insert(contactLocation))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))

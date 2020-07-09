@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.android.library.network;
 
-import com.gmail.fuskerr63.android.library.object.Position;
+import com.gmail.fuskerr63.java.entity.Position;
 
 import io.reactivex.Single;
 import retrofit2.Retrofit;

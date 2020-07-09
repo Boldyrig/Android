@@ -1,7 +1,6 @@
-package com.gmail.fuskerr63.java;
+package com.gmail.fuskerr63.java.entity;
 
 import java.net.URI;
-
 import java.util.Calendar;
 
 public class Contact {

@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.android.library.view;
 
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 
 import moxy.MvpView;
 import moxy.viewstate.strategy.SingleStateStrategy;

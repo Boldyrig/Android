@@ -24,8 +24,8 @@ import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationConta
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
 import java.net.URI;
 import java.util.Calendar;

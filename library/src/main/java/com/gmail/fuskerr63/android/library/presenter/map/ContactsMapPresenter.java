@@ -2,10 +2,14 @@ package com.gmail.fuskerr63.android.library.presenter.map;
 
 import android.util.Log;
 
-import com.gmail.fuskerr63.android.library.database.interactor.DatabaseInteractor;
-import com.gmail.fuskerr63.android.library.network.interactor.DirectionInteractor;
-import com.gmail.fuskerr63.android.library.object.Position;
+import com.gmail.fuskerr63.java.entity.Position;
+import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
+import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,26 +40,36 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))
                 .subscribe(
-                        users -> getViewState().printMarkers(users),
+                        contactLocations -> getViewState().printMarkers(contactLocations),
                         error -> Log.d("TAG", error.getMessage())));
     }
 
-    public void onMarkerClick(Position position) {
+    public void onMarkerClick(LatLng latLng) {
         if(latLngFrom == null) {
-            latLngFrom = position;
+            latLngFrom = new Position(latLng.latitude, latLng.longitude);
         } else if(latLngTo == null) {
-            latLngTo = position;
+            latLngTo = new Position(latLng.latitude, latLng.longitude);
             disposable.add(directionInteractor.loadDirection(latLngFrom, latLngTo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                     .doFinally(() -> getViewState().setProgressStatus(false))
                     .subscribe(
-                            directionStatus -> getViewState().printDirection(directionStatus.getPoints(), directionStatus.getBounds()),
+                            directionStatus -> {
+                                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
+                                for(Position position : directionStatus.getPoints()) {
+                                    pointsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
+                                }
+                                List<LatLng> boundsLatLng = new ArrayList<LatLng>();
+                                for(Position position : directionStatus.getBounds()) {
+                                    boundsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
+                                }
+                                getViewState().printDirection(pointsLatLng, boundsLatLng);
+                            },
                             error -> getViewState().showErrorToast("Не удалось проложить путь")
                     ));
         } else {
-            latLngFrom = position;
+            latLngFrom = new Position(latLng.latitude, latLng.longitude);
             latLngTo = null;
             getViewState().clearDirection();
         }

@@ -9,9 +9,9 @@ import moxy.viewstate.strategy.StateStrategyType;
 
 public interface ContactMapView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
-    void moveTo(LatLng position);
+    void moveTo(LatLng latLng);
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void replaceMarker(LatLng position, String title);
+    void replaceMarker(LatLng latLng, String title);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setProgressStatus(boolean show);
 }

@@ -22,8 +22,8 @@ import com.gmail.fuskerr63.android.library.fragment.contact.ContactDetailsFragme
 import com.gmail.fuskerr63.android.library.fragment.contacts.ContactListFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactMapFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactsMapFragment;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

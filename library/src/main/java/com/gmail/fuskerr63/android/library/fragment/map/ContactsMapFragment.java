@@ -14,11 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gmail.fuskerr63.android.library.database.User;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
-import com.gmail.fuskerr63.android.library.object.Position;
+import com.gmail.fuskerr63.java.entity.ContactLocation;
+import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
@@ -78,14 +78,14 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void printMarkers(List<User> users) {
-        if(googleMap != null && users != null && !users.isEmpty()) {
+    public void printMarkers(List<ContactLocation> contactLocations) {
+        if(googleMap != null && contactLocations != null && !contactLocations.isEmpty()) {
             googleMap.clear();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(User user : users) {
-                LatLng postition = new LatLng(user.getLatitude(), user.getLongitude());
+            for(ContactLocation contactLocation : contactLocations) {
+                LatLng postition = new LatLng(contactLocation.getPosition().getLatitude(), contactLocation.getPosition().getLongitude());
                 builder.include(postition);
-                googleMap.addMarker(new MarkerOptions().position(postition).title(user.getName()));
+                googleMap.addMarker(new MarkerOptions().position(postition).title(contactLocation.getName()));
             }
             LatLngBounds bounds = builder.build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, PADDING);
@@ -187,8 +187,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        LatLng latLng = marker.getPosition();
-        contactsMapPresenter.onMarkerClick(new Position(latLng.latitude, latLng.longitude));
+        contactsMapPresenter.onMarkerClick(marker.getPosition());
         return false;
     }
 }

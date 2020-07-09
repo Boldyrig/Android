@@ -8,7 +8,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +23,8 @@ import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresent
 import com.gmail.fuskerr63.android.library.recyclerview.ContactAdapter;
 import com.gmail.fuskerr63.android.library.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.android.library.view.ContactListView;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
 import java.util.List;
 

@@ -10,9 +10,12 @@ import com.gmail.fuskerr63.appllication.di.app.DaggerAppComponent;
 import com.gmail.fuskerr63.appllication.di.app.DatabaseInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.DatabaseModule;
 import com.gmail.fuskerr63.appllication.di.app.DirectionInteractorModule;
+import com.gmail.fuskerr63.appllication.di.app.DirectionRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.DirectionRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeInteractorModule;
+import com.gmail.fuskerr63.appllication.di.app.GeoCodeRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
+import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 
 public class ContactApplication extends Application implements ContactApplicationContainer {
@@ -29,8 +32,11 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .repositoryModule(new RepositoryModule())
                 .geoCodeRetrofitModule(new GeoCodeRetrofitModule())
                 .geoCodeInteractorModule(new GeoCodeInteractorModule())
+                .geoCodeRepositoryModule(new GeoCodeRepositoryModule())
                 .directionRetrofitModule(new DirectionRetrofitModule())
                 .directionInteractorModule(new DirectionInteractorModule())
+                .directionRepositoryModule(new DirectionRepositoryModule())
+                .locationRepositoryModule(new LocationRepositoryModule())
                 .databaseModule(new DatabaseModule())
                 .databaseInteractorModule(new DatabaseInteractorModule())
                 .contactInteractorModule(new ContactInteractorModule())

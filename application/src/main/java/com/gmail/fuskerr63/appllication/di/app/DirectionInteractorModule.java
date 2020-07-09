@@ -1,8 +1,8 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
-import com.gmail.fuskerr63.android.library.network.DirectionRetrofit;
-import com.gmail.fuskerr63.android.library.network.interactor.DirectionInteractor;
-import com.gmail.fuskerr63.android.library.network.interactor.DirectionModel;
+import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
+import com.gmail.fuskerr63.java.interactor.DirectionModel;
+import com.gmail.fuskerr63.java.repository.DirectionRepository;
 
 import javax.inject.Singleton;
 
@@ -13,7 +13,7 @@ import dagger.Provides;
 public class DirectionInteractorModule {
     @Singleton
     @Provides
-    public DirectionInteractor provideDirectionRetrofit(DirectionRetrofit directionRetrofit) {
-        return new DirectionModel(directionRetrofit);
+    public DirectionInteractor provideDirectionRetrofit(DirectionRepository directionRepository) {
+        return new DirectionModel(directionRepository);
     }
 }

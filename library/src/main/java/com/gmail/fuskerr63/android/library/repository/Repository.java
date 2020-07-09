@@ -4,7 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
 import java.lang.ref.WeakReference;

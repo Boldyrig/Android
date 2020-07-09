@@ -1,4 +1,4 @@
-package com.gmail.fuskerr63.android.library.object;
+package com.gmail.fuskerr63.java.entity;
 
 public class Position {
     private final double latitude;

@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.android.library.view;
 
-import com.gmail.fuskerr63.android.library.database.User;
+import com.gmail.fuskerr63.java.entity.ContactLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import moxy.viewstate.strategy.StateStrategyType;
 
 public interface ContactsMapView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
-    void printMarkers(List<User> users);
+    void printMarkers(List<ContactLocation> contactLocations);
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setProgressStatus(boolean show);
     @StateStrategyType(SingleStateStrategy.class)

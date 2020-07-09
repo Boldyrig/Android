@@ -1,8 +1,8 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
-import com.gmail.fuskerr63.android.library.network.GeoCodeRetrofit;
-import com.gmail.fuskerr63.android.library.network.interactor.GeoCodeInteractor;
-import com.gmail.fuskerr63.android.library.network.interactor.GeoCodeModel;
+import com.gmail.fuskerr63.java.interactor.GeoCodeInteractor;
+import com.gmail.fuskerr63.java.interactor.GeoCodeModel;
+import com.gmail.fuskerr63.java.repository.GeoCodeRepository;
 
 import javax.inject.Singleton;
 
@@ -13,7 +13,7 @@ import dagger.Provides;
 public class GeoCodeInteractorModule {
     @Singleton
     @Provides
-    public GeoCodeInteractor provideGeoCodeInteractor(GeoCodeRetrofit geoCodeRetrofit) {
-        return new GeoCodeModel(geoCodeRetrofit);
+    public GeoCodeInteractor provideGeoCodeInteractor(GeoCodeRepository geoCodeRepository) {
+        return new GeoCodeModel(geoCodeRepository);
     }
 }
