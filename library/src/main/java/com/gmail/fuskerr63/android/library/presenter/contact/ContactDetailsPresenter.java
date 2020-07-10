@@ -5,7 +5,9 @@ import android.util.Log;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
+import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
+import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 
 import javax.inject.Inject;
 
@@ -48,6 +50,14 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
                 .doFinally(() -> getViewState().loadingStatus(false))
                 .subscribe(contact -> getViewState().updateDetails(contact), error -> Log.d("TAG", error.getMessage())));
+    }
+
+    public void onClickBirthday(Contact contact, String notificationCancel, String notificationSend) {
+        if(notificationInteractor.toggleNotificationForContact(contact).alarmIsUp()) {
+            getViewState().setTextButton(notificationCancel);
+        } else {
+            getViewState().setTextButton(notificationSend);
+        }
     }
 
     @Override

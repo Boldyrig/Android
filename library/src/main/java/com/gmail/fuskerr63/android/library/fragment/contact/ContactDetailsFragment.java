@@ -1,9 +1,7 @@
 package com.gmail.fuskerr63.android.library.fragment.contact;
 
 import android.app.Application;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -40,7 +38,6 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements ContactDetailsView {
-    private OnClickButtonListener targetElement;
     private OnMenuItemClickDetails menuItemClickListener;
 
     @InjectPresenter
@@ -55,6 +52,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     }
 
     private String name;
+    private String notificationText;
+    private String notificatinCancel;
+    private String notificationSend;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,9 +80,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof OnClickButtonListener) {
-            targetElement = (OnClickButtonListener) context;
-        }
         if(context instanceof OnMenuItemClickDetails) {
             menuItemClickListener = (OnMenuItemClickDetails) context;
         }
@@ -92,12 +89,9 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
             ContactComponentContainer contactComponent = appContainer.plusContactComponent();
             contactComponent.inject(this);
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        targetElement = null;
+        notificationText = context.getString(R.string.notification_text);
+        notificatinCancel = context.getString(R.string.cancel_notification);
+        notificationSend = context.getString(R.string.send_notification);
     }
 
     @Override
@@ -110,7 +104,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        detailsPresenter.showDetails(getArguments().getInt("ID"));
+        detailsPresenter.showDetails(getArguments().getInt("ID"), notificationText, notificatinCancel, notificationSend);
     }
 
     @Override
@@ -138,25 +132,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
             Calendar birthday = contact.getBirthday();
             if(birthday != null) {
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
+                Button button = (Button) view.findViewById(R.id.birthday_button);
                 button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(contact, notificatinCancel, notificationSend));
             }
-            Context context = getContext();
-            if(context != null) {
-                Boolean alarmIsUp = (PendingIntent.getBroadcast(context, 0, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
-                if (alarmIsUp) {
-                    button.setText(R.string.cancel_notification);
-                } else {
-                    button.setText(R.string.send_notification);
-                }
-            }
-            button.setOnClickListener(new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(targetElement != null) {
-                        targetElement.onClickButton(v, contact);
-                    }
-                }
-            });
         }
     }
 
@@ -166,16 +145,17 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         getView().findViewById(R.id.progress_bar_details).setVisibility(status);
     }
 
+    @Override
+    public void setTextButton(String text) {
+        ((Button) getView().findViewById(R.id.birthday_button)).setText(text);
+    }
+
     public static ContactDetailsFragment newInstance(int id) {
         ContactDetailsFragment contactDetails = new ContactDetailsFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("ID", id);
         contactDetails.setArguments(bundle);
         return contactDetails;
-    }
-
-    public interface OnClickButtonListener {
-        void onClickButton(View v, Contact contact);
     }
 
     public interface OnMenuItemClickDetails {

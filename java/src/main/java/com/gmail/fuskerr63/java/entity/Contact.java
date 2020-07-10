@@ -26,6 +26,17 @@ public class Contact {
         this.address = null;
     }
 
+    public Contact(int id, String name, Calendar birthday) {
+        this.id = id;
+        this.image = null;
+        this.name = name;
+        this.number = null;
+        this.number2 = null;
+        this.email = null;
+        this.email2 = null;
+        this.birthday = birthday;
+    }
+
     public Contact(int id, URI image, String name, String number) {
         this.id = id;
         this.image = image;
