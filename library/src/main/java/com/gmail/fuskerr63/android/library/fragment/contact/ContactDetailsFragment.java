@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,22 +24,24 @@ import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationConta
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import io.reactivex.rxjava3.annotations.Nullable;
+import io.reactivex.annotations.Nullable;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactDetailsFragment extends MvpAppCompatFragment implements ContactDetailsView {
     private OnClickButtonListener targetElement;
+    private OnMenuItemClickDetails menuItemClickListener;
 
     @InjectPresenter
     ContactDetailsPresenter detailsPresenter;
@@ -49,11 +54,37 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         return presenterProvider.get();
     }
 
+    private String name;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_details, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.app_bar_map_details) {
+            menuItemClickListener.onMenuItemClickDetails(getArguments().getInt("ID"), name);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if(context instanceof OnClickButtonListener) {
             targetElement = (OnClickButtonListener) context;
+        }
+        if(context instanceof OnMenuItemClickDetails) {
+            menuItemClickListener = (OnMenuItemClickDetails) context;
         }
         Application app = getActivity().getApplication();
         if(app instanceof ContactApplicationContainer) {
@@ -89,20 +120,26 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void updateDetails(final Contact contact) {
+        name = contact.getName();
         final String ACTION = "com.gmail.fuskerr63.action.notification";
         View view = getView();
         if(view != null) {
-            ((ImageView) view.findViewById(R.id.image)).setImageURI(Uri.parse(contact.getImage().toString()));
+            URI image = contact.getImage();
+            if(image != null) {
+                ((ImageView) view.findViewById(R.id.image)).setImageURI(Uri.parse(image.toString()));
+            }
             ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
             ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
             ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
             ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
             ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            ((TextView) view.findViewById(R.id.address_contact)).setText(contact.getAddress());
+            Button button = (Button) view.findViewById(R.id.birthday_button);
             Calendar birthday = contact.getBirthday();
             if(birthday != null) {
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));
+                button.setVisibility(View.VISIBLE);
             }
-            Button button = (Button) view.findViewById(R.id.birthday_button);
             Context context = getContext();
             if(context != null) {
                 Boolean alarmIsUp = (PendingIntent.getBroadcast(context, 0, new Intent(ACTION), PendingIntent.FLAG_NO_CREATE) != null);
@@ -138,6 +175,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     }
 
     public interface OnClickButtonListener {
-        public void onClickButton(View v, Contact contact);
+        void onClickButton(View v, Contact contact);
+    }
+
+    public interface OnMenuItemClickDetails {
+        void onMenuItemClickDetails(int id, String name);
     }
 }

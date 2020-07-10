@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Contact List App</string>
+    <string name="api_key">AIzaSyDgPFwLs_rqm2OU3pIiPXpKD_qebYZJ4T0</string>
 
     <string name="empty"></string>
     <string name="description">Description</string>
@@ -17,4 +18,5 @@
     <string name="channel_description">some description</string>
     <string name="notification_title">Contacts</string>
     <string name="search">Search</string>
+    <string name="map_title">Map</string>
 </resources>

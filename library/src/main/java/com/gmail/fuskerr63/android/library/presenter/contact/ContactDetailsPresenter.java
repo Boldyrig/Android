@@ -1,38 +1,60 @@
 package com.gmail.fuskerr63.android.library.presenter.contact;
 
+import android.util.Log;
+
+import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private ContactInteractor interactor;
+    private ContactInteractor contactInteractor;
+    private DatabaseInteractor databaseInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactInteractor interactor) {
-        this.interactor = interactor;
+    public ContactDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor) {
+        this.contactInteractor = contactInteractor;
+        this.databaseInteractor = databaseInteractor;
     }
 
     public void showDetails(int id) {
-        disposable.add(interactor.getContactById(id)
+        disposable.add(contactInteractor.getContactById(id)
                 .subscribeOn(Schedulers.io())
+                .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
+                        .map(user -> {
+                            Contact newContact = new Contact(
+                                    contact.getId(),
+                                    contact.getImage(),
+                                    contact.getName(),
+                                    contact.getNumber(),
+                                    contact.getNumber2(),
+                                    contact.getEmail(),
+                                    contact.getEmail2(),
+                                    contact.getBirthday(),
+                                    user.getAddress()
+                            );
+                            return newContact;
+                        }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
                 .doFinally(() -> getViewState().loadingStatus(false))
-                .subscribe(contact -> getViewState().updateDetails(contact)));
+                .subscribe(contact -> getViewState().updateDetails(contact), error -> Log.d("TAG", error.getMessage())));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        interactor = null;
+        contactInteractor = null;
+        databaseInteractor = null;
         disposable.dispose();
     }
 }

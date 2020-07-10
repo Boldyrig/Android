@@ -4,7 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
 import java.lang.ref.WeakReference;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Locale;
 import java.net.URI;
 
-import io.reactivex.rxjava3.annotations.Nullable;
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.Single;
+import io.reactivex.annotations.Nullable;
 
 public class Repository implements ContactRepository {
     WeakReference<ContentResolver> weakContentResolver;
@@ -34,10 +34,12 @@ public class Repository implements ContactRepository {
         weakContentResolver = new WeakReference(contentResolver);
     }
 
+    @Override
     public Single<List<Contact>> getContacts(@Nullable final String selector) {
         return Single.fromCallable(() -> loadContacts(selector));
     };
 
+    @Override
     public Single<Contact> getContactById(final int id) {
         return Single.fromCallable(() -> loadContactById(id));
     };

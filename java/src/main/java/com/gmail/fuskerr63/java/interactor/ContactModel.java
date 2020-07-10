@@ -1,13 +1,14 @@
 package com.gmail.fuskerr63.java.interactor;
 
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.annotations.Nullable;
-import io.reactivex.rxjava3.core.Single;
+import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
+
 
 public class ContactModel implements ContactInteractor {
     private final ContactRepository repository;

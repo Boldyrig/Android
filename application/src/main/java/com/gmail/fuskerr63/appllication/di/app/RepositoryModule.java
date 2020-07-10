@@ -12,15 +12,9 @@ import dagger.Provides;
 
 @Module
 public class RepositoryModule {
-    private ContactRepository repository;
-
-    public RepositoryModule(Context context) {
-        repository = new Repository(context.getContentResolver());
-    }
-
     @Singleton
     @Provides
-    public ContactRepository provideRepository() {
-        return repository;
+    public ContactRepository provideRepository(Context context) {
+        return new Repository(context.getContentResolver());
     }
 }

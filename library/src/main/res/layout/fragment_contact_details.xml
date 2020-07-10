@@ -163,9 +163,31 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/empty"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/birthday_contact"
                 app:layout_constraintStart_toStartOf="@+id/birthday_contact"
                 app:layout_constraintTop_toBottomOf="@+id/birthday_contact" />
+
+            <TextView
+                android:id="@+id/address_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="address:"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/address_contact"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/address_contact" />
+
+            <TextView
+                android:id="@+id/address_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:text="@string/empty"
+                app:layout_constraintEnd_toEndOf="@+id/birthday_contact"
+                app:layout_constraintStart_toStartOf="@+id/birthday_contact"
+                app:layout_constraintTop_toBottomOf="@+id/birthday_button" />
 
             <TextView
                 android:id="@+id/description_text"
@@ -179,7 +201,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/birthday_button" />
+                app:layout_constraintTop_toBottomOf="@+id/address_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

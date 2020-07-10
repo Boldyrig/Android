@@ -8,7 +8,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,20 +23,22 @@ import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresent
 import com.gmail.fuskerr63.android.library.recyclerview.ContactAdapter;
 import com.gmail.fuskerr63.android.library.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.android.library.view.ContactListView;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
-import com.gmail.fuskerr63.java.Contact;
 
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.annotations.NonNull;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private View.OnClickListener targetElement;
+    private onMenuItemClickContacts onMenuItemClickListener;
     private ContactAdapter contactAdapter;
 
     private final String TAG = "TAG";
@@ -58,6 +59,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         super.onAttach(context);
         if(context instanceof View.OnClickListener) {
             targetElement = (View.OnClickListener) context;
+        }
+        if(context instanceof onMenuItemClickContacts) {
+            onMenuItemClickListener = (onMenuItemClickContacts) context;
         }
         Application app = getActivity().getApplication();
         if(app instanceof ContactApplicationContainer) {
@@ -115,6 +119,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.app_bar_map) {
+            onMenuItemClickListener.onMenuItemClickContacts();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void updateList(final List<Contact> contacts) {
         if(contactAdapter != null) {
@@ -138,5 +152,13 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     public static ContactListFragment newInstance() {
         ContactListFragment contactList = new ContactListFragment();
         return contactList;
+    }
+
+    public interface onMenuItemClickContacts {
+        void onMenuItemClickContacts();
+    }
+
+    public interface OnClickContact {
+        void onClickContact(int id, String name);
     }
 }
