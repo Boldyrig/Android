@@ -104,7 +104,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        detailsPresenter.showDetails(getArguments().getInt("ID"), notificationText, notificatinCancel, notificationSend);
+        detailsPresenter.showDetails(getArguments().getInt("ID"));
     }
 
     @Override
@@ -128,7 +128,6 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
             ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
             ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
             ((TextView) view.findViewById(R.id.address_contact)).setText(contact.getAddress());
-            Button button = (Button) view.findViewById(R.id.birthday_button);
             Calendar birthday = contact.getBirthday();
             if(birthday != null) {
                 ((TextView) view.findViewById(R.id.birthday_contact)).setText(birthday.get(Calendar.DATE) + " " + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " " + birthday.get(Calendar.YEAR));

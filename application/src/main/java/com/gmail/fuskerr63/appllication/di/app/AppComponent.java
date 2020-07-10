@@ -24,7 +24,7 @@ import dagger.Component;
         IntentManagerModule.class,
         ContextModule.class,
         AlarmManagerModule.class,
-        NotificationManagerModule.class
+        NotificationManagerModule.class,
         GeoCodeRetrofitModule.class,
         GeoCodeInteractorModule.class,
         GeoCodeRepositoryModule.class,

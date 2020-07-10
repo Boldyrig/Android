@@ -5,7 +5,6 @@ import android.util.Log;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
-import com.gmail.fuskerr63.java.Contact;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 
@@ -19,13 +18,15 @@ import moxy.MvpPresenter;
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private ContactInteractor contactInteractor;
     private DatabaseInteractor databaseInteractor;
+    private NotificationInteractor notificationInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor) {
+    public ContactDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor, NotificationInteractor notificationInteractor) {
         this.contactInteractor = contactInteractor;
         this.databaseInteractor = databaseInteractor;
+        this.notificationInteractor = notificationInteractor;
     }
 
     public void showDetails(int id) {
@@ -65,6 +66,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
         super.onDestroy();
         contactInteractor = null;
         databaseInteractor = null;
+        notificationInteractor = null;
         disposable.dispose();
     }
 }

@@ -13,7 +13,7 @@ import dagger.Provides;
 public class ContactModule {
     @ContactDetailsScope
     @Provides
-    ContactDetailsPresenter provideDetailsPresenter(ContactInteractor contactInteractor, NotificationInteractor notificationInteractor) {
-        return new ContactDetailsPresenter(contactInteractor, notificationInteractor);
+    ContactDetailsPresenter provideDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor, NotificationInteractor notificationInteractor) {
+        return new ContactDetailsPresenter(contactInteractor, databaseInteractor, notificationInteractor);
     }
 }

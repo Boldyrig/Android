@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
-import com.gmail.fuskerr63.java.Contact;
+import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotifyNotificationManager;
 

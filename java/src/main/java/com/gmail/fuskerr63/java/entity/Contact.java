@@ -35,6 +35,7 @@ public class Contact {
         this.email = null;
         this.email2 = null;
         this.birthday = birthday;
+        this.address = null;
     }
 
     public Contact(int id, URI image, String name, String number) {
