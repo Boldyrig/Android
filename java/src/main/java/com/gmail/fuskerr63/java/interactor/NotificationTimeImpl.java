@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.java.interactor;
 
 import java.util.Calendar;
 
+@SuppressWarnings("unused")
 public class NotificationTimeImpl implements NotificationTime {
     @Override
     public Calendar getCurrentTimeCalendar() {

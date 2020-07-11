@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.repository.ContactRepository;
 
 import java.lang.ref.WeakReference;
@@ -16,211 +17,259 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.net.URI;
+import java.util.Objects;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class Repository implements ContactRepository {
-    WeakReference<ContentResolver> weakContentResolver;
+    private transient final WeakReference<ContentResolver> weakContentResolver;
+    private transient ContentResolver contentResolver;
+    private static final String SELECTION_SYMBOL = " = ?";
 
-    private final String[] PROJECTION = new String[] {
+    private transient final String[] projection = {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.PHOTO_URI,
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.Contacts.HAS_PHONE_NUMBER
     };
 
-    public Repository(ContentResolver contentResolver) {
-        weakContentResolver = new WeakReference(contentResolver);
+    @SuppressWarnings("unused")
+    public Repository(@Nullable ContentResolver contentResolver) {
+        weakContentResolver = new WeakReference<>(contentResolver);
     }
 
+    @Nullable
     @Override
     public Single<List<Contact>> getContacts(@Nullable final String selector) {
         return Single.fromCallable(() -> loadContacts(selector));
-    };
+    }
 
+    @SuppressWarnings("unused")
+    @Nullable
     @Override
     public Single<Contact> getContactById(final int id) {
         return Single.fromCallable(() -> loadContactById(id));
-    };
-
-    private ArrayList<Contact> loadContacts(@Nullable final String selector) {
-        ContentResolver contentResolver = weakContentResolver.get();
-        if(contentResolver == null) return null;
-        String selection = null;
-        if(selector != null && !selector.equals("")) {
-            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE \'%" + selector + "%\'";
-        }
-        Cursor cursorContact = contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                PROJECTION,
-                selection,
-                null,
-                ContactsContract.Contacts.DISPLAY_NAME + " ASC");
-        ArrayList<Contact> contacts = new ArrayList();
-        try {
-            int displayName = cursorContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-            int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
-            int id = cursorContact.getColumnIndex(ContactsContract.Contacts._ID);
-            int hasPhoneNumer = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
-
-            if(cursorContact.getCount() > 0) {
-                cursorContact.moveToFirst();
-                while(!cursorContact.isAfterLast()) {
-                    URI image = null;
-                    String name = cursorContact.getString(displayName);
-                    ArrayList<String> numbers = new ArrayList<String>();
-                    // собираем картинку
-                    String imageString = cursorContact.getString(photoUri);
-                    if(imageString != null) {
-                        image = URI.create(imageString);
-                    }
-                    // берем id контакта
-                    int idContact = cursorContact.getInt(id);
-                    // собираем номера
-                    int hasNumber = cursorContact.getInt(hasPhoneNumer);
-                    if(hasNumber > 0) {
-                        Cursor cursorPhone = contentResolver.query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER },
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                new String[] { String.valueOf(idContact) },
-                                null
-                        );
-                        try {
-                            int number = cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                            if(cursorPhone.getCount() > 0) {
-                                cursorPhone.moveToFirst();
-                                while(!cursorPhone.isAfterLast()) {
-                                    numbers.add(cursorPhone.getString(number));
-                                    cursorPhone.moveToNext();
-                                }
-                            }
-                        } finally {
-                            cursorPhone.close();
-                        }
-                    }
-                    String number = numbers.size() > 0 ? numbers.get(0) : null;
-                    Contact contact = new Contact(idContact, image, name, number);
-                    contacts.add(contact);
-                    cursorContact.moveToNext();
-                }
-            }
-        } finally {
-            cursorContact.close();
-        }
-        return contacts;
     }
 
-    private Contact loadContactById(final int id) {
-        ContentResolver contentResolver = weakContentResolver.get();
-        if(contentResolver == null) return null;
-        Cursor cursorContact = contentResolver.query(
-                ContactsContract.Contacts.CONTENT_URI,
-                PROJECTION,
-                ContactsContract.Contacts._ID + " = ?",
-                new String[] { String.valueOf(id) },
-                ContactsContract.Contacts.DISPLAY_NAME + " ASC");
-        Contact contact = null;
+    @Nullable
+    private Contact loadContactFromCursor(@Nullable Cursor cursorContact, int id) {
         try {
-            int displayName = cursorContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
-            int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
-            int hasPhoneNumber = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
-
             if (cursorContact.getCount() > 0) {
                 cursorContact.moveToFirst();
-                URI image = null;
+                int displayName = Objects.requireNonNull(cursorContact)
+                        .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 String name = cursorContact.getString(displayName);
-                ArrayList<String> numbers = new ArrayList<String>();
-                ArrayList<String> emails = new ArrayList<String>();
-                Calendar birthday = null;
                 // собираем картинку
+                int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
                 String imageString = cursorContact.getString(photoUri);
+                URI image;
                 if (imageString != null) {
                     image = URI.create(imageString);
+                } else {
+                    image = URI.create("");
                 }
                 // собираем номера
+                int hasPhoneNumber = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
                 int hasNumber = cursorContact.getInt(hasPhoneNumber);
+                List<String> numbers;
                 if (hasNumber > 0) {
                     Cursor cursorPhone = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + SELECTION_SYMBOL,
                             new String[]{String.valueOf(id)},
                             null
                     );
-                    try {
-                        int number = cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        if (cursorPhone.getCount() > 0) {
-                            cursorPhone.moveToFirst();
-                            while (!cursorPhone.isAfterLast()) {
-                                numbers.add(cursorPhone.getString(number));
-                                cursorPhone.moveToNext();
-                            }
-                        }
-                    } finally {
-                        cursorPhone.close();
-                    }
+                    numbers = loadNumbersFromCursor(cursorPhone);
+                } else {
+                    numbers = new ArrayList<>();
                 }
                 // собираем почты
                 Cursor cursorEmail = contentResolver.query(
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                         new String[]{ContactsContract.CommonDataKinds.Email.ADDRESS},
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + SELECTION_SYMBOL,
                         new String[]{String.valueOf(id)},
                         null
                 );
-                try {
-                    int address = cursorEmail.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
-                    if (cursorEmail.getCount() > 0) {
-                        cursorEmail.moveToFirst();
-                        while (!cursorEmail.isAfterLast()) {
-                            emails.add(cursorEmail.getString(address));
-                            cursorEmail.moveToNext();
-                        }
-                    }
-                } finally {
-                    cursorEmail.close();
-                }
+                List<String> emails = loadEmailsFromCursor(cursorEmail);
                 // собираем день рождения
                 Cursor cursorBirthday = contentResolver.query(
                         ContactsContract.Data.CONTENT_URI,
                         new String[]{ContactsContract.CommonDataKinds.Event.START_DATE},
-                        ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                                ContactsContract.CommonDataKinds.Event.TYPE + " = " + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
+                        ContactsContract.Data.CONTACT_ID + " = ? AND "
+                                + ContactsContract.CommonDataKinds.Event.TYPE + " = "
+                                + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
                         new String[]{String.valueOf(id)},
                         null
                 );
-                try {
-                    int startDate = cursorBirthday.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
-                    if (cursorBirthday.getCount() > 0) {
-                        cursorBirthday.moveToFirst();
-                        while (!cursorBirthday.isAfterLast()) {
-                            String date = cursorBirthday.getString(startDate);
-                            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
-                            Calendar calendar = new GregorianCalendar();
-                            try {
-                                calendar.setTime(format.parse(date));
-                            } catch (ParseException e) {
-                                calendar.setTimeInMillis(0);
-                            }
-                            birthday = calendar;
-                            cursorBirthday.moveToNext();
-                        }
-                    }
-                } finally {
-                    cursorBirthday.close();
-                }
-                String number1 = numbers.size() > 0 ? numbers.get(0) : null;
-                String number2 = numbers.size() > 1 ? numbers.get(1) : null;
+                Calendar birthday = loadBirthdayFromCursor(cursorBirthday);
 
-                String email1 = emails.size() > 0 ? emails.get(0) : null;
-                String email2 = emails.size() > 1 ? emails.get(1) : null;
-                contact = new Contact(id, image, name, number1, number2, email1, email2, birthday);
+                String number1 = numbers.isEmpty() ? "" : numbers.get(0);
+                String number2 = numbers.size() < 2 ? "" : numbers.get(1);
+
+                String email1 = emails.isEmpty() ? "" : emails.get(0);
+                String email2 = emails.size() < 2 ? "" : emails.get(1);
+
+                ContactInfo contactInfo = new ContactInfo(name, number1, number2, email1, email2);
+                return new Contact(id, image, contactInfo, birthday);
             }
         } finally {
             cursorContact.close();
         }
-        return contact;
+        return null;
+    }
+
+    @Nullable
+    private List<Contact> loadContactsFromCursor(@NonNull Cursor cursorContact) {
+        try {
+            if (cursorContact.getCount() > 0) {
+                List<Contact> contacts = new ArrayList<>();
+                cursorContact.moveToFirst();
+                while (!cursorContact.isAfterLast()) {
+                    int displayName = Objects.requireNonNull(cursorContact)
+                            .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                    String name = cursorContact.getString(displayName);
+                    // собираем картинку
+                    int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
+                    String imageString = cursorContact.getString(photoUri);
+                    URI image;
+                    if (imageString != null) {
+                        image = URI.create(imageString);
+                    } else {
+                        image = URI.create("");
+                    }
+                    int hasPhoneNumer = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
+                    int hasNumber = cursorContact.getInt(hasPhoneNumer);
+                    int id = cursorContact.getColumnIndex(ContactsContract.Contacts._ID);
+                    int idContact = cursorContact.getInt(id);
+                    List<String> numbers;
+                    if (hasNumber > 0) {
+                        Cursor cursorPhone = contentResolver.query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + SELECTION_SYMBOL,
+                                new String[]{String.valueOf(idContact)},
+                                null
+                        );
+                        numbers = loadNumbersFromCursor(cursorPhone);
+                    } else {
+                        numbers = new ArrayList<>();
+                    }
+                    String number = !numbers.isEmpty() ? numbers.get(0) : null;
+                    Contact contact = new Contact(idContact, image, name, number);
+                    contacts.add(contact);
+                    cursorContact.moveToNext();
+                }
+                return contacts;
+            }
+        } finally {
+            Objects.requireNonNull(cursorContact).close();
+        }
+        return null;
+    }
+
+    @Nullable
+    private List<String> loadNumbersFromCursor(@Nullable Cursor cursorPhone) {
+        List<String> numbers = new ArrayList<>();
+        try {
+            if (cursorPhone.getCount() > 0) {
+                cursorPhone.moveToFirst();
+                while (!cursorPhone.isAfterLast()) {
+                    int number = Objects.requireNonNull(cursorPhone)
+                            .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    numbers.add(cursorPhone.getString(number));
+                    cursorPhone.moveToNext();
+                }
+            }
+        } finally {
+            Objects.requireNonNull(cursorPhone).close();
+        }
+        return numbers;
+    }
+
+    @Nullable
+    private List<String> loadEmailsFromCursor(@Nullable Cursor cursorEmail) {
+        try {
+            if (cursorEmail.getCount() > 0) {
+                cursorEmail.moveToFirst();
+                List<String> emails = new ArrayList<>();
+                while (!cursorEmail.isAfterLast()) {
+                    int address = Objects.requireNonNull(cursorEmail)
+                            .getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+                    emails.add(cursorEmail.getString(address));
+                    cursorEmail.moveToNext();
+                }
+                return emails;
+            }
+        } finally {
+            Objects.requireNonNull(cursorEmail).close();
+        }
+        return null;
+    }
+
+    @Nullable
+    private Calendar loadBirthdayFromCursor(@Nullable Cursor cursorBirthday) {
+        try {
+            if (cursorBirthday.getCount() > 0) {
+                cursorBirthday.moveToFirst();
+                List<Calendar> birthday = new ArrayList<>();
+                while (!cursorBirthday.isAfterLast()) {
+                    int startDate = Objects.requireNonNull(cursorBirthday)
+                            .getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE);
+                    String date = cursorBirthday.getString(startDate);
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
+                    Calendar calendar = new GregorianCalendar();
+                    try {
+                        calendar.setTime(Objects.requireNonNull(format.parse(date)));
+                    } catch (ParseException e) {
+                        calendar.setTimeInMillis(0);
+                    }
+                    birthday.add(calendar);
+                }
+                return birthday.get(0);
+            }
+        } finally {
+            Objects.requireNonNull(cursorBirthday).close();
+        }
+        return null;
+    }
+
+    @Nullable
+    private List<Contact> loadContacts(@Nullable final String selector) {
+        contentResolver = weakContentResolver.get();
+        if (contentResolver == null) {
+            return null;
+        }
+        String selection;
+        if (selector != null && !selector.equals("")) {
+            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE \'%" + selector + "%\'";
+        } else {
+            selection = "";
+        }
+        Cursor cursorContact = contentResolver.query(
+                ContactsContract.Contacts.CONTENT_URI,
+                projection,
+                selection,
+                null,
+                ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        return loadContactsFromCursor(cursorContact);
+    }
+
+    @Nullable
+    private Contact loadContactById(final int id) {
+        contentResolver = weakContentResolver.get();
+        if (contentResolver == null) {
+            return null;
+        }
+        Cursor cursorContact = contentResolver.query(
+                ContactsContract.Contacts.CONTENT_URI,
+                projection,
+                ContactsContract.Contacts._ID + SELECTION_SYMBOL,
+                new String[] {String.valueOf(id)},
+                ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        return loadContactFromCursor(cursorContact, id);
     }
 }

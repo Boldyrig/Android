@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class DirectionResponse {
     @SerializedName("routes")
     private List<Route> routes;

@@ -9,11 +9,15 @@ import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactMapView;
 import com.gmail.fuskerr63.java.interactor.GeoCodeInteractor;
+import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -21,37 +25,52 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import moxy.MvpPresenter;
 
 public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
-    private DatabaseInteractor databaseInteractor;
-    private GeoCodeInteractor geoCodeInteractor;
+    private final DatabaseInteractor databaseInteractor;
+    private final GeoCodeInteractor geoCodeInteractor;
 
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactMapPresenter(DatabaseInteractor databaseInteractor, GeoCodeInteractor geoCodeInteractor) {
+    public ContactMapPresenter(
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable GeoCodeInteractor geoCodeInteractor) {
         this.databaseInteractor = databaseInteractor;
         this.geoCodeInteractor = geoCodeInteractor;
     }
 
-    public void showCurrentLocation(int id, String name) {
+    @SuppressWarnings("unused")
+    public void showCurrentLocation(int id) {
         disposable.add(databaseInteractor.getUserByContactId(id)
                 .subscribeOn(Schedulers.io())
                 .map(contactLocation -> {
                     LatLng latLng = new LatLng(
                             contactLocation.getPosition().getLatitude(),
                             contactLocation.getPosition().getLongitude());
-                    return new Pair<String, LatLng>(contactLocation.getName(), latLng);
+                    return new Pair<>(contactLocation.getName(), latLng);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pair -> {
                     getViewState().moveTo(pair.second);
                     getViewState().replaceMarker(pair.second, pair.first);
-                }, error -> Log.d("TAG", error.getMessage())));
+                }, error -> {
+                    if (BuildConfig.DEBUG) {
+                        Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                    }
+                }));
     }
 
-    public void onMapClick(LatLng position, int id, String name) {
+    @SuppressWarnings("unused")
+    public void onMapClick(@Nullable LatLng position, int id, @Nullable String name) {
         getViewState().replaceMarker(position, name);
-        disposable.add(Single.just(new ContactLocation(id, name, new Position(position.latitude, position.longitude), null))
-                .flatMap(contactLocation -> geoCodeInteractor.loadAddress(new Position(position.latitude, position.longitude))
+        disposable.add(
+                Single.just(new ContactLocation(
+                        id,
+                        name,
+                        new Position(position.latitude, position.longitude),
+                        null)
+                )
+                .flatMap(contactLocation ->
+                        geoCodeInteractor.loadAddress(new Position(position.latitude, position.longitude))
                         .map(geoCodeAddress ->
                                 new ContactLocation(
                                     contactLocation.getId(),
@@ -60,11 +79,18 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                                     geoCodeAddress.getAddress()))
                 )
                 .subscribeOn(Schedulers.io())
-                .flatMapCompletable(contactLocation -> databaseInteractor.insert(contactLocation))
+                .flatMapCompletable(databaseInteractor::insert)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(response -> getViewState().setProgressStatus(true))
                 .doFinally(() -> getViewState().setProgressStatus(false))
-                .subscribe(() -> Log.d("TAG", "Success"), error -> Log.d("TAG", error.getMessage())));
+                .subscribe(
+                        () -> Log.d("TAG", "Success"),
+                        error -> {
+                            if (BuildConfig.DEBUG) {
+                                Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                            }
+                        }
+                ));
     }
 
     @Override

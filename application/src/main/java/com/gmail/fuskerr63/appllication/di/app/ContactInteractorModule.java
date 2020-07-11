@@ -8,12 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
+@SuppressWarnings("unused")
 @Module
 public class ContactInteractorModule {
+    @Nullable
     @Singleton
     @Provides
-    public ContactInteractor provideContactModel(ContactRepository repository) {
+    public ContactInteractor provideContactModel(@Nullable ContactRepository repository) {
         return new ContactModel(repository);
     }
 }

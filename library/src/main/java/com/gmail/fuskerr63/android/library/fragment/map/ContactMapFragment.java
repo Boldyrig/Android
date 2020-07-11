@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactMapComponentContainer;
@@ -23,36 +20,40 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
+@SuppressWarnings("unused")
 public class ContactMapFragment extends MvpAppCompatFragment implements ContactMapView, OnMapReadyCallback {
     private MapView mapView;
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @Inject
     Provider<ContactMapPresenter> presenterProvider;
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @InjectPresenter
     ContactMapPresenter contactMapPresenter;
 
     private Location lastKnownLocation;
-    private CameraPosition cameraPosition;
 
     private GoogleMap googleMap;
     private ProgressBar progressBar;
 
-    private final String KEY_CAMERA_POSITION = "CAMERA_POSITION";
-    private final String KEY_LOCATION = "LOCATION";
-    private final int DEFAULT_ZOOM = 15;
+    private final String keyLocation = "LOCATION";
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @ProvidePresenter
     ContactMapPresenter provideMapPresenter() {
         return presenterProvider.get();
@@ -61,8 +62,8 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Application app = getActivity().getApplication();
-        if(app instanceof ContactApplicationContainer) {
+        Application app = Objects.requireNonNull(getActivity()).getApplication();
+        if (app instanceof ContactApplicationContainer) {
             AppContainer appContainer = ((ContactApplicationContainer) app).getAppComponent();
             ContactMapComponentContainer component = appContainer.plusContactMapComponent();
             component.inject(this);
@@ -70,22 +71,24 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+            lastKnownLocation = savedInstanceState.getParcelable(keyLocation);
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.map_title);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_map);
-        mapView = (MapView) view.findViewById(R.id.map_view);
+        ((TextView) Objects.requireNonNull(getActivity()).findViewById(R.id.title)).setText(R.string.map_title);
+        progressBar = view.findViewById(R.id.progress_bar_map);
+        mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return view;
@@ -113,12 +116,11 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
         if (googleMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, googleMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, lastKnownLocation);
+            outState.putParcelable(keyLocation, lastKnownLocation);
         }
     }
 
@@ -128,7 +130,8 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
         mapView.onLowMemory();
     }
 
-    public static ContactMapFragment newInstance(int id, String name) {
+    @NonNull
+    public static ContactMapFragment newInstance(int id, @Nullable String name) {
         ContactMapFragment mapFragment = new ContactMapFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("ID", id);
@@ -138,28 +141,27 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
-        int id = getArguments().getInt("ID");
+        int id = Objects.requireNonNull(getArguments()).getInt("ID");
         String name = getArguments().getString("NAME");
-        googleMap.setOnMapClickListener(click -> {
-            contactMapPresenter.onMapClick(click, id, name);
-        });
-        contactMapPresenter.showCurrentLocation(id, name);
+        googleMap.setOnMapClickListener(click -> contactMapPresenter.onMapClick(click, id, name));
+        contactMapPresenter.showCurrentLocation(id);
     }
 
     @Override
-    public void replaceMarker(LatLng latLng, String title) {
-        if(googleMap != null) {
+    public void replaceMarker(@Nullable LatLng latLng, @Nullable String title) {
+        if (googleMap != null) {
             googleMap.clear();
             googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
         }
     }
 
     @Override
-    public void moveTo(LatLng latLng) {
-        if(googleMap != null) {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+    public void moveTo(@Nullable LatLng latLng) {
+        if (googleMap != null) {
+            final int defaultZoom = 16;
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, defaultZoom));
         }
     }
 

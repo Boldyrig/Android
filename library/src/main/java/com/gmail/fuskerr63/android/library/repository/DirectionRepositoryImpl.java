@@ -7,41 +7,48 @@ import com.gmail.fuskerr63.android.library.network.DirectionRetrofit;
 import com.gmail.fuskerr63.java.entity.DirectionStatus;
 import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.repository.DirectionRepository;
+import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.Nullable;
 
 public class DirectionRepositoryImpl implements DirectionRepository {
-    private DirectionRetrofit directionRetrofit;
+    private transient final DirectionRetrofit directionRetrofit;
 
-    public DirectionRepositoryImpl(DirectionRetrofit directionRetrofit) {
+    @SuppressWarnings("unused")
+    public DirectionRepositoryImpl(@Nullable DirectionRetrofit directionRetrofit) {
         this.directionRetrofit = directionRetrofit;
     }
 
+    @Nullable
     @Override
-    public Single<DirectionStatus> loadDirection(Position latLngFrom, Position latLngTo) {
+    public Single<DirectionStatus> loadDirection(@Nullable Position latLngFrom, @Nullable Position latLngTo) {
         return directionRetrofit.loadDirection(latLngFrom, latLngTo)
                 .map(directionResponse -> {
                     String polylinePoints = "";
                     DirectionResponse.Route.Bound bound = null;
-                    try{
+                    try {
                         bound = directionResponse.getRoutes().get(0).getBounds();
                         polylinePoints = directionResponse.getRoutes().get(0).getOverviewPolyline().getPoints();
                     } catch (IndexOutOfBoundsException e) {
-                        Log.d("TAG", e.getMessage());
+                        if (BuildConfig.DEBUG) {
+                            Log.d("TAG", Objects.requireNonNull(e.getMessage()));
+                        }
                     }
-                    List<Position> bounds = new ArrayList<Position>();
-                    if(bound != null) {
+                    List<Position> bounds = new ArrayList<>();
+                    if (bound != null) {
                         bounds.add(new Position(bound.getNorthEast().getLat(), bound.getNorthEast().getLng()));
                         bounds.add(new Position(bound.getSouthWest().getLat(), bound.getSouthWest().getLng()));
                     }
                     List<LatLng> pointsLatLng = PolyUtil.decode(polylinePoints);
-                    List<Position> pointsPosition = new ArrayList<Position>();
-                    for(LatLng latLng : pointsLatLng) {
+                    List<Position> pointsPosition = new ArrayList<>();
+                    for (LatLng latLng : pointsLatLng) {
                         pointsPosition.add(new Position(latLng.latitude, latLng.longitude));
                     }
                     return new DirectionStatus(bounds, pointsPosition);

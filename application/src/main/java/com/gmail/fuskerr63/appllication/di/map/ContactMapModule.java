@@ -7,12 +7,17 @@ import com.gmail.fuskerr63.java.interactor.GeoCodeInteractor;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 @Module
 public class ContactMapModule {
+    @Nullable
     @ContactMapScope
     @Provides
-    public ContactMapPresenter provideContactPresenter(DatabaseInteractor databaseInteractor, GeoCodeInteractor geoCodeInteractor) {
+    public ContactMapPresenter provideContactPresenter(
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable GeoCodeInteractor geoCodeInteractor) {
         return new ContactMapPresenter(databaseInteractor, geoCodeInteractor);
     }
 }

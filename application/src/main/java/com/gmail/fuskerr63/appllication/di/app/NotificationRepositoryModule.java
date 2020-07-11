@@ -11,12 +11,18 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationRepositoryModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
-    public NotificationRepository provideNotificationRepository(AlarmManager alarmManager, NotificationManager notificationManager, IntentManager intentManager) {
+    public NotificationRepository provideNotificationRepository(
+            @Nullable AlarmManager alarmManager,
+            @Nullable NotificationManager notificationManager,
+            @Nullable IntentManager intentManager) {
         return new NotificationRepositoryImpl(alarmManager, notificationManager, intentManager);
     }
 }

@@ -27,25 +27,28 @@ import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
+@SuppressWarnings("unused")
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private View.OnClickListener targetElement;
-    private onMenuItemClickContacts onMenuItemClickListener;
+    private OnMenuItemClickContacts onMenuItemClickListener;
     private ContactAdapter contactAdapter;
 
-    private final String TAG = "TAG";
-
+    @SuppressWarnings("WeakerAccess")
     @InjectPresenter
     ContactListPresenter contactPresenter;
 
+    @SuppressWarnings("WeakerAccess")
     @Inject
     Provider<ContactListPresenter> presenterProvider;
 
@@ -55,16 +58,16 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof View.OnClickListener) {
+        if (context instanceof View.OnClickListener) {
             targetElement = (View.OnClickListener) context;
         }
-        if(context instanceof onMenuItemClickContacts) {
-            onMenuItemClickListener = (onMenuItemClickContacts) context;
+        if (context instanceof OnMenuItemClickContacts) {
+            onMenuItemClickListener = (OnMenuItemClickContacts) context;
         }
-        Application app = getActivity().getApplication();
-        if(app instanceof ContactApplicationContainer) {
+        Application app = Objects.requireNonNull(getActivity()).getApplication();
+        if (app instanceof ContactApplicationContainer) {
             AppContainer appComponent = ((ContactApplicationContainer) app).getAppComponent();
             ContactsComponentContainer contactsComponent = appComponent.plusContactsComponent();
             contactsComponent.inject(this);
@@ -78,14 +81,20 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public @Nullable View onCreateView(
+            @Nullable LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.contact_list_title);
+        ((TextView) Objects.requireNonNull(getActivity())
+                .findViewById(R.id.title))
+                .setText(R.string.contact_list_title);
         contactAdapter = new ContactAdapter(targetElement);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(contactAdapter);
-        recyclerView.addItemDecoration(new ContactDecorator((int) pxFromDp(10)));
+        final int dp10 = 10;
+        recyclerView.addItemDecoration(new ContactDecorator((int) pxFromDp(dp10)));
 
         setHasOptionsMenu(true);
         return view;
@@ -98,7 +107,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @Nullable MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
@@ -130,8 +139,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void updateList(final List<Contact> contacts) {
-        if(contactAdapter != null) {
+    public void updateList(@Nullable final List<Contact> contacts) {
+        if (contactAdapter != null) {
             contactAdapter.setContacts(contacts);
         }
     }
@@ -139,26 +148,21 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void loadingStatus(boolean show) {
         int status = show ? View.VISIBLE : View.GONE;
-        getView().findViewById(R.id.progress_bar_list).setVisibility(status);
+        Objects.requireNonNull(getView()).findViewById(R.id.progress_bar_list).setVisibility(status);
     }
 
     private float pxFromDp(int dp) {
-        return dp * getContext().getApplicationContext()
+        return dp * Objects.requireNonNull(getContext()).getApplicationContext()
                 .getResources()
                 .getDisplayMetrics()
                 .density;
     }
 
-    public static ContactListFragment newInstance() {
-        ContactListFragment contactList = new ContactListFragment();
-        return contactList;
+    public static @NonNull ContactListFragment newInstance() {
+        return new ContactListFragment();
     }
 
-    public interface onMenuItemClickContacts {
+    public interface OnMenuItemClickContacts {
         void onMenuItemClickContacts();
-    }
-
-    public interface OnClickContact {
-        void onClickContact(int id, String name);
     }
 }

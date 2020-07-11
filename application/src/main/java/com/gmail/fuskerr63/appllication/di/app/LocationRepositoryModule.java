@@ -8,12 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class LocationRepositoryModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
-    public LocationRepository provideLocationRepository(AppDatabase appDatabase) {
+    public LocationRepository provideLocationRepository(@Nullable AppDatabase appDatabase) {
         return new LocationRepositoryImpl(appDatabase);
     }
 }

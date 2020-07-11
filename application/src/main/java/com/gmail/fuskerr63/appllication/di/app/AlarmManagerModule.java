@@ -7,12 +7,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class AlarmManagerModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
-    public AlarmManager provideAlarmManager(Context context) {
-        return (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+    public AlarmManager provideAlarmManager(@Nullable Context context) {
+        return (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 }

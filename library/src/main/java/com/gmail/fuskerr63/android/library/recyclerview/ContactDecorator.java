@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * Простейший декоратор, добавляющий отступы
  */
 public class ContactDecorator extends RecyclerView.ItemDecoration {
-    private final int pixelOffset;
+    private transient final int pixelOffset;
 
     /***
      *
@@ -21,9 +21,13 @@ public class ContactDecorator extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+    public void getItemOffsets(
+            @NonNull Rect outRect,
+            @NonNull View view,
+            @NonNull RecyclerView parent,
+            @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if(parent.getChildAdapterPosition(view) != 0) {
+        if (parent.getChildAdapterPosition(view) != 0) {
             outRect.top = pixelOffset;
         }
         outRect.left = pixelOffset;

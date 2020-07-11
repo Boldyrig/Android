@@ -11,14 +11,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
 import com.gmail.fuskerr63.java.entity.ContactLocation;
-import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
@@ -36,31 +32,39 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-public class ContactsMapFragment extends MvpAppCompatFragment implements ContactsMapView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class ContactsMapFragment extends MvpAppCompatFragment implements
+        ContactsMapView,
+        OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener {
     private MapView mapView;
     private ProgressBar progressBar;
-    private PolylineOptions polylineOptions;
 
-    private final int PADDING = 100;
+    private final int padding = 100;
 
-    List<Polyline> polylines = new ArrayList<Polyline>();
+    private final List<Polyline> polylines = new ArrayList<>();
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @Inject
     Provider<ContactsMapPresenter> presenterProvider;
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @InjectPresenter
     ContactsMapPresenter contactsMapPresenter;
 
     private GoogleMap googleMap;
 
+    @SuppressWarnings("unused")
     @ProvidePresenter
     ContactsMapPresenter provideMapPresenter() {
         return presenterProvider.get();
@@ -69,8 +73,8 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Application app = getActivity().getApplication();
-        if(app instanceof ContactApplicationContainer) {
+        Application app = Objects.requireNonNull(getActivity()).getApplication();
+        if (app instanceof ContactApplicationContainer) {
             AppContainer appContainer = ((ContactApplicationContainer) app).getAppComponent();
             ContactsMapComponentContainer component = appContainer.plusContactsMapComponent();
             component.inject(this);
@@ -78,28 +82,34 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void printMarkers(List<ContactLocation> contactLocations) {
-        if(googleMap != null && contactLocations != null && !contactLocations.isEmpty()) {
+    public void printMarkers(@Nullable List<ContactLocation> contactLocations) {
+        if (googleMap != null && contactLocations != null && !contactLocations.isEmpty()) {
             googleMap.clear();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(ContactLocation contactLocation : contactLocations) {
-                LatLng postition = new LatLng(contactLocation.getPosition().getLatitude(), contactLocation.getPosition().getLongitude());
+            for (ContactLocation contactLocation : contactLocations) {
+                LatLng postition = new LatLng(
+                        contactLocation.getPosition().getLatitude(),
+                        contactLocation.getPosition().getLongitude()
+                );
                 builder.include(postition);
                 googleMap.addMarker(new MarkerOptions().position(postition).title(contactLocation.getName()));
             }
             LatLngBounds bounds = builder.build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, PADDING);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             googleMap.animateCamera(cameraUpdate);
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        ((TextView) getActivity().findViewById(R.id.title)).setText(R.string.map_title);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_map);
-        mapView = (MapView) view.findViewById(R.id.map_view);
+        ((TextView) Objects.requireNonNull(getActivity()).findViewById(R.id.title)).setText(R.string.map_title);
+        progressBar = view.findViewById(R.id.progress_bar_map);
+        mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return view;
@@ -127,7 +137,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@Nullable Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
@@ -138,14 +148,15 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
         mapView.onLowMemory();
     }
 
+    @NonNull
     public static ContactsMapFragment newInstance() {
         return new ContactsMapFragment();
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
-        googleMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
+        googleMap.setOnMarkerClickListener(this);
         contactsMapPresenter.onMapReady();
     }
 
@@ -155,38 +166,41 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements Contact
         progressBar.setVisibility(status);
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void clearDirection() {
-        if(polylines != null) {
-            for(Polyline polyline : polylines) {
-                polyline.remove();
-            }
+        for (Polyline polyline : polylines) {
+            polyline.remove();
         }
     }
 
     @Override
-    public void showErrorToast(String message) {
+    public void showErrorToast(@Nullable String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void printDirection(List<LatLng> points, List<LatLng> bounds) {
-        if(googleMap != null) {
+    public void printDirection(@Nullable List<LatLng> points, @Nullable List<LatLng> bounds) {
+        if (googleMap != null) {
             // Нарисовать линию
-            polylineOptions = new PolylineOptions().width(10F).color((Color.BLUE)).addAll(points);
+            final float defaultWidth = 10F;
+            PolylineOptions polylineOptions = new PolylineOptions()
+                    .width(defaultWidth)
+                    .color((Color.BLUE))
+                    .addAll(points);
             polylines.add(googleMap.addPolyline(polylineOptions));
             // Передвинуть камеру
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for(LatLng bound : bounds) {
+            for (LatLng bound : bounds) {
                 builder.include(bound);
             }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);
             googleMap.animateCamera(cameraUpdate);
         }
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
+    public boolean onMarkerClick(@Nullable Marker marker) {
         contactsMapPresenter.onMarkerClick(marker.getPosition());
         return false;
     }

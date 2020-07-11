@@ -11,5 +11,4 @@ public interface LocationRepository {
     Single<List<ContactLocation>> getAll();
     Single<ContactLocation> getUserByContactId(int contactId);
     Completable insert(ContactLocation contactLocation);
-    void delete(ContactLocation contactLocation);
 }

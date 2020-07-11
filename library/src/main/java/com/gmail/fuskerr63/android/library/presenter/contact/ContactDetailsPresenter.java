@@ -3,14 +3,19 @@ package com.gmail.fuskerr63.android.library.presenter.contact;
 import android.util.Log;
 
 import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
+import com.gmail.fuskerr63.library.BuildConfig;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
@@ -23,7 +28,10 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor, NotificationInteractor notificationInteractor) {
+    public ContactDetailsPresenter(
+            @Nullable ContactInteractor contactInteractor,
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable NotificationInteractor notificationInteractor) {
         this.contactInteractor = contactInteractor;
         this.databaseInteractor = databaseInteractor;
         this.notificationInteractor = notificationInteractor;
@@ -34,27 +42,39 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                 .subscribeOn(Schedulers.io())
                 .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
                         .map(user -> {
-                            Contact newContact = new Contact(
-                                    contact.getId(),
-                                    contact.getImage(),
+                            ContactInfo contactInfo = new ContactInfo(
                                     contact.getName(),
                                     contact.getNumber(),
                                     contact.getNumber2(),
                                     contact.getEmail(),
-                                    contact.getEmail2(),
+                                    contact.getEmail2()
+                            );
+                            return new Contact(
+                                    contact.getId(),
+                                    contact.getImage(),
+                                    contactInfo,
                                     contact.getBirthday(),
                                     user.getAddress()
                             );
-                            return newContact;
                         }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
                 .doFinally(() -> getViewState().loadingStatus(false))
-                .subscribe(contact -> getViewState().updateDetails(contact), error -> Log.d("TAG", error.getMessage())));
+                .subscribe(
+                        contact -> getViewState().updateDetails(contact),
+                        error -> {
+                            if (BuildConfig.DEBUG) {
+                                Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                            }
+                        }
+                ));
     }
 
-    public void onClickBirthday(Contact contact, String notificationCancel, String notificationSend) {
-        if(notificationInteractor.toggleNotificationForContact(contact).alarmIsUp()) {
+    public void onClickBirthday(
+            @Nullable Contact contact,
+            @Nullable String notificationCancel,
+            @Nullable String notificationSend) {
+        if (notificationInteractor.toggleNotificationForContact(contact).alarmIsUp()) {
             getViewState().setTextButton(notificationCancel);
         } else {
             getViewState().setTextButton(notificationSend);

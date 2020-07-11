@@ -2,32 +2,32 @@ package com.gmail.fuskerr63.android.library.presenter.contacts;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 import com.gmail.fuskerr63.android.library.view.ContactListView;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
+import com.gmail.fuskerr63.library.BuildConfig;
+
+import java.util.Objects;
 
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private ContactInteractor interactor;
+    private final transient ContactInteractor interactor;
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
-    private final PublishSubject<String> publishSubject = PublishSubject.create();
-
-    private final String TAG = "TAG";
+    private transient final CompositeDisposable disposable = new CompositeDisposable();
+    private transient final PublishSubject<String> publishSubject = PublishSubject.create();
 
     @Inject
-    public ContactListPresenter(ContactInteractor interactor) {
+    public ContactListPresenter(@Nullable ContactInteractor interactor) {
         this.interactor = interactor;
         disposable.add(
                 publishSubject.switchMapSingle(
@@ -40,17 +40,22 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 contacts -> getViewState().updateList(contacts),
-                                error -> Log.d(TAG, error.getMessage()))
+                                error -> {
+                                    if (BuildConfig.DEBUG) {
+                                        Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                                    }
+                                })
         );
         updateList("");
     }
 
-    public void updateList(@Nullable String selector) { publishSubject.onNext(selector); }
+    public void updateList(@Nullable String selector) {
+        publishSubject.onNext(Objects.requireNonNull(selector));
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        interactor = null;
         disposable.dispose();
     }
 }

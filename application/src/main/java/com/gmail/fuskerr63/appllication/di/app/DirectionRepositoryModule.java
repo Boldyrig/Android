@@ -8,12 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class DirectionRepositoryModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
-    public DirectionRepository provideDirectionRepository(DirectionRetrofit directionRetrofit) {
+    public DirectionRepository provideDirectionRepository(@Nullable DirectionRetrofit directionRetrofit) {
         return new DirectionRepositoryImpl(directionRetrofit);
     }
 }

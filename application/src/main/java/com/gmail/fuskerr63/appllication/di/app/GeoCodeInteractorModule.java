@@ -8,12 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class GeoCodeInteractorModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
-    public GeoCodeInteractor provideGeoCodeInteractor(GeoCodeRepository geoCodeRepository) {
+    public GeoCodeInteractor provideGeoCodeInteractor(@Nullable GeoCodeRepository geoCodeRepository) {
         return new GeoCodeModel(geoCodeRepository);
     }
 }

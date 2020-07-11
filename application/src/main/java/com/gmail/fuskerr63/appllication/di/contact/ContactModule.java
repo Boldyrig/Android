@@ -8,12 +8,18 @@ import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 @Module
 public class ContactModule {
     @ContactDetailsScope
+    @Nullable
     @Provides
-    ContactDetailsPresenter provideDetailsPresenter(ContactInteractor contactInteractor, DatabaseInteractor databaseInteractor, NotificationInteractor notificationInteractor) {
+    ContactDetailsPresenter provideDetailsPresenter(
+            @Nullable ContactInteractor contactInteractor,
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable NotificationInteractor notificationInteractor) {
         return new ContactDetailsPresenter(contactInteractor, databaseInteractor, notificationInteractor);
     }
 }

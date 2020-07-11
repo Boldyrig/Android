@@ -8,6 +8,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotifyNotificationManagerModule {
@@ -19,9 +21,12 @@ public class NotifyNotificationManagerModule {
         this.priority = priority;
     }
 
+    @SuppressWarnings({"unused"})
+    @NonNull
     @Singleton
     @Provides
-    public NotifyNotificationManager provideNotifyNotificationManager(NotificationRepository notificationRepository) {
+    public NotifyNotificationManager provideNotifyNotificationManager(
+            @Nullable NotificationRepository notificationRepository) {
         return new NotifyNotificationManagerImpl(notificationRepository, flagUpdateCurrent, priority);
     }
 }

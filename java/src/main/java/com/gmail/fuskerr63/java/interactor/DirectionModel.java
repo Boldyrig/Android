@@ -7,8 +7,9 @@ import com.gmail.fuskerr63.java.repository.DirectionRepository;
 import io.reactivex.Single;
 
 public class DirectionModel implements DirectionInteractor {
-    private DirectionRepository directionRepository;
+    private final DirectionRepository directionRepository;
 
+    @SuppressWarnings("unused")
     public DirectionModel(DirectionRepository directionRepository) {
         this.directionRepository = directionRepository;
     }

@@ -6,13 +6,13 @@ import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
 import com.gmail.fuskerr63.appllication.di.map.ContactMapComponent;
 import com.gmail.fuskerr63.appllication.di.map.ContactsMapComponent;
-import com.gmail.fuskerr63.java.repository.DirectionRepository;
-import com.gmail.fuskerr63.java.repository.GeoCodeRepository;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
+import io.reactivex.annotations.Nullable;
 
+@SuppressWarnings("unused")
 @Singleton
 @Component(modules = {
         RepositoryModule.class,
@@ -36,17 +36,21 @@ import dagger.Component;
         DirectionRepositoryModule.class
 })
 public interface AppComponent extends AppContainer {
+    @Nullable
     @Override
     ContactsComponent plusContactsComponent();
 
+    @Nullable
     @Override
     ContactComponent plusContactComponent();
 
+    @Nullable
     @Override
     ContactMapComponent plusContactMapComponent();
 
+    @Nullable
     @Override
     ContactsMapComponent plusContactsMapComponent();
     @Override
-    void inject(ContactReceiver contactReceiver);
+    void inject(@Nullable ContactReceiver contactReceiver);
 }

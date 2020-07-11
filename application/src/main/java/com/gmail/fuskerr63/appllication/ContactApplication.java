@@ -29,6 +29,8 @@ import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 
+import io.reactivex.annotations.Nullable;
+
 public class ContactApplication extends Application implements ContactApplicationContainer {
     private AppComponent appComponent;
 
@@ -44,8 +46,15 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .contactInteractorModule(new ContactInteractorModule())
                 .notificationTimeModule(new NotificationTimeModule())
                 .notificationRepositoryModule(new NotificationRepositoryModule())
-                .notificationInteractorModule(new NotificationInteractorModule(PendingIntent.FLAG_NO_CREATE, PendingIntent.FLAG_UPDATE_CURRENT, getString(R.string.notification_text)))
-                .notifyNotificationManagerModule(new NotifyNotificationManagerModule(PendingIntent.FLAG_UPDATE_CURRENT, NotificationCompat.PRIORITY_DEFAULT))
+                .notificationInteractorModule(new NotificationInteractorModule(
+                        PendingIntent.FLAG_NO_CREATE,
+                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        getString(R.string.notification_text)
+                ))
+                .notifyNotificationManagerModule(new NotifyNotificationManagerModule(
+                        PendingIntent.FLAG_UPDATE_CURRENT,
+                        NotificationCompat.PRIORITY_DEFAULT
+                ))
                 .intentManagerModule(new IntentManagerModule(MainActivity.class))
                 .contextModule(new ContextModule(getApplicationContext()))
                 .alarmManagerModule(new AlarmManagerModule())
@@ -63,9 +72,10 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .build();
     }
 
+    @Nullable
     @Override
     public AppComponent getAppComponent() {
-        if(appComponent == null) {
+        if (appComponent == null) {
             initDependencies();
         }
         return appComponent;

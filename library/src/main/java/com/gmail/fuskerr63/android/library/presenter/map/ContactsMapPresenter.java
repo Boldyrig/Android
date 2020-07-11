@@ -6,21 +6,25 @@ import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
+import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private DatabaseInteractor databaseInteractor;
-    private DirectionInteractor directionInteractor;
+    private final DatabaseInteractor databaseInteractor;
+    private final DirectionInteractor directionInteractor;
 
     private Position latLngFrom;
     private Position latLngTo;
@@ -28,11 +32,14 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactsMapPresenter(DatabaseInteractor databaseInteractor, DirectionInteractor directionInteractor) {
+    public ContactsMapPresenter(
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable DirectionInteractor directionInteractor) {
         this.databaseInteractor = databaseInteractor;
         this.directionInteractor = directionInteractor;
     }
 
+    @SuppressWarnings("unused")
     public void onMapReady() {
         disposable.add(databaseInteractor.getAll()
                 .subscribeOn(Schedulers.io())
@@ -41,13 +48,18 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                 .doFinally(() -> getViewState().setProgressStatus(false))
                 .subscribe(
                         contactLocations -> getViewState().printMarkers(contactLocations),
-                        error -> Log.d("TAG", error.getMessage())));
+                        error -> {
+                            if (BuildConfig.DEBUG) {
+                                Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                            }
+                        }));
     }
 
-    public void onMarkerClick(LatLng latLng) {
-        if(latLngFrom == null) {
+    @SuppressWarnings("unused")
+    public void onMarkerClick(@NonNull LatLng latLng) {
+        if (latLngFrom == null) {
             latLngFrom = new Position(latLng.latitude, latLng.longitude);
-        } else if(latLngTo == null) {
+        } else if (latLngTo == null) {
             latLngTo = new Position(latLng.latitude, latLng.longitude);
             disposable.add(directionInteractor.loadDirection(latLngFrom, latLngTo)
                     .subscribeOn(Schedulers.io())
@@ -56,12 +68,12 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     .doFinally(() -> getViewState().setProgressStatus(false))
                     .subscribe(
                             directionStatus -> {
-                                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
-                                for(Position position : directionStatus.getPoints()) {
+                                List<LatLng> pointsLatLng = new ArrayList<>();
+                                for (Position position : directionStatus.getPoints()) {
                                     pointsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
                                 }
-                                List<LatLng> boundsLatLng = new ArrayList<LatLng>();
-                                for(Position position : directionStatus.getBounds()) {
+                                List<LatLng> boundsLatLng = new ArrayList<>();
+                                for (Position position : directionStatus.getBounds()) {
                                     boundsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
                                 }
                                 getViewState().printDirection(pointsLatLng, boundsLatLng);

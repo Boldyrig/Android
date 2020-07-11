@@ -7,9 +7,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationTimeModule {
+    @SuppressWarnings("unused")
+    @Nullable
     @Singleton
     @Provides
     public NotificationTime provideNotificationTime() {

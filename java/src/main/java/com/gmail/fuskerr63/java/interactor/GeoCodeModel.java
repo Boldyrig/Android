@@ -7,8 +7,9 @@ import com.gmail.fuskerr63.java.repository.GeoCodeRepository;
 import io.reactivex.Single;
 
 public class GeoCodeModel implements GeoCodeInteractor {
-    GeoCodeRepository geoCodeRepository;
+    private final GeoCodeRepository geoCodeRepository;
 
+    @SuppressWarnings("unused")
     public GeoCodeModel(GeoCodeRepository geoCodeRepository) {
         this.geoCodeRepository = geoCodeRepository;
     }

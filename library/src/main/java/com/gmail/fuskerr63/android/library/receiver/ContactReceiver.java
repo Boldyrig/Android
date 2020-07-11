@@ -14,27 +14,31 @@ import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
 
-public class ContactReceiver extends BroadcastReceiver {
-    private final String EXTRA_ID = "ID";
-    private final String EXTRA_NAME = "NAME";
-    private final String EXTRA_TEXT = "TEXT";
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
+public class ContactReceiver extends BroadcastReceiver {
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @Inject
-    NotificationInteractor notificationInteractor;
+    transient NotificationInteractor notificationInteractor;
+    @SuppressWarnings({"WeakerAccess", "unused"})
     @Inject
-    NotifyNotificationManager notificationManager;
+    transient NotifyNotificationManager notificationManager;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @Nullable Intent intent) {
         Context appContext = context.getApplicationContext();
-        if(appContext instanceof ContactApplicationContainer) {
+        if (appContext instanceof ContactApplicationContainer) {
             ((ContactApplicationContainer) appContext).getAppComponent().inject(this);
         }
         Bundle extras = intent.getExtras();
-        if(extras != null) {
-            String text = extras.getString(EXTRA_TEXT);
-            int id = extras.getInt(EXTRA_ID);
-            String name = extras.getString(EXTRA_NAME);
+        if (extras != null) {
+            String extraText = "TEXT";
+            String text = extras.getString(extraText);
+            String extraId = "ID";
+            int id = extras.getInt(extraId);
+            String extraName = "NAME";
+            String name = extras.getString(extraName);
             notificationManager.notifyNotification(id, text);
             notificationInteractor.toggleNotificationForContact(new Contact(id, name, new GregorianCalendar()));
         }

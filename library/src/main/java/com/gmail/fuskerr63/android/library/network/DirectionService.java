@@ -4,7 +4,10 @@ import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface DirectionService {
+interface DirectionService {
     @GET("json")
-    Single<DirectionResponse> loadDirection(@Query("origin") String latLngFrom, @Query("destination") String latLngTo, @Query("key") String apiKey);
+    Single<DirectionResponse> loadDirection(
+            @Query("origin") String latLngFrom,
+            @Query("destination") String latLngTo,
+            @Query("key") String apiKey);
 }

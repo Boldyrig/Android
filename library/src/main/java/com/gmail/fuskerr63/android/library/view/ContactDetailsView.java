@@ -2,15 +2,16 @@ package com.gmail.fuskerr63.android.library.view;
 
 import com.gmail.fuskerr63.java.entity.Contact;
 
+import io.reactivex.annotations.Nullable;
 import moxy.MvpView;
 import moxy.viewstate.strategy.SingleStateStrategy;
 import moxy.viewstate.strategy.StateStrategyType;
 
 public interface ContactDetailsView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
-    void updateDetails(Contact contact);
+    void updateDetails(@Nullable Contact contact);
     @StateStrategyType(SingleStateStrategy.class)
     void loadingStatus(boolean show);
     @StateStrategyType(SingleStateStrategy.class)
-    void setTextButton(String text);
+    void setTextButton(@Nullable String text);
 }
