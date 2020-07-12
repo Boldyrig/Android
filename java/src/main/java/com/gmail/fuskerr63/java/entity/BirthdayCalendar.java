@@ -24,7 +24,7 @@ public class BirthdayCalendar {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return year*month*day*hour*minute*second;
     }
 
     public BirthdayCalendar(int year, int month, int day, int hour, int minute, int second) {

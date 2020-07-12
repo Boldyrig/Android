@@ -5,6 +5,7 @@ task pmd(type: Pmd, group: 'Verification') {
     source = fileTree('src/main/java')
     include '**/*.java'
     exclude '**/gen/**'
+    ruleSets = []
 
     reports {
         xml {

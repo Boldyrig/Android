@@ -74,24 +74,16 @@ public class Repository implements ContactRepository {
                     image = URI.create("");
                 }
                 // собираем номера
-                int hasPhoneNumber = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
-                int hasNumber = cursorContact.getInt(hasPhoneNumber);
-                List<String> numbers;
-                if (hasNumber > 0) {
-                    Cursor cursorPhone = contentResolver.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + SELECTION_SYMBOL,
-                            new String[]{String.valueOf(id)},
-                            null
-                    );
-                    if (cursorPhone != null) {
-                        numbers = loadNumbersFromCursor(cursorPhone);
-                    } else {
-                        numbers = new ArrayList<>();
-                    }
-                } else {
-                    numbers = new ArrayList<>();
+                List<String> numbers = new ArrayList<>();
+                Cursor cursorPhone = contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + SELECTION_SYMBOL,
+                        new String[]{String.valueOf(id)},
+                        null
+                );
+                if (cursorPhone != null) {
+                    numbers = loadNumbersFromCursor(cursorPhone);
                 }
                 // собираем почты
                 Cursor cursorEmail = contentResolver.query(

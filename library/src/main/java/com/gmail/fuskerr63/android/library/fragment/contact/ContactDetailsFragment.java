@@ -120,16 +120,14 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         if (contactDetailsDelegate != null) {
             contactDetailsDelegate.showDetails(contact);
         }
-        if (contact != null && contact.getBirthday().get(Calendar.YEAR) != 0) {
-            if (getView() != null) {
-                Button button = getView().findViewById(R.id.birthday_button);
-                button.setVisibility(View.VISIBLE);
-                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(
-                        contact,
-                        notificatinCancel,
-                        notificationSend
-                ));
-            }
+        if (contact != null && contact.getBirthday().get(Calendar.YEAR) != 0 && getView() != null) {
+            Button button = getView().findViewById(R.id.birthday_button);
+            button.setVisibility(View.VISIBLE);
+            button.setOnClickListener(v -> detailsPresenter.onClickBirthday(
+                    contact,
+                    notificatinCancel,
+                    notificationSend
+            ));
         }
     }
 
