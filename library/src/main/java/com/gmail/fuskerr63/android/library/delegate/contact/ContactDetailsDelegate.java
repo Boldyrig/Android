@@ -24,7 +24,7 @@ public class ContactDetailsDelegate {
     public void showDetails(@Nullable Contact contact) {
         if (view != null && contact != null) {
             URI image = contact.getImage();
-            if (image != null) {
+            if (!image.toString().equals("")) {
                 ((ImageView) view.findViewById(R.id.image)).setImageURI(Uri.parse(image.toString()));
             }
             ((TextView) view.findViewById(R.id.name)).setText(contact.getName());

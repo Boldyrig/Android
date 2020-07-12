@@ -3,6 +3,4 @@
     package="com.gmail.fuskerr63.library">
 
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-
-    <application android:supportsRtl="true"/>
 </manifest>
