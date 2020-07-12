@@ -64,7 +64,7 @@ public class BirthdayUnitTest {
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 
         // Установить день рождения на 1990 8 сентября
-        Calendar birthday = new GregorianCalendar(year1990, Calendar.SEPTEMBER, day8);
+        Calendar birthday = new GregorianCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         contact = new Contact(contactId, contactName, birthday);
         // Следующий день рождения
         Calendar nextBirthday = new GregorianCalendar(year2000, Calendar.SEPTEMBER, day8);

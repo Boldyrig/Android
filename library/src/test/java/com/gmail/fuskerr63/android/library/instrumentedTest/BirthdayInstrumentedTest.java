@@ -57,7 +57,7 @@ public class BirthdayInstrumentedTest {
     private final int day29 = 29;
 
 
-    private BirthdayCalendar birthday;
+    private Calendar birthday = new GregorianCalendar();
     private final Calendar currentCalendar = new GregorianCalendar();
     private final Calendar nextBirthday = new GregorianCalendar();
 
@@ -79,12 +79,7 @@ public class BirthdayInstrumentedTest {
 
     @Test
     public void testNotificationInteractorIfBirthdayWasInThisYearThenTakeNextYear() {
-        when(notificationRepository.alarmIsUp(
-                contactId,
-                textNotification + " " + contactName,
-                flagNoCreate)).thenReturn(false);
-
-        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
+        birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         final int day9 = 9;
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day9);
         nextBirthday.set(year2000, Calendar.SEPTEMBER, day8, 0, 0, 0);
@@ -109,12 +104,7 @@ public class BirthdayInstrumentedTest {
 
     @Test
     public void testNotificationInteractorIfBirthdayWasNotInThisYearThenTakeCurrentYear() {
-        when(notificationRepository.alarmIsUp(
-                contactId,
-                textNotification + " " + contactName,
-                flagNoCreate)).thenReturn(false);
-
-        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
+        birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
         nextBirthday.set(year1999, Calendar.SEPTEMBER, day8, 0, 0, 0);
 
@@ -143,7 +133,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + contactName,
                 flagNoCreate)).thenReturn(true);
 
-        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
+        birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
 
         contact = new Contact(contactId, contactName, birthday);
@@ -157,12 +147,7 @@ public class BirthdayInstrumentedTest {
 
     @Test
     public void testNotificationInteractorCheck29FebruaryLogicNextYearIsLeap() {
-        when(notificationRepository.alarmIsUp(
-                contactId,
-                textNotification + " " + contactName,
-                flagNoCreate)).thenReturn(false);
-
-        birthday = new BirthdayCalendar(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
+        birthday.set(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
         int day2 = 2;
         currentCalendar.set(year1999, Calendar.MARCH, day2);
         nextBirthday.set(year2000, Calendar.FEBRUARY, day29, 0, 0, 0);
@@ -187,12 +172,7 @@ public class BirthdayInstrumentedTest {
 
     @Test
     public void testNotificationInteractorCheck29FebruaryLogicNextYearIsNotLeap() {
-        when(notificationRepository.alarmIsUp(
-                contactId,
-                textNotification + " " + contactName,
-                flagNoCreate)).thenReturn(false);
-
-        birthday = new BirthdayCalendar(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
+        birthday.set(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
         final int day1 = 1;
         currentCalendar.set(year2000, Calendar.MARCH, day1);
         final int year2004 = 2004;

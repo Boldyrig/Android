@@ -11,6 +11,20 @@ public class BirthdayCalendar {
     private final int minute;
     private final int second;
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof BirthdayCalendar) {
+            BirthdayCalendar birthdayCalendar = (BirthdayCalendar) obj;
+            return birthdayCalendar.getYear() == year &&
+                    birthdayCalendar.getMonth() == month &&
+                    birthdayCalendar.getDay() == day &&
+                    birthdayCalendar.getHour() == hour &&
+                    birthdayCalendar.getMinute() == minute &&
+                    birthdayCalendar.getSecond() == second;
+        }
+        return false;
+    }
+
     public BirthdayCalendar(int year, int month, int day, int hour, int minute, int second) {
         this.year = year;
         this.month = month;

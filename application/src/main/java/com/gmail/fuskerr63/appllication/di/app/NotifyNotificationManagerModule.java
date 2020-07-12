@@ -13,8 +13,8 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotifyNotificationManagerModule {
-    private transient final int flagUpdateCurrent;
-    private transient final int priority;
+    private final transient int flagUpdateCurrent;
+    private final transient int priority;
 
     public NotifyNotificationManagerModule(int flagUpdateCurrent, int priority) {
         this.flagUpdateCurrent = flagUpdateCurrent;
