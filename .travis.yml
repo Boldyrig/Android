@@ -15,7 +15,7 @@ android:
     - extra-android-m2repository
     - addon-google_apis-google-$ANDROID_API_LEVEL
 script:
-  - ./gradlew build checkstyle
-  - ./gradlew build lint
-  - ./gradlew build pmd
-  - ./gradlew build test
+  - ./gradlew checkstyle
+  - ./gradlew lint
+  - ./gradlew pmd
+  - ./gradlew test
