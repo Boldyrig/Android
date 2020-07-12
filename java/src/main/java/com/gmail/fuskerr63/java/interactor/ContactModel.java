@@ -11,7 +11,7 @@ import io.reactivex.annotations.Nullable;
 
 
 public class ContactModel implements ContactInteractor {
-    private final ContactRepository repository;
+    private transient final ContactRepository repository;
 
     public ContactModel(@NonNull ContactRepository repository) {
         this.repository = repository;

@@ -23,13 +23,13 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private final DatabaseInteractor databaseInteractor;
-    private final DirectionInteractor directionInteractor;
+    private transient final DatabaseInteractor databaseInteractor;
+    private transient final DirectionInteractor directionInteractor;
 
-    private Position latLngFrom;
-    private Position latLngTo;
+    private transient Position latLngFrom;
+    private transient Position latLngTo;
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
+    private transient final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactsMapPresenter(
@@ -69,8 +69,11 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     .subscribe(
                             directionStatus -> {
                                 List<LatLng> pointsLatLng = new ArrayList<>();
-                                for (Position position : directionStatus.getPoints()) {
-                                    pointsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
+                                for (int i = 0; i < directionStatus.getPoints().size(); i++) {
+                                    pointsLatLng.add(new LatLng(
+                                            directionStatus.getPoints().get(i).getLatitude(),
+                                            directionStatus.getPoints().get(i).getLongitude())
+                                    );
                                 }
                                 List<LatLng> boundsLatLng = new ArrayList<>();
                                 for (Position position : directionStatus.getBounds()) {
@@ -82,7 +85,6 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     ));
         } else {
             latLngFrom = new Position(latLng.latitude, latLng.longitude);
-            latLngTo = null;
             getViewState().clearDirection();
         }
     }

@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 apply from: '../etc/checkstyle/style-script.gradle'
 apply from: '../etc/lint/lint-script.gradle'
+apply from: '../etc/pmd/pmd-script.gradle'
 
 android {
     compileSdkVersion 29

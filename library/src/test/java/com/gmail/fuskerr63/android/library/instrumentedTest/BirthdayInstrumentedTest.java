@@ -57,7 +57,7 @@ public class BirthdayInstrumentedTest {
     private final int day29 = 29;
 
 
-    private final Calendar birthday = new GregorianCalendar();
+    private BirthdayCalendar birthday;
     private final Calendar currentCalendar = new GregorianCalendar();
     private final Calendar nextBirthday = new GregorianCalendar();
 
@@ -84,7 +84,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + " " + contactName,
                 flagNoCreate)).thenReturn(false);
 
-        birthday.set(year1990, Calendar.SEPTEMBER, day8);
+        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         final int day9 = 9;
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day9);
         nextBirthday.set(year2000, Calendar.SEPTEMBER, day8, 0, 0, 0);
@@ -114,7 +114,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + " " + contactName,
                 flagNoCreate)).thenReturn(false);
 
-        birthday.set(year1990, Calendar.SEPTEMBER, day8);
+        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
         nextBirthday.set(year1999, Calendar.SEPTEMBER, day8, 0, 0, 0);
 
@@ -143,7 +143,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + contactName,
                 flagNoCreate)).thenReturn(true);
 
-        birthday.set(year1990, Calendar.SEPTEMBER, day8);
+        birthday = new BirthdayCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
 
         contact = new Contact(contactId, contactName, birthday);
@@ -162,7 +162,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + " " + contactName,
                 flagNoCreate)).thenReturn(false);
 
-        birthday.set(year1988, Calendar.FEBRUARY, day29);
+        birthday = new BirthdayCalendar(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
         int day2 = 2;
         currentCalendar.set(year1999, Calendar.MARCH, day2);
         nextBirthday.set(year2000, Calendar.FEBRUARY, day29, 0, 0, 0);
@@ -192,7 +192,7 @@ public class BirthdayInstrumentedTest {
                 textNotification + " " + contactName,
                 flagNoCreate)).thenReturn(false);
 
-        birthday.set(year1988, Calendar.FEBRUARY, day29);
+        birthday = new BirthdayCalendar(year1988, Calendar.FEBRUARY, day29, 0, 0, 0);
         final int day1 = 1;
         currentCalendar.set(year2000, Calendar.MARCH, day1);
         final int year2004 = 2004;

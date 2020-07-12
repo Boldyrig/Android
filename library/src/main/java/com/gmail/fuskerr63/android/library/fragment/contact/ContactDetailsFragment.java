@@ -18,6 +18,7 @@ import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationConta
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
+import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
 
@@ -44,7 +45,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
 
     @SuppressWarnings("WeakerAccess")
     @InjectPresenter
-    transient ContactDetailsPresenter detailsPresenter;
+    ContactDetailsPresenter detailsPresenter;
 
     @SuppressWarnings("WeakerAccess")
     @Inject
@@ -118,8 +119,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         if(contactDetailsDelegate != null) {
             contactDetailsDelegate.showDetails(contact);
         }
-        Calendar birthday = contact.getBirthday();
-        if (birthday != null) {
+        if (contact.getBirthday().get(Calendar.YEAR) != 0) {
             Button button = getView().findViewById(R.id.birthday_button);
             button.setVisibility(getView().VISIBLE);
             button.setOnClickListener(v -> detailsPresenter.onClickBirthday(

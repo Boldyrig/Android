@@ -10,7 +10,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class ContextModule {
-    private final Context context;
+    private transient final Context context;
 
     public ContextModule(@Nullable Context context) {
         this.context = context;

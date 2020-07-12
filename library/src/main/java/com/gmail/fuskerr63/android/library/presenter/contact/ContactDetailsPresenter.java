@@ -21,11 +21,11 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private ContactInteractor contactInteractor;
-    private DatabaseInteractor databaseInteractor;
-    private NotificationInteractor notificationInteractor;
+    private transient final ContactInteractor contactInteractor;
+    private transient final DatabaseInteractor databaseInteractor;
+    private transient final NotificationInteractor notificationInteractor;
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
+    private transient final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactDetailsPresenter(
@@ -74,7 +74,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
             @Nullable Contact contact,
             @Nullable String notificationCancel,
             @Nullable String notificationSend) {
-        if (notificationInteractor.toggleNotificationForContact(contact).alarmIsUp()) {
+        if (notificationInteractor.toggleNotificationForContact(contact).isAlarmUp()) {
             getViewState().setTextButton(notificationCancel);
         } else {
             getViewState().setTextButton(notificationSend);
@@ -84,9 +84,6 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        contactInteractor = null;
-        databaseInteractor = null;
-        notificationInteractor = null;
         disposable.dispose();
     }
 }

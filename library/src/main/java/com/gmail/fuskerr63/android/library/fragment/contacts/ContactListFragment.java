@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,12 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gmail.fuskerr63.android.library.delegate.contacts.ContactListDelegate;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresenter;
 import com.gmail.fuskerr63.android.library.recyclerview.ContactAdapter;
-import com.gmail.fuskerr63.android.library.recyclerview.ContactDecorator;
 import com.gmail.fuskerr63.android.library.view.ContactListView;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
@@ -40,9 +38,9 @@ import moxy.presenter.ProvidePresenter;
 
 @SuppressWarnings("unused")
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
-    private View.OnClickListener targetElement;
-    private OnMenuItemClickContacts onMenuItemClickListener;
-    private ContactAdapter contactAdapter;
+    private transient OnMenuItemClickContacts onMenuItemClickListener;
+    private transient ContactListDelegate contactListDelegate;
+    private transient ContactAdapter contactAdapter;
 
     @SuppressWarnings("WeakerAccess")
     @InjectPresenter
@@ -50,7 +48,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @SuppressWarnings("WeakerAccess")
     @Inject
-    Provider<ContactListPresenter> presenterProvider;
+    transient Provider<ContactListPresenter> presenterProvider;
 
     @ProvidePresenter
     ContactListPresenter provideContactPresenter() {
@@ -60,9 +58,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof View.OnClickListener) {
-            targetElement = (View.OnClickListener) context;
-        }
         if (context instanceof OnMenuItemClickContacts) {
             onMenuItemClickListener = (OnMenuItemClickContacts) context;
         }
@@ -75,12 +70,6 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        targetElement = null;
-    }
-
-    @Override
     public @Nullable View onCreateView(
             @Nullable LayoutInflater inflater,
             @Nullable ViewGroup container,
@@ -89,21 +78,11 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         ((TextView) Objects.requireNonNull(getActivity())
                 .findViewById(R.id.title))
                 .setText(R.string.contact_list_title);
-        contactAdapter = new ContactAdapter(targetElement);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(contactAdapter);
-        final int dp10 = 10;
-        recyclerView.addItemDecoration(new ContactDecorator((int) pxFromDp(dp10)));
-
+        int dp10 = 10;
+        contactListDelegate = new ContactListDelegate(view);
+        contactListDelegate.onCreateView(getContext(), pxFromDp(dp10));
         setHasOptionsMenu(true);
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        contactAdapter = null;
     }
 
     @Override
@@ -140,9 +119,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
 
     @Override
     public void updateList(@Nullable final List<Contact> contacts) {
-        if (contactAdapter != null) {
-            contactAdapter.setContacts(contacts);
-        }
+        contactListDelegate.updateList(contacts);
     }
 
     @Override

@@ -25,10 +25,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import moxy.MvpPresenter;
 
 public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
-    private final DatabaseInteractor databaseInteractor;
-    private final GeoCodeInteractor geoCodeInteractor;
+    private transient final DatabaseInteractor databaseInteractor;
+    private transient final GeoCodeInteractor geoCodeInteractor;
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
+    private transient final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactMapPresenter(

@@ -14,9 +14,9 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationInteractorModule {
-    private final int flagNoCreate;
-    private final int flagUpdateCurrent;
-    private final String notificationText;
+    private transient final int flagNoCreate;
+    private transient final int flagUpdateCurrent;
+    private transient final String notificationText;
 
     public NotificationInteractorModule(int flagNoCreate, int flagUpdateCurrent, @Nullable String notificationText) {
         this.flagNoCreate = flagNoCreate;

@@ -16,14 +16,14 @@ public class Contact {
 
     public Contact(int id, String name, Calendar birthday) {
         this.id = id;
-        this.image = null;
+        this.image = URI.create("");
         this.name = name;
-        this.number = null;
-        this.number2 = null;
-        this.email = null;
-        this.email2 = null;
+        this.number = "";
+        this.number2 = "";
+        this.email = "";
+        this.email2 = "";
         this.birthday = birthday;
-        this.address = null;
+        this.address = "";
     }
 
     public Contact(int id, URI image, String name, String number) {
@@ -31,11 +31,12 @@ public class Contact {
         this.image = image;
         this.name = name;
         this.number = number;
-        this.number2 = null;
-        this.email = null;
-        this.email2 = null;
-        this.birthday = null;
-        this.address = null;
+        this.number2 = "";
+        this.email = "";
+        this.email2 = "";
+        this.birthday = Calendar.getInstance();
+        birthday.set(Calendar.YEAR, 0);
+        this.address = "";
     }
 
     public Contact(int id, URI image, ContactInfo contactInfo, Calendar birthday) {
@@ -47,7 +48,7 @@ public class Contact {
         this.email = contactInfo.getEmail();
         this.email2 = contactInfo.getEmail2();
         this.birthday = birthday;
-        this.address = null;
+        this.address = "";
     }
 
     public Contact(int id, URI image, ContactInfo contactInfo, Calendar birthday, String address) {

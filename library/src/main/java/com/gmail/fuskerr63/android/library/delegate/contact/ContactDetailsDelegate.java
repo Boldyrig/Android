@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
 
@@ -33,8 +34,8 @@ public class ContactDetailsDelegate {
             ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
             ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
             ((TextView) view.findViewById(R.id.address_contact)).setText(contact.getAddress());
-            Calendar birthday = contact.getBirthday();
-            if (birthday != null) {
+            if (contact.getBirthday().get(Calendar.YEAR) != 0) {
+                Calendar birthday = contact.getBirthday();
                 String birthdayText = birthday.get(Calendar.DATE) + " "
                         + birthday.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()) + " "
                         + birthday.get(Calendar.YEAR);

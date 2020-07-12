@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class NotificationInteractorImpl implements NotificationInteractor {
-    private final NotificationTime time;
-    private final NotificationRepository notificationRepository;
+    private transient final NotificationTime time;
+    private transient final NotificationRepository notificationRepository;
 
     private static final int YEAR = Calendar.YEAR;
     private static final int MONTH = Calendar.MONTH;
@@ -17,9 +17,9 @@ public class NotificationInteractorImpl implements NotificationInteractor {
     private static final int MINUTE = Calendar.MINUTE;
     private static final int SECOND = Calendar.SECOND;
 
-    private final String textNotification;
-    private final int flagNoCreate;
-    private final int flagUpdateCurrent;
+    private transient final String textNotification;
+    private transient final int flagNoCreate;
+    private transient final int flagUpdateCurrent;
 
     public NotificationInteractorImpl(
             NotificationTime time,
@@ -62,8 +62,8 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         int day = birthday.get(DATE);
         Calendar nextBirthday = new GregorianCalendar();
         int year;
-        final int monthFebruary = 1;
-        final int day29 = 29;
+        int monthFebruary = 1;
+        int day29 = 29;
         if (month == monthFebruary && day == day29) {
             year = getNearLeapYear(time.getCurrentTimeCalendar().get(YEAR));
         } else {

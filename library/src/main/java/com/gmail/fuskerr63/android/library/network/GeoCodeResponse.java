@@ -8,7 +8,7 @@ import java.util.List;
 public class GeoCodeResponse {
 
     @SerializedName("response")
-    private GeoResponse response;
+    private  transient GeoResponse response;
 
     public GeoResponse getResponse() {
         return response;
@@ -17,7 +17,7 @@ public class GeoCodeResponse {
     public static class GeoResponse {
 
         @SerializedName("GeoObjectCollection")
-        private GeoObjectCollection geoObjectCollection;
+        private  transient GeoObjectCollection geoObjectCollection;
 
         public GeoObjectCollection getGeoObjectCollection() {
             return geoObjectCollection;
@@ -26,7 +26,7 @@ public class GeoCodeResponse {
         public static class GeoObjectCollection {
 
             @SerializedName("featureMember")
-            private List<FeatureMember> featureMember;
+            private transient List<FeatureMember> featureMember;
 
             public List<FeatureMember> getFeatureMember() {
                 return featureMember;
@@ -35,7 +35,7 @@ public class GeoCodeResponse {
             public static class FeatureMember {
 
                 @SerializedName("GeoObject")
-                private GeoObject geoObject;
+                private transient GeoObject geoObject;
 
                 public GeoObject getGeoObject() {
                     return geoObject;
@@ -44,7 +44,7 @@ public class GeoCodeResponse {
                 public static class GeoObject {
 
                     @SerializedName("metaDataProperty")
-                    private MetaDataProperty metaDataProperty;
+                    private transient MetaDataProperty metaDataProperty;
 
                     public MetaDataProperty getMetaDataProperty() {
                         return metaDataProperty;
@@ -53,7 +53,7 @@ public class GeoCodeResponse {
                     public static class MetaDataProperty {
 
                         @SerializedName("GeocoderMetaData")
-                        private GeocoderMetaData geocoderMetaData;
+                        private transient GeocoderMetaData geocoderMetaData;
 
                         public GeocoderMetaData getGeocoderMetaData() {
                             return geocoderMetaData;
@@ -61,7 +61,7 @@ public class GeoCodeResponse {
 
                         public static class GeocoderMetaData {
                             @SerializedName("text")
-                            private String text;
+                            private transient String text;
 
                             public void setText(String text) {
                                 this.text = text;

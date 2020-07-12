@@ -34,26 +34,26 @@ import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-@SuppressWarnings("unused")
 public class ContactMapFragment extends MvpAppCompatFragment implements ContactMapView, OnMapReadyCallback {
-    private MapView mapView;
+    private transient MapView mapView;
+    private static final String UNUSED = "unused";
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({"WeakerAccess", UNUSED})
     @Inject
-    Provider<ContactMapPresenter> presenterProvider;
+    transient Provider<ContactMapPresenter> presenterProvider;
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({"WeakerAccess", UNUSED})
     @InjectPresenter
     ContactMapPresenter contactMapPresenter;
 
-    private Location lastKnownLocation;
+    private transient Location lastKnownLocation;
 
-    private GoogleMap googleMap;
-    private ProgressBar progressBar;
+    private transient GoogleMap googleMap;
+    private transient ProgressBar progressBar;
 
-    private final String keyLocation = "LOCATION";
+    private static final String KEY_LOCATION = "LOCATION";
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({"WeakerAccess", UNUSED})
     @ProvidePresenter
     ContactMapPresenter provideMapPresenter() {
         return presenterProvider.get();
@@ -73,9 +73,8 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState != null) {
-            lastKnownLocation = savedInstanceState.getParcelable(keyLocation);
+            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
     }
 
@@ -98,9 +97,6 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     public void onDestroyView() {
         super.onDestroyView();
         mapView.onDestroy();
-        mapView = null;
-        progressBar = null;
-        googleMap = null;
     }
 
     @Override
@@ -120,7 +116,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
         if (googleMap != null) {
-            outState.putParcelable(keyLocation, lastKnownLocation);
+            outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
     }
 
@@ -144,8 +140,9 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
         int id = Objects.requireNonNull(getArguments()).getInt("ID");
-        String name = getArguments().getString("NAME");
-        googleMap.setOnMapClickListener(click -> contactMapPresenter.onMapClick(click, id, name));
+        googleMap.setOnMapClickListener(
+                click -> contactMapPresenter.onMapClick(click, id, getArguments().getString("NAME"))
+        );
         contactMapPresenter.showCurrentLocation(id);
     }
 
@@ -160,7 +157,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     @Override
     public void moveTo(@Nullable LatLng latLng) {
         if (googleMap != null) {
-            final int defaultZoom = 16;
+            int defaultZoom = 16;
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, defaultZoom));
         }
     }

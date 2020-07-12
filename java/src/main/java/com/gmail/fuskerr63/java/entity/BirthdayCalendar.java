@@ -1,5 +1,8 @@
 package com.gmail.fuskerr63.java.entity;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class BirthdayCalendar {
     private final int year;
     private final int month;
@@ -39,5 +42,20 @@ public class BirthdayCalendar {
 
     public int getSecond() {
         return second;
+    }
+
+    public boolean isEmpty() {
+        return year == 0;
+    }
+
+    public Calendar getCalendar() {
+        return new GregorianCalendar(
+                year,
+                month,
+                day,
+                hour,
+                minute,
+                second
+        );
     }
 }

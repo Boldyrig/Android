@@ -2,9 +2,9 @@ package com.gmail.fuskerr63.java.entity;
 
 public class ContactLocation {
     private final int id;
-    private final String name;
-    private final Position latLng;
-    private final String address;
+    private transient final String name;
+    private transient final Position latLng;
+    private transient final String address;
 
     public ContactLocation(int id, String name, Position latLng, String address) {
         this.id = id;

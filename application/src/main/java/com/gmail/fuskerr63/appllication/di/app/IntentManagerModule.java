@@ -13,7 +13,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class IntentManagerModule {
-    private final Class<MainActivity> mainActivityClass;
+    private transient final Class<MainActivity> mainActivityClass;
 
     public IntentManagerModule(@Nullable Class<MainActivity> mainActivityClass) {
         this.mainActivityClass = mainActivityClass;

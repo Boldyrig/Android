@@ -32,7 +32,7 @@ import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 import io.reactivex.annotations.Nullable;
 
 public class ContactApplication extends Application implements ContactApplicationContainer {
-    private AppComponent appComponent;
+    private transient AppComponent appComponent;
 
     @Override
     public void onCreate() {

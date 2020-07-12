@@ -7,7 +7,7 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public class DirectionResponse {
     @SerializedName("routes")
-    private List<Route> routes;
+    private transient List<Route> routes;
 
     public List<Route> getRoutes() {
         return routes;
@@ -15,9 +15,9 @@ public class DirectionResponse {
 
     public static class Route {
         @SerializedName("bounds")
-        private Bound bounds;
+        private transient Bound bounds;
         @SerializedName("overview_polyline")
-        private OverviewPolyline overviewPolyline;
+        private transient OverviewPolyline overviewPolyline;
 
         public Bound getBounds() {
             return bounds;
@@ -29,9 +29,9 @@ public class DirectionResponse {
 
         public static class Bound {
             @SerializedName("northeast")
-            private NorthEast northEast;
+            private transient NorthEast northEast;
             @SerializedName("southwest")
-            private SouthWest southWest;
+            private  transient SouthWest southWest;
 
             public NorthEast getNorthEast() {
                 return northEast;
@@ -43,9 +43,9 @@ public class DirectionResponse {
 
             public static class NorthEast {
                 @SerializedName("lat")
-                private double lat;
+                private transient double lat;
                 @SerializedName("lng")
-                private double lng;
+                private transient double lng;
 
                 public double getLat() {
                     return lat;
@@ -58,9 +58,9 @@ public class DirectionResponse {
 
             public static class SouthWest {
                 @SerializedName("lat")
-                private double lat;
+                private transient double lat;
                 @SerializedName("lng")
-                private double lng;
+                private transient double lng;
 
                 public double getLat() {
                     return lat;
@@ -74,7 +74,7 @@ public class DirectionResponse {
 
         public static class OverviewPolyline {
             @SerializedName("points")
-            private String points;
+            private transient String points;
 
             public String getPoints() {
                 return points;

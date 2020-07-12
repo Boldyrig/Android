@@ -2,15 +2,13 @@ package com.gmail.fuskerr63.android.library.fragment.map;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.gmail.fuskerr63.android.library.delegate.map.ContactsMapDelegate;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsMapComponentContainer;
@@ -18,19 +16,12 @@ import com.gmail.fuskerr63.java.entity.ContactLocation;
 import com.gmail.fuskerr63.android.library.presenter.map.ContactsMapPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.library.R;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,24 +38,21 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
         ContactsMapView,
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
-    private MapView mapView;
-    private ProgressBar progressBar;
+    private transient MapView mapView;
+    private transient ContactsMapDelegate contactsMapDelegate;
+    private static final String UNUSED = "unused";
 
-    private final int padding = 100;
-
-    private final List<Polyline> polylines = new ArrayList<>();
-
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({"WeakerAccess", UNUSED})
     @Inject
-    Provider<ContactsMapPresenter> presenterProvider;
+    transient Provider<ContactsMapPresenter> presenterProvider;
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    @SuppressWarnings({"WeakerAccess", UNUSED})
     @InjectPresenter
     ContactsMapPresenter contactsMapPresenter;
 
-    private GoogleMap googleMap;
+    private transient GoogleMap googleMap;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings(UNUSED)
     @ProvidePresenter
     ContactsMapPresenter provideMapPresenter() {
         return presenterProvider.get();
@@ -83,21 +71,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
 
     @Override
     public void printMarkers(@Nullable List<ContactLocation> contactLocations) {
-        if (googleMap != null && contactLocations != null && !contactLocations.isEmpty()) {
-            googleMap.clear();
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (ContactLocation contactLocation : contactLocations) {
-                LatLng postition = new LatLng(
-                        contactLocation.getPosition().getLatitude(),
-                        contactLocation.getPosition().getLongitude()
-                );
-                builder.include(postition);
-                googleMap.addMarker(new MarkerOptions().position(postition).title(contactLocation.getName()));
-            }
-            LatLngBounds bounds = builder.build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            googleMap.animateCamera(cameraUpdate);
-        }
+        contactsMapDelegate.printMarkers(googleMap, contactLocations);
     }
 
     @Nullable
@@ -107,8 +81,8 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        contactsMapDelegate = new ContactsMapDelegate(view);
         ((TextView) Objects.requireNonNull(getActivity()).findViewById(R.id.title)).setText(R.string.map_title);
-        progressBar = view.findViewById(R.id.progress_bar_map);
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -119,9 +93,6 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         mapView.onDestroy();
-        mapView = null;
-        progressBar = null;
-        googleMap = null;
     }
 
     @Override
@@ -162,41 +133,23 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
 
     @Override
     public void setProgressStatus(boolean show) {
-        int status = show ? View.VISIBLE : View.GONE;
-        progressBar.setVisibility(status);
+        contactsMapDelegate.setProgressStatus(show);
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings(UNUSED)
     @Override
     public void clearDirection() {
-        for (Polyline polyline : polylines) {
-            polyline.remove();
-        }
+        contactsMapDelegate.clearDirection();
     }
 
     @Override
     public void showErrorToast(@Nullable String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        contactsMapDelegate.showErrorToast(message, getContext());
     }
 
     @Override
     public void printDirection(@Nullable List<LatLng> points, @Nullable List<LatLng> bounds) {
-        if (googleMap != null) {
-            // Нарисовать линию
-            final float defaultWidth = 10F;
-            PolylineOptions polylineOptions = new PolylineOptions()
-                    .width(defaultWidth)
-                    .color((Color.BLUE))
-                    .addAll(points);
-            polylines.add(googleMap.addPolyline(polylineOptions));
-            // Передвинуть камеру
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (LatLng bound : bounds) {
-                builder.include(bound);
-            }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), padding);
-            googleMap.animateCamera(cameraUpdate);
-        }
+        contactsMapDelegate.printDirection(googleMap, points, bounds);
     }
 
     @Override

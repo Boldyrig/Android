@@ -9,7 +9,7 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class DatabaseModel implements DatabaseInteractor {
-    private final LocationRepository locationRepository;
+    private transient final LocationRepository locationRepository;
 
     public DatabaseModel(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
