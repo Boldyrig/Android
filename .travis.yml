@@ -1,19 +1,19 @@
 language: android
 jdk: oraclejdk8
-env:
-  global:
-    - ANDROID_API_LEVEL=29
-    - ANDROID_BUILD_TOOLS_VERSION=29.0.3
 android:
   components:
-    - tools
     - platform-tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
+    - tools
+    - build-tools-29.0.3
+    - android-29
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-$ANDROID_API_LEVEL
+    - addon-google_apis-google-19
+before_install:
+  - yes | sdkmanager "platforms;android-29"
+  - chmod +x gradlew
+
 script:
   - ./gradlew checkstyle
   - ./gradlew lint
