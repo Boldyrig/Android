@@ -12,19 +12,20 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Objects;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class GeoCodeRepositoryImpl implements GeoCodeRepository {
-    private transient final GeoCodeRetrofit geoCodeRetrofit;
+    private final transient GeoCodeRetrofit geoCodeRetrofit;
 
     @SuppressWarnings("unused")
     public GeoCodeRepositoryImpl(@Nullable GeoCodeRetrofit geoCodeRetrofit) {
         this.geoCodeRetrofit = geoCodeRetrofit;
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public Single<GeoCodeAddress> loadAddress(@Nullable Position position) {
+    public Single<GeoCodeAddress> loadAddress(@NonNull Position position) {
         return geoCodeRetrofit.loadAddress(new LatLng(position.getLatitude(), position.getLongitude()))
                 .map(codeResponse -> {
                         String address = "";

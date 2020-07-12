@@ -10,7 +10,7 @@ import com.gmail.fuskerr63.appllication.di.map.ContactsMapComponent;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import io.reactivex.annotations.Nullable;
+import io.reactivex.annotations.NonNull;
 
 @SuppressWarnings("unused")
 @Singleton
@@ -36,21 +36,21 @@ import io.reactivex.annotations.Nullable;
         DirectionRepositoryModule.class
 })
 public interface AppComponent extends AppContainer {
-    @Nullable
     @Override
+    @NonNull
     ContactsComponent plusContactsComponent();
 
-    @Nullable
     @Override
+    @NonNull
     ContactComponent plusContactComponent();
 
-    @Nullable
     @Override
+    @NonNull
     ContactMapComponent plusContactMapComponent();
 
-    @Nullable
     @Override
+    @NonNull
     ContactsMapComponent plusContactsMapComponent();
     @Override
-    void inject(@Nullable ContactReceiver contactReceiver);
+    void inject(@NonNull ContactReceiver contactReceiver);
 }

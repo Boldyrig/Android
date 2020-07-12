@@ -16,19 +16,20 @@ import java.util.List;
 import java.util.Objects;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class DirectionRepositoryImpl implements DirectionRepository {
-    private transient final DirectionRetrofit directionRetrofit;
+    private final transient DirectionRetrofit directionRetrofit;
 
     @SuppressWarnings("unused")
     public DirectionRepositoryImpl(@Nullable DirectionRetrofit directionRetrofit) {
         this.directionRetrofit = directionRetrofit;
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public Single<DirectionStatus> loadDirection(@Nullable Position latLngFrom, @Nullable Position latLngTo) {
+    public Single<DirectionStatus> loadDirection(@NonNull Position latLngFrom, @NonNull Position latLngTo) {
         return directionRetrofit.loadDirection(latLngFrom, latLngTo)
                 .map(directionResponse -> {
                     String polylinePoints = "";

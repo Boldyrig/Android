@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.annotations.Nullable;
 
 public class ContactListDelegate {
-    private transient final View view;
+    private final transient View view;
     private transient ContactAdapter contactAdapter;
 
     public ContactListDelegate(@Nullable View view) {

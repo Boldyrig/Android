@@ -10,15 +10,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.annotations.Nullable;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class DatabaseModule {
     @SuppressWarnings("unused")
-    @Nullable
+    @NonNull
     @Singleton
     @Provides
-    public AppDatabase provideAppDatabase(@Nullable Context applicationContext) {
+    public AppDatabase provideAppDatabase(@NonNull Context applicationContext) {
         String databaseName = "user_address";
         return Room.databaseBuilder(applicationContext, AppDatabase.class, databaseName).build();
     }

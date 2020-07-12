@@ -11,10 +11,11 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class LocationRepositoryImpl implements LocationRepository {
-    private transient final AppDatabase appDatabase;
+    private final transient AppDatabase appDatabase;
 
     public LocationRepositoryImpl(@Nullable AppDatabase appDatabase) {
         this.appDatabase = appDatabase;
@@ -49,9 +50,9 @@ public class LocationRepositoryImpl implements LocationRepository {
                         user.getAddress()));
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public Completable insert(@Nullable ContactLocation contactLocation) {
+    public Completable insert(@NonNull ContactLocation contactLocation) {
         User user = new User(
                 contactLocation.getId(),
                 contactLocation.getName(),

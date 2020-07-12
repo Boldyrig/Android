@@ -18,7 +18,6 @@ import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationConta
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
-import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
 
@@ -115,18 +114,22 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void updateDetails(@Nullable final Contact contact) {
-        name = contact.getName();
-        if(contactDetailsDelegate != null) {
+        if (contact != null) {
+            name = contact.getName();
+        }
+        if (contactDetailsDelegate != null) {
             contactDetailsDelegate.showDetails(contact);
         }
-        if (contact.getBirthday().get(Calendar.YEAR) != 0) {
-            Button button = getView().findViewById(R.id.birthday_button);
-            button.setVisibility(getView().VISIBLE);
-            button.setOnClickListener(v -> detailsPresenter.onClickBirthday(
-                    contact,
-                    notificatinCancel,
-                    notificationSend
-            ));
+        if (contact != null && contact.getBirthday().get(Calendar.YEAR) != 0) {
+            if (getView() != null) {
+                Button button = getView().findViewById(R.id.birthday_button);
+                button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(v -> detailsPresenter.onClickBirthday(
+                        contact,
+                        notificatinCancel,
+                        notificationSend
+                ));
+            }
         }
     }
 

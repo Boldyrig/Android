@@ -70,7 +70,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void printMarkers(@Nullable List<ContactLocation> contactLocations) {
+    public void printMarkers(@NonNull List<ContactLocation> contactLocations) {
         contactsMapDelegate.printMarkers(googleMap, contactLocations);
     }
 
@@ -148,12 +148,12 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
     }
 
     @Override
-    public void printDirection(@Nullable List<LatLng> points, @Nullable List<LatLng> bounds) {
+    public void printDirection(@NonNull List<LatLng> points, @NonNull List<LatLng> bounds) {
         contactsMapDelegate.printDirection(googleMap, points, bounds);
     }
 
     @Override
-    public boolean onMarkerClick(@Nullable Marker marker) {
+    public boolean onMarkerClick(@NonNull Marker marker) {
         contactsMapPresenter.onMarkerClick(marker.getPosition());
         return false;
     }

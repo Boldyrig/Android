@@ -24,11 +24,11 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class Repository implements ContactRepository {
-    private transient final WeakReference<ContentResolver> weakContentResolver;
+    private final transient WeakReference<ContentResolver> weakContentResolver;
     private transient ContentResolver contentResolver;
     private static final String SELECTION_SYMBOL = " = ?";
 
-    private transient final String[] projection = {
+    private final transient String[] projection = {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.PHOTO_URI,
             ContactsContract.Contacts.DISPLAY_NAME,
@@ -40,14 +40,14 @@ public class Repository implements ContactRepository {
         weakContentResolver = new WeakReference<>(contentResolver);
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public Single<List<Contact>> getContacts(@Nullable final String selector) {
+    public Single<List<Contact>> getContacts(@NonNull final String selector) {
         return Single.fromCallable(() -> loadContacts(selector));
     }
 
     @SuppressWarnings("unused")
-    @Nullable
+    @NonNull
     @Override
     public Single<Contact> getContactById(final int id) {
         return Single.fromCallable(() -> loadContactById(id));
@@ -55,6 +55,9 @@ public class Repository implements ContactRepository {
 
     @Nullable
     private Contact loadContactFromCursor(@Nullable Cursor cursorContact, int id) {
+        if (cursorContact == null) {
+            return null;
+        }
         try {
             if (cursorContact.getCount() > 0) {
                 cursorContact.moveToFirst();
@@ -82,7 +85,11 @@ public class Repository implements ContactRepository {
                             new String[]{String.valueOf(id)},
                             null
                     );
-                    numbers = loadNumbersFromCursor(cursorPhone);
+                    if (cursorPhone != null) {
+                        numbers = loadNumbersFromCursor(cursorPhone);
+                    } else {
+                        numbers = new ArrayList<>();
+                    }
                 } else {
                     numbers = new ArrayList<>();
                 }
@@ -123,7 +130,10 @@ public class Repository implements ContactRepository {
     }
 
     @Nullable
-    private List<Contact> loadContactsFromCursor(@NonNull Cursor cursorContact) {
+    private List<Contact> loadContactsFromCursor(@Nullable Cursor cursorContact) {
+        if (cursorContact == null) {
+            return null;
+        }
         try {
             if (cursorContact.getCount() > 0) {
                 List<Contact> contacts = new ArrayList<>();
@@ -171,8 +181,11 @@ public class Repository implements ContactRepository {
         return null;
     }
 
-    @Nullable
+    @NonNull
     private List<String> loadNumbersFromCursor(@Nullable Cursor cursorPhone) {
+        if (cursorPhone == null) {
+            return new ArrayList<>();
+        }
         List<String> numbers = new ArrayList<>();
         try {
             if (cursorPhone.getCount() > 0) {
@@ -190,8 +203,11 @@ public class Repository implements ContactRepository {
         return numbers;
     }
 
-    @Nullable
+    @NonNull
     private List<String> loadEmailsFromCursor(@Nullable Cursor cursorEmail) {
+        if (cursorEmail == null) {
+            return new ArrayList<>();
+        }
         try {
             if (cursorEmail.getCount() > 0) {
                 cursorEmail.moveToFirst();
@@ -207,11 +223,14 @@ public class Repository implements ContactRepository {
         } finally {
             Objects.requireNonNull(cursorEmail).close();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Nullable
     private Calendar loadBirthdayFromCursor(@Nullable Cursor cursorBirthday) {
+        if (cursorBirthday == null) {
+            return null;
+        }
         try {
             if (cursorBirthday.getCount() > 0) {
                 cursorBirthday.moveToFirst();
@@ -245,7 +264,7 @@ public class Repository implements ContactRepository {
         }
         String selection;
         if (selector != null && !selector.equals("")) {
-            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE \'%" + selector + "%\'";
+            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE '%" + selector + "%'";
         } else {
             selection = "";
         }

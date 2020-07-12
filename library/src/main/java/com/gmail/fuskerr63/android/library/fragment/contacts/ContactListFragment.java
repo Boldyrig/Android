@@ -42,6 +42,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
     private transient ContactListDelegate contactListDelegate;
     private transient ContactAdapter contactAdapter;
 
+    private static final int DP_10 = 10;
+
     @SuppressWarnings("WeakerAccess")
     @InjectPresenter
     ContactListPresenter contactPresenter;
@@ -69,24 +71,24 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         }
     }
 
+    @NonNull
     @Override
-    public @Nullable View onCreateView(
-            @Nullable LayoutInflater inflater,
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         ((TextView) Objects.requireNonNull(getActivity())
                 .findViewById(R.id.title))
                 .setText(R.string.contact_list_title);
-        int dp10 = 10;
         contactListDelegate = new ContactListDelegate(view);
-        contactListDelegate.onCreateView(getContext(), pxFromDp(dp10));
+        contactListDelegate.onCreateView(getContext(), pxFromDp(DP_10));
         setHasOptionsMenu(true);
         return view;
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @Nullable MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
         MenuItem menuItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
@@ -135,7 +137,8 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
                 .density;
     }
 
-    public static @NonNull ContactListFragment newInstance() {
+    @NonNull
+    public static ContactListFragment newInstance() {
         return new ContactListFragment();
     }
 

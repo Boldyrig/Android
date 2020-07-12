@@ -5,6 +5,7 @@ import android.util.Log;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -23,11 +24,11 @@ import moxy.MvpPresenter;
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
     private final transient ContactInteractor interactor;
 
-    private transient final CompositeDisposable disposable = new CompositeDisposable();
-    private transient final PublishSubject<String> publishSubject = PublishSubject.create();
+    private final transient CompositeDisposable disposable = new CompositeDisposable();
+    private final transient PublishSubject<String> publishSubject = PublishSubject.create();
 
     @Inject
-    public ContactListPresenter(@Nullable ContactInteractor interactor) {
+    public ContactListPresenter(@NonNull ContactInteractor interactor) {
         this.interactor = interactor;
         disposable.add(
                 publishSubject.switchMapSingle(

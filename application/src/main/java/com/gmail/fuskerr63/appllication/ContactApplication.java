@@ -29,7 +29,7 @@ import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 
-import io.reactivex.annotations.Nullable;
+import io.reactivex.annotations.NonNull;
 
 public class ContactApplication extends Application implements ContactApplicationContainer {
     private transient AppComponent appComponent;
@@ -72,7 +72,7 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .build();
     }
 
-    @Nullable
+    @NonNull
     @Override
     public AppComponent getAppComponent() {
         if (appComponent == null) {

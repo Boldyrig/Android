@@ -15,7 +15,6 @@ import java.util.GregorianCalendar;
 import javax.inject.Inject;
 
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 public class ContactReceiver extends BroadcastReceiver {
     @SuppressWarnings({"WeakerAccess", "unused"})
@@ -26,7 +25,7 @@ public class ContactReceiver extends BroadcastReceiver {
     transient NotifyNotificationManager notificationManager;
 
     @Override
-    public void onReceive(@NonNull Context context, @Nullable Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Context appContext = context.getApplicationContext();
         if (appContext instanceof ContactApplicationContainer) {
             ((ContactApplicationContainer) appContext).getAppComponent().inject(this);

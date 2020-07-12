@@ -16,6 +16,9 @@ public class NotificationManagerModule {
     @Singleton
     @Provides
     public NotificationManager provideNotificationManager(@Nullable Context context) {
-        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (context != null) {
+            return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return null;
     }
 }

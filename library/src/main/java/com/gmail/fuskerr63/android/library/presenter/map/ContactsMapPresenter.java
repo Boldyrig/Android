@@ -23,13 +23,13 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private transient final DatabaseInteractor databaseInteractor;
-    private transient final DirectionInteractor directionInteractor;
+    private final transient DatabaseInteractor databaseInteractor;
+    private final transient DirectionInteractor directionInteractor;
 
     private transient Position latLngFrom;
     private transient Position latLngTo;
 
-    private transient final CompositeDisposable disposable = new CompositeDisposable();
+    private final transient CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactsMapPresenter(

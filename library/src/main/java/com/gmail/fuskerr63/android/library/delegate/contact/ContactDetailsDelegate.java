@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
 
@@ -16,14 +15,14 @@ import java.util.Locale;
 import io.reactivex.annotations.Nullable;
 
 public class ContactDetailsDelegate {
-    private transient final View view;
+    private final transient View view;
 
     public ContactDetailsDelegate(@Nullable View view) {
         this.view = view;
     }
 
     public void showDetails(@Nullable Contact contact) {
-        if(view != null && contact != null) {
+        if (view != null && contact != null) {
             URI image = contact.getImage();
             if (image != null) {
                 ((ImageView) view.findViewById(R.id.image)).setImageURI(Uri.parse(image.toString()));

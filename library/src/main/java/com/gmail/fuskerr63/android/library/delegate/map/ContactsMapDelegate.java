@@ -20,16 +20,18 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class ContactsMapDelegate {
     private static final int PADDING = 100;
-    private transient final List<Polyline> polylines = new ArrayList<>();
+    private static final float DEFAULT_WIDTH = 10F;
+    private final transient List<Polyline> polylines = new ArrayList<>();
 
     private transient ProgressBar progressBar;
 
     public ContactsMapDelegate(@Nullable View view) {
-        if(view != null) {
+        if (view != null) {
             progressBar = view.findViewById(R.id.progress_bar_map);
         }
     }
@@ -53,14 +55,13 @@ public class ContactsMapDelegate {
     }
 
     public void printDirection(
-            GoogleMap googleMap,
-            @Nullable List<LatLng> points,
-            @Nullable List<LatLng> bounds) {
+            @NonNull GoogleMap googleMap,
+            @NonNull List<LatLng> points,
+            @NonNull List<LatLng> bounds) {
         if (googleMap != null) {
             // Нарисовать линию
-            float defaultWidth = 10F;
             PolylineOptions polylineOptions = new PolylineOptions()
-                    .width(defaultWidth)
+                    .width(DEFAULT_WIDTH)
                     .color(Color.BLUE)
                     .addAll(points);
             polylines.add(googleMap.addPolyline(polylineOptions));
@@ -85,7 +86,7 @@ public class ContactsMapDelegate {
     }
 
     public void setProgressStatus(boolean show) {
-        if(progressBar != null) {
+        if (progressBar != null) {
             int status = show ? View.VISIBLE : View.GONE;
             progressBar.setVisibility(status);
         }

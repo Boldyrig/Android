@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * Простейший декоратор, добавляющий отступы
  */
 public class ContactDecorator extends RecyclerView.ItemDecoration {
-    private transient final int pixelOffset;
+    private final transient int pixelOffset;
 
     /***
      *

@@ -6,11 +6,11 @@ import com.gmail.fuskerr63.java.interactor.NotificationRepository;
 import io.reactivex.annotations.Nullable;
 
 public class NotifyNotificationManagerImpl implements NotifyNotificationManager {
-    private transient final NotificationRepository notificationRepository;
+    private final transient NotificationRepository notificationRepository;
 
     private static final String CHANNEL_ID = "CHANNEL_ID";
-    private transient final int flagUpdateCurrent;
-    private transient final int priority;
+    private final transient int flagUpdateCurrent;
+    private final transient int priority;
 
     public NotifyNotificationManagerImpl(
             @Nullable NotificationRepository notificationRepository,

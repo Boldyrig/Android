@@ -21,11 +21,11 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private transient final ContactInteractor contactInteractor;
-    private transient final DatabaseInteractor databaseInteractor;
-    private transient final NotificationInteractor notificationInteractor;
+    private final transient ContactInteractor contactInteractor;
+    private final transient DatabaseInteractor databaseInteractor;
+    private final transient NotificationInteractor notificationInteractor;
 
-    private transient final CompositeDisposable disposable = new CompositeDisposable();
+    private final transient CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactDetailsPresenter(

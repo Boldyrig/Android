@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(@Nullable View view) {
+    public void onClick(@NonNull View view) {
         showDetails(view.getId());
     }
 

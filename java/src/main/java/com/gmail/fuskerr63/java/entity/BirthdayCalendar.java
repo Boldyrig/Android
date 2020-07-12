@@ -1,8 +1,5 @@
 package com.gmail.fuskerr63.java.entity;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 public class BirthdayCalendar {
     private final int year;
     private final int month;
@@ -13,16 +10,21 @@ public class BirthdayCalendar {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof BirthdayCalendar) {
+        if (obj instanceof BirthdayCalendar) {
             BirthdayCalendar birthdayCalendar = (BirthdayCalendar) obj;
-            return birthdayCalendar.getYear() == year &&
-                    birthdayCalendar.getMonth() == month &&
-                    birthdayCalendar.getDay() == day &&
-                    birthdayCalendar.getHour() == hour &&
-                    birthdayCalendar.getMinute() == minute &&
-                    birthdayCalendar.getSecond() == second;
+            return birthdayCalendar.getYear() == year
+                    && birthdayCalendar.getMonth() == month
+                    && birthdayCalendar.getDay() == day
+                    && birthdayCalendar.getHour() == hour
+                    && birthdayCalendar.getMinute() == minute
+                    && birthdayCalendar.getSecond() == second;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public BirthdayCalendar(int year, int month, int day, int hour, int minute, int second) {
@@ -56,20 +58,5 @@ public class BirthdayCalendar {
 
     public int getSecond() {
         return second;
-    }
-
-    public boolean isEmpty() {
-        return year == 0;
-    }
-
-    public Calendar getCalendar() {
-        return new GregorianCalendar(
-                year,
-                month,
-                day,
-                hour,
-                minute,
-                second
-        );
     }
 }

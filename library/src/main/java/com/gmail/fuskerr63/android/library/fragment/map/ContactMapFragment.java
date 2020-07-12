@@ -52,6 +52,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     private transient ProgressBar progressBar;
 
     private static final String KEY_LOCATION = "LOCATION";
+    private static final int DEFAULT_ZOOM = 16;;
 
     @SuppressWarnings({"WeakerAccess", UNUSED})
     @ProvidePresenter
@@ -147,7 +148,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @Override
-    public void replaceMarker(@Nullable LatLng latLng, @Nullable String title) {
+    public void replaceMarker(@NonNull LatLng latLng, @Nullable String title) {
         if (googleMap != null) {
             googleMap.clear();
             googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
@@ -155,10 +156,9 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @Override
-    public void moveTo(@Nullable LatLng latLng) {
+    public void moveTo(@NonNull LatLng latLng) {
         if (googleMap != null) {
-            int defaultZoom = 16;
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, defaultZoom));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         }
     }
 

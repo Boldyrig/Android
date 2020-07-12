@@ -9,15 +9,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.annotations.Nullable;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class RepositoryModule {
     @SuppressWarnings("unused")
-    @Nullable
+    @NonNull
     @Singleton
     @Provides
-    public ContactRepository provideRepository(@Nullable Context context) {
+    public ContactRepository provideRepository(@NonNull Context context) {
         return new Repository(context.getContentResolver());
     }
 }

@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,7 +57,7 @@ public class BirthdayInstrumentedTest {
     private final int day29 = 29;
 
 
-    private Calendar birthday = new GregorianCalendar();
+    private final Calendar birthday = new GregorianCalendar();
     private final Calendar currentCalendar = new GregorianCalendar();
     private final Calendar nextBirthday = new GregorianCalendar();
 

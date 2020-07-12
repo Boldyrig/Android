@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat;
 import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.library.R;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class IntentManager {
@@ -18,15 +19,15 @@ public class IntentManager {
     private static final String EXTRA_TEXT = "TEXT";
     private static final String ACTION = "com.gmail.fuskerr63.action.notification";
 
-    private transient final Context context;
-    private transient final Class<MainActivity> mainActivityClass;
+    private final transient Context context;
+    private final transient Class<MainActivity> mainActivityClass;
 
     public IntentManager(@Nullable Class<MainActivity> mainActivityClass, @Nullable Context context) {
         this.mainActivityClass = mainActivityClass;
         this.context = context;
     }
 
-    @Nullable
+    @NonNull
     public Intent getIntent(int id, @Nullable String name, @Nullable String text) {
         Intent intent = new Intent(ACTION);
         intent.putExtra(EXTRA_ID, id);
@@ -37,8 +38,8 @@ public class IntentManager {
         return intent;
     }
 
-    @Nullable
-    private Intent getIntent(@Nullable Context context, int id) {
+    @NonNull
+    private Intent getIntent(@NonNull Context context, int id) {
         Intent intent = new Intent(context, mainActivityClass);
         intent.putExtra(EXTRA_ID, id);
         return intent;
@@ -49,7 +50,7 @@ public class IntentManager {
             int id,
             @Nullable String text,
             int flag,
-            @Nullable String channeId,
+            @NonNull String channeId,
             int priority) {
         PendingIntent pendingIntent = getPendingIntent(id, getIntent(context, id), flag);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(context, channeId)

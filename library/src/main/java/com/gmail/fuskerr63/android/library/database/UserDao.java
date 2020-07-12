@@ -9,20 +9,21 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 @SuppressWarnings("unused")
 @Dao
 public interface UserDao {
-    @Nullable
     @Query("SELECT * FROM user")
+    @NonNull
     Single<List<User>> getAll();
 
-    @Nullable
     @Query("SELECT * FROM user WHERE contact_id = :contactId")
+    @NonNull
     Single<User> getUserByContactId(int contactId);
 
-    @Nullable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @NonNull
     Completable insert(@Nullable User user);
 }

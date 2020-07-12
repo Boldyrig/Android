@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class NotificationInteractorImpl implements NotificationInteractor {
-    private transient final NotificationTime time;
-    private transient final NotificationRepository notificationRepository;
+    private final transient NotificationTime time;
+    private final transient NotificationRepository notificationRepository;
 
     private static final int YEAR = Calendar.YEAR;
     private static final int MONTH = Calendar.MONTH;
@@ -17,9 +17,11 @@ public class NotificationInteractorImpl implements NotificationInteractor {
     private static final int MINUTE = Calendar.MINUTE;
     private static final int SECOND = Calendar.SECOND;
 
-    private transient final String textNotification;
-    private transient final int flagNoCreate;
-    private transient final int flagUpdateCurrent;
+    private static final int DAY_29 = 29;
+
+    private final transient String textNotification;
+    private final transient int flagNoCreate;
+    private final transient int flagUpdateCurrent;
 
     public NotificationInteractorImpl(
             NotificationTime time,
@@ -63,8 +65,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         Calendar nextBirthday = new GregorianCalendar();
         int year;
         int monthFebruary = 1;
-        int day29 = 29;
-        if (month == monthFebruary && day == day29) {
+        if (month == monthFebruary && day == DAY_29) {
             year = getNearLeapYear(time.getCurrentTimeCalendar().get(YEAR));
         } else {
             year = time.getCurrentTimeCalendar().get(YEAR);
@@ -73,7 +74,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         nextBirthday.set(year, birthday.get(MONTH), birthday.get(DATE), 0, 0, 0);
 
         if (time.getCurrentTimeCalendar().getTimeInMillis() > nextBirthday.getTimeInMillis()) {
-            if (month == monthFebruary && day == day29) {
+            if (month == monthFebruary && day == DAY_29) {
                 year = getNearLeapYear(time.getCurrentTimeCalendar().get(YEAR) + 1);
                 nextBirthday.set(YEAR, year);
             } else {

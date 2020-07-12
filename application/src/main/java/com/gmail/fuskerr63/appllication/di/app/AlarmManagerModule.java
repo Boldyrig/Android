@@ -16,6 +16,9 @@ public class AlarmManagerModule {
     @Singleton
     @Provides
     public AlarmManager provideAlarmManager(@Nullable Context context) {
-        return (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (context != null) {
+            return (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        }
+        return null;
     }
 }
