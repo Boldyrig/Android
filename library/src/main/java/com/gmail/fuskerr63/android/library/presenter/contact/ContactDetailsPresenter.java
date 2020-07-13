@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -40,7 +41,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
         this.notificationInteractor = notificationInteractor;
     }
 
-    public void showDetails(int id) {
+    public void showDetails(int id, @NonNull String notificatinCancel, @NonNull String notificationSend) {
         if (contactInteractor != null) {
             disposable.add(contactInteractor.getContactById(id)
                     .subscribeOn(Schedulers.io())
@@ -65,7 +66,14 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                     .doOnSubscribe(d -> getViewState().loadingStatus(true))
                     .doFinally(() -> getViewState().loadingStatus(false))
                     .subscribe(
-                            contact -> getViewState().updateDetails(contact),
+                            contact -> {
+                                getViewState().updateDetails(contact);
+                                if (notificationInteractor.getNotificationStatusForContact(contact).isAlarmUp()) {
+                                    getViewState().setTextButton(notificatinCancel);
+                                } else {
+                                    getViewState().setTextButton(notificationSend);
+                                }
+                            },
                             error -> {
                                 if (BuildConfig.DEBUG) {
                                     Log.d("TAG", Objects.requireNonNull(error.getMessage()));

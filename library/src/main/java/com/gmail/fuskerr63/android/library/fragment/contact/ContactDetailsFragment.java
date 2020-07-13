@@ -107,7 +107,11 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        detailsPresenter.showDetails(Objects.requireNonNull(getArguments()).getInt("ID"));
+        detailsPresenter.showDetails(
+                Objects.requireNonNull(getArguments()).getInt("ID"),
+                notificatinCancel,
+                notificationSend
+        );
     }
 
     @Override
@@ -118,7 +122,10 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
         if (contactDetailsDelegate != null) {
             contactDetailsDelegate.showDetails(contact);
         }
-        if (contact != null && contact.getBirthday().get(Calendar.YEAR) != 0 && getView() != null) {
+        if (contact != null
+                && contact.getBirthday() != null
+                && contact.getBirthday().get(Calendar.YEAR) != 1
+                && getView() != null) {
             Button button = getView().findViewById(R.id.birthday_button);
             button.setVisibility(View.VISIBLE);
             button.setOnClickListener(v -> detailsPresenter.onClickBirthday(

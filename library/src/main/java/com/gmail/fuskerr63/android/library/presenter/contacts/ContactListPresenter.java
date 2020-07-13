@@ -37,8 +37,7 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSubscribe(d -> getViewState().loadingStatus(true))
-                                .doFinally(() -> getViewState().loadingStatus(false))
-                )
+                                .doFinally(() -> getViewState().loadingStatus(false)))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 contacts -> getViewState().updateList(contacts),

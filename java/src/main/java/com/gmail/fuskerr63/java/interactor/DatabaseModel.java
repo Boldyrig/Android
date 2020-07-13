@@ -24,7 +24,8 @@ public class DatabaseModel implements DatabaseInteractor {
 
     @Override
     public Single<ContactLocation> getUserByContactId(int contactId) {
-        return locationRepository.getUserByContactId(contactId);
+        return locationRepository.getUserByContactId(contactId)
+                .onErrorReturnItem(new ContactLocation(-1, "", null, ""));
     }
 
     @Override
