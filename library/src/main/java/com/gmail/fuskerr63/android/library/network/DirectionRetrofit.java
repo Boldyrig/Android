@@ -9,9 +9,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DirectionRetrofit {
-    private final transient DirectionService service;
+    private final DirectionService service;
 
-    @SuppressWarnings("unused")
     public DirectionRetrofit() {
         String url = "https://maps.googleapis.com/maps/api/directions/";
         Retrofit retrofit = new Retrofit.Builder()

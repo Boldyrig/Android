@@ -14,9 +14,10 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationInteractorModule {
-    private final transient int flagNoCreate;
-    private final transient int flagUpdateCurrent;
-    private final transient String notificationText;
+    private final int flagNoCreate;
+    private final int flagUpdateCurrent;
+    @Nullable
+    private final String notificationText;
 
     public NotificationInteractorModule(int flagNoCreate, int flagUpdateCurrent, @Nullable String notificationText) {
         this.flagNoCreate = flagNoCreate;
@@ -24,7 +25,6 @@ public class NotificationInteractorModule {
         this.notificationText = notificationText;
     }
 
-    @SuppressWarnings({"unused"})
     @NonNull
     @Singleton
     @Provides

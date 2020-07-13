@@ -12,7 +12,7 @@ import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
-@SuppressWarnings("unused")
+
 @Dao
 public interface UserDao {
     @Query("SELECT * FROM user")

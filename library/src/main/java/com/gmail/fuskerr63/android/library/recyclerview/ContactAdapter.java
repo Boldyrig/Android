@@ -18,7 +18,8 @@ import java.net.URI;
 import java.util.List;
 
 public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
-    private final transient View.OnClickListener onClickListener;
+    @Nullable
+    private final View.OnClickListener onClickListener;
 
 
     public ContactAdapter(@Nullable View.OnClickListener onClickListener) {

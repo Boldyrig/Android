@@ -6,9 +6,13 @@ import com.gmail.fuskerr63.java.entity.Contact;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import io.reactivex.annotations.NonNull;
+
 public class NotificationInteractorImpl implements NotificationInteractor {
-    private final transient NotificationTime time;
-    private final transient NotificationRepository notificationRepository;
+    @NonNull
+    private final NotificationTime time;
+    @NonNull
+    private final NotificationRepository notificationRepository;
 
     private static final int YEAR = Calendar.YEAR;
     private static final int MONTH = Calendar.MONTH;
@@ -19,14 +23,15 @@ public class NotificationInteractorImpl implements NotificationInteractor {
 
     private static final int DAY_29 = 29;
 
-    private final transient String textNotification;
-    private final transient int flagNoCreate;
-    private final transient int flagUpdateCurrent;
+    @NonNull
+    private final String textNotification;
+    private final int flagNoCreate;
+    private final int flagUpdateCurrent;
 
     public NotificationInteractorImpl(
-            NotificationTime time,
-            NotificationRepository notificationRepository,
-            String textNotification,
+            @NonNull NotificationTime time,
+            @NonNull NotificationRepository notificationRepository,
+            @NonNull String textNotification,
             int flagNoCreate,
             int flagUpdateCurrent) {
         this.time = time;

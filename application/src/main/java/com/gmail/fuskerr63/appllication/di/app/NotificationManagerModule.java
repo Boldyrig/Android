@@ -11,7 +11,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationManagerModule {
-    @SuppressWarnings("unused")
+
     @Nullable
     @Singleton
     @Provides

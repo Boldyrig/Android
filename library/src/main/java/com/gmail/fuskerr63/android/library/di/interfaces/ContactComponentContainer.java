@@ -4,7 +4,6 @@ import com.gmail.fuskerr63.android.library.fragment.contact.ContactDetailsFragme
 
 import io.reactivex.annotations.NonNull;
 
-@SuppressWarnings({"EmptyMethod", "unused"})
 public interface ContactComponentContainer {
     void inject(@NonNull ContactDetailsFragment contactDetailsFragment);
 }

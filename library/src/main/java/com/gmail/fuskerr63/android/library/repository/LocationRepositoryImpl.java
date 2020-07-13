@@ -12,16 +12,16 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 public class LocationRepositoryImpl implements LocationRepository {
-    private final transient AppDatabase appDatabase;
+    @NonNull
+    private final AppDatabase appDatabase;
 
-    public LocationRepositoryImpl(@Nullable AppDatabase appDatabase) {
+    public LocationRepositoryImpl(@NonNull AppDatabase appDatabase) {
         this.appDatabase = appDatabase;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Single<List<ContactLocation>> getAll() {
         return appDatabase.userDao().getAll()
@@ -38,8 +38,8 @@ public class LocationRepositoryImpl implements LocationRepository {
                 });
     }
 
-    @SuppressWarnings("unused")
-    @Nullable
+
+    @NonNull
     @Override
     public Single<ContactLocation> getUserByContactId(int contactId) {
         return appDatabase.userDao().getUserByContactId(contactId)

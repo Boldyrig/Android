@@ -16,8 +16,9 @@ import java.util.List;
 import io.reactivex.annotations.Nullable;
 
 public class ContactListDelegate {
-    private final transient View view;
-    private transient ContactAdapter contactAdapter;
+    @Nullable
+    private final View view;
+    private ContactAdapter contactAdapter;
 
     public ContactListDelegate(@Nullable View view) {
         this.view = view;
@@ -26,10 +27,12 @@ public class ContactListDelegate {
     public void onCreateView(@Nullable Context context, float px) {
         if (context instanceof View.OnClickListener) {
             contactAdapter = new ContactAdapter((View.OnClickListener) context);
-            RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(contactAdapter);
-            recyclerView.addItemDecoration(new ContactDecorator((int) px));
+            if (view != null) {
+                RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                recyclerView.setAdapter(contactAdapter);
+                recyclerView.addItemDecoration(new ContactDecorator((int) px));
+            }
         }
     }
 

@@ -17,13 +17,13 @@ import java.util.Objects;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 public class DirectionRepositoryImpl implements DirectionRepository {
-    private final transient DirectionRetrofit directionRetrofit;
+    @NonNull
+    private final DirectionRetrofit directionRetrofit;
 
-    @SuppressWarnings("unused")
-    public DirectionRepositoryImpl(@Nullable DirectionRetrofit directionRetrofit) {
+
+    public DirectionRepositoryImpl(@NonNull DirectionRetrofit directionRetrofit) {
         this.directionRetrofit = directionRetrofit;
     }
 

@@ -12,7 +12,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class DirectionInteractorModule {
-    @SuppressWarnings("unused")
+
     @Nullable
     @Singleton
     @Provides

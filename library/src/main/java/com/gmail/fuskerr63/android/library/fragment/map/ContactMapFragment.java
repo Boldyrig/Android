@@ -35,26 +35,22 @@ import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
 public class ContactMapFragment extends MvpAppCompatFragment implements ContactMapView, OnMapReadyCallback {
-    private transient MapView mapView;
-    private static final String UNUSED = "unused";
+    private MapView mapView;
 
-    @SuppressWarnings({"WeakerAccess", UNUSED})
     @Inject
-    transient Provider<ContactMapPresenter> presenterProvider;
+    Provider<ContactMapPresenter> presenterProvider;
 
-    @SuppressWarnings({"WeakerAccess", UNUSED})
     @InjectPresenter
     ContactMapPresenter contactMapPresenter;
 
-    private transient Location lastKnownLocation;
+    private Location lastKnownLocation;
 
-    private transient GoogleMap googleMap;
-    private transient ProgressBar progressBar;
+    private GoogleMap googleMap;
+    private ProgressBar progressBar;
 
     private static final String KEY_LOCATION = "LOCATION";
     private static final int DEFAULT_ZOOM = 16;;
 
-    @SuppressWarnings({"WeakerAccess", UNUSED})
     @ProvidePresenter
     ContactMapPresenter provideMapPresenter() {
         return presenterProvider.get();

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 
 import io.reactivex.annotations.NonNull;
 
-@SuppressWarnings("unused")
+
 @Database(entities = {User.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     @NonNull

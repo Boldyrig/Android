@@ -26,20 +26,22 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import moxy.MvpPresenter;
 
 public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
-    private final transient DatabaseInteractor databaseInteractor;
-    private final transient GeoCodeInteractor geoCodeInteractor;
+    @NonNull
+    private final DatabaseInteractor databaseInteractor;
+    @NonNull
+    private final GeoCodeInteractor geoCodeInteractor;
 
-    private final transient CompositeDisposable disposable = new CompositeDisposable();
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactMapPresenter(
-            @Nullable DatabaseInteractor databaseInteractor,
-            @Nullable GeoCodeInteractor geoCodeInteractor) {
+            @NonNull DatabaseInteractor databaseInteractor,
+            @NonNull GeoCodeInteractor geoCodeInteractor) {
         this.databaseInteractor = databaseInteractor;
         this.geoCodeInteractor = geoCodeInteractor;
     }
 
-    @SuppressWarnings("unused")
+
     public void showCurrentLocation(int id) {
         disposable.add(databaseInteractor.getUserByContactId(id)
                 .subscribeOn(Schedulers.io())
@@ -60,7 +62,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 }));
     }
 
-    @SuppressWarnings("unused")
+
     public void onMapClick(@NonNull LatLng position, int id, @Nullable String name) {
         getViewState().replaceMarker(position, name);
         disposable.add(

@@ -8,7 +8,6 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.annotations.NonNull;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
 @Module
 public class ContactsModule {
     @ContactsListScope

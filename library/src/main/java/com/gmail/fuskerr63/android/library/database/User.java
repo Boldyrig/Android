@@ -2,7 +2,6 @@ package com.gmail.fuskerr63.android.library.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import io.reactivex.annotations.Nullable;
@@ -13,6 +12,7 @@ public class User {
     @ColumnInfo(name = "contact_id")
     private final int contactId;
 
+    @Nullable
     @ColumnInfo(name = "name")
     private final String name;
 
@@ -22,17 +22,9 @@ public class User {
     @ColumnInfo(name = "longitude")
     private final double longitude;
 
+    @Nullable
     @ColumnInfo(name = "address")
     private final String address;
-
-    @Ignore
-    public User(int contactId, @Nullable String name, double latitude, double longitude) {
-        this.contactId = contactId;
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = "";
-    }
 
     public User(int contactId, @Nullable String name, double latitude, double longitude, @Nullable String address) {
         this.contactId = contactId;

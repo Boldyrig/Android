@@ -16,10 +16,11 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class ContactViewHolder extends RecyclerView.ViewHolder {
-    private final transient View view;
-    private final transient ImageView image;
-    private final transient TextView name;
-    private final transient TextView number;
+    @NonNull
+    private final View view;
+    private final ImageView image;
+    private final TextView name;
+    private final TextView number;
 
     public ContactViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,7 +34,7 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
         if (contact != null) {
             view.setId(contact.getId());
             URI imageUri = contact.getImage();
-            if (imageUri == null) {
+            if (imageUri.toString().equals("")) {
                 image.setImageResource(R.mipmap.android_icon); // дефолтная картинка
             } else {
                 image.setImageURI(Uri.parse(imageUri.toString()));

@@ -19,7 +19,6 @@ import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresenter;
-import com.gmail.fuskerr63.android.library.recyclerview.ContactAdapter;
 import com.gmail.fuskerr63.android.library.view.ContactListView;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
@@ -36,21 +35,18 @@ import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-@SuppressWarnings("unused")
+
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
-    private transient OnMenuItemClickContacts onMenuItemClickListener;
-    private transient ContactListDelegate contactListDelegate;
-    private transient ContactAdapter contactAdapter;
+    private OnMenuItemClickContacts onMenuItemClickListener;
+    private ContactListDelegate contactListDelegate;
 
     private static final int DP_10 = 10;
 
-    @SuppressWarnings("WeakerAccess")
     @InjectPresenter
     ContactListPresenter contactPresenter;
 
-    @SuppressWarnings("WeakerAccess")
     @Inject
-    transient Provider<ContactListPresenter> presenterProvider;
+    Provider<ContactListPresenter> presenterProvider;
 
     @ProvidePresenter
     ContactListPresenter provideContactPresenter() {

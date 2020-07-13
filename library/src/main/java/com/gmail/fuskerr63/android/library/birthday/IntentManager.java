@@ -19,8 +19,10 @@ public class IntentManager {
     private static final String EXTRA_TEXT = "TEXT";
     private static final String ACTION = "com.gmail.fuskerr63.action.notification";
 
-    private final transient Context context;
-    private final transient Class<MainActivity> mainActivityClass;
+    @Nullable
+    private final Context context;
+    @Nullable
+    private final Class<MainActivity> mainActivityClass;
 
     public IntentManager(@Nullable Class<MainActivity> mainActivityClass, @Nullable Context context) {
         this.mainActivityClass = mainActivityClass;

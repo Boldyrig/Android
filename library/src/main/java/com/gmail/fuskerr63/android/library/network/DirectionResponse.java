@@ -4,48 +4,61 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-@SuppressWarnings("ALL")
-public class DirectionResponse {
-    @SerializedName("routes")
-    private transient List<Route> routes;
+import io.reactivex.annotations.NonNull;
 
+public class DirectionResponse {
+    @NonNull
+    @SerializedName("routes")
+    private List<Route> routes;
+
+    @NonNull
     public List<Route> getRoutes() {
         return routes;
     }
 
     public static class Route {
+        @NonNull
         @SerializedName("bounds")
-        private transient Bound bounds;
+        private Bound bounds;
+        @NonNull
         @SerializedName("overview_polyline")
-        private transient OverviewPolyline overviewPolyline;
+        private OverviewPolyline overviewPolyline;
 
+        @NonNull
         public Bound getBounds() {
             return bounds;
         }
 
+        @NonNull
         public OverviewPolyline getOverviewPolyline() {
             return overviewPolyline;
         }
 
         public static class Bound {
+            @NonNull
             @SerializedName("northeast")
-            private transient NorthEast northEast;
+            private NorthEast northEast;
+            @NonNull
             @SerializedName("southwest")
-            private  transient SouthWest southWest;
+            private  SouthWest southWest;
 
+            @NonNull
             public NorthEast getNorthEast() {
                 return northEast;
             }
 
+            @NonNull
             public SouthWest getSouthWest() {
                 return southWest;
             }
 
             public static class NorthEast {
+                @NonNull
                 @SerializedName("lat")
-                private transient double lat;
+                private double lat;
+                @NonNull
                 @SerializedName("lng")
-                private transient double lng;
+                private double lng;
 
                 public double getLat() {
                     return lat;
@@ -57,10 +70,12 @@ public class DirectionResponse {
             }
 
             public static class SouthWest {
+                @NonNull
                 @SerializedName("lat")
-                private transient double lat;
+                private double lat;
+                @NonNull
                 @SerializedName("lng")
-                private transient double lng;
+                private double lng;
 
                 public double getLat() {
                     return lat;
@@ -73,9 +88,11 @@ public class DirectionResponse {
         }
 
         public static class OverviewPolyline {
+            @NonNull
             @SerializedName("points")
-            private transient String points;
+            private String points;
 
+            @NonNull
             public String getPoints() {
                 return points;
             }

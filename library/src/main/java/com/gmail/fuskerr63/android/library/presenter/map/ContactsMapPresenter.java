@@ -17,29 +17,30 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private final transient DatabaseInteractor databaseInteractor;
-    private final transient DirectionInteractor directionInteractor;
+    @NonNull
+    private final DatabaseInteractor databaseInteractor;
+    @NonNull
+    private final DirectionInteractor directionInteractor;
 
-    private transient Position latLngFrom;
-    private transient Position latLngTo;
+    private Position latLngFrom;
+    private Position latLngTo;
 
-    private final transient CompositeDisposable disposable = new CompositeDisposable();
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactsMapPresenter(
-            @Nullable DatabaseInteractor databaseInteractor,
-            @Nullable DirectionInteractor directionInteractor) {
+            @NonNull DatabaseInteractor databaseInteractor,
+            @NonNull DirectionInteractor directionInteractor) {
         this.databaseInteractor = databaseInteractor;
         this.directionInteractor = directionInteractor;
     }
 
-    @SuppressWarnings("unused")
+
     public void onMapReady() {
         disposable.add(databaseInteractor.getAll()
                 .subscribeOn(Schedulers.io())
@@ -55,7 +56,7 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                         }));
     }
 
-    @SuppressWarnings("unused")
+
     public void onMarkerClick(@NonNull LatLng latLng) {
         if (latLngFrom == null) {
             latLngFrom = new Position(latLng.latitude, latLng.longitude);

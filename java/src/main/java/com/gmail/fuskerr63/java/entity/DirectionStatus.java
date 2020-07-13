@@ -6,7 +6,7 @@ public class DirectionStatus {
     private final List<Position> bounds;
     private final List<Position> points;
 
-    @SuppressWarnings("unused")
+
     public DirectionStatus(List<Position> bounds, List<Position> points) {
         this.bounds = bounds;
         this.points = points;

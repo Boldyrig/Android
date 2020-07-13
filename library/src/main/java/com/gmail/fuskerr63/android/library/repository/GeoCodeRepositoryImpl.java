@@ -13,13 +13,13 @@ import java.util.Objects;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 
 public class GeoCodeRepositoryImpl implements GeoCodeRepository {
-    private final transient GeoCodeRetrofit geoCodeRetrofit;
+    @NonNull
+    private final GeoCodeRetrofit geoCodeRetrofit;
 
-    @SuppressWarnings("unused")
-    public GeoCodeRepositoryImpl(@Nullable GeoCodeRetrofit geoCodeRetrofit) {
+
+    public GeoCodeRepositoryImpl(@NonNull GeoCodeRetrofit geoCodeRetrofit) {
         this.geoCodeRetrofit = geoCodeRetrofit;
     }
 

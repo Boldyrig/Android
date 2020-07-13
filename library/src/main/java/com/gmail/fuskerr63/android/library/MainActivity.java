@@ -133,13 +133,13 @@ public class MainActivity extends AppCompatActivity implements
         showDetails(view.getId());
     }
 
-    @SuppressWarnings("unused")
+
     @Override
     public void onMenuItemClickDetails(int id, @Nullable String name) {
         showContactMap(id, name);
     }
 
-    @SuppressWarnings("unused")
+
     @Override
     public void onMenuItemClickContacts() {
         showContactsMap();

@@ -14,23 +14,23 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class NotificationRepositoryImpl implements NotificationRepository {
-    private final transient AlarmManager alarmManager;
-    private final transient NotificationManager notificationManager;
-    private final transient IntentManager intentManager;
+    @NonNull
+    private final AlarmManager alarmManager;
+    @NonNull
+    private final NotificationManager notificationManager;
+    @NonNull
+    private final IntentManager intentManager;
 
-    private static final String UNUSED = "unused";
-
-    @SuppressWarnings(UNUSED)
     public NotificationRepositoryImpl(
-            @Nullable AlarmManager alarmManager,
-            @Nullable NotificationManager notificationManager,
-            @Nullable IntentManager intentManager) {
+            @NonNull AlarmManager alarmManager,
+            @NonNull NotificationManager notificationManager,
+            @NonNull IntentManager intentManager) {
         this.alarmManager = alarmManager;
         this.notificationManager = notificationManager;
         this.intentManager = intentManager;
     }
 
-    @SuppressWarnings(UNUSED)
+
     @Override
     public void setAlarm(@NonNull BirthdayCalendar birthdayCalendar, int id, @Nullable String text, int flag) {
         Calendar birthday = new GregorianCalendar(
@@ -51,7 +51,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                 ));
     }
 
-    @SuppressWarnings(UNUSED)
+
     @Override
     public void cancelAlarm(int id, @Nullable String text, int flag) {
         alarmManager.cancel(
@@ -71,7 +71,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
         notificationManager.notify(id, intentManager.getNotification(id, text, flag, channelId, priority));
     }
 
-    @SuppressWarnings(UNUSED)
+
     @Override
     public boolean alarmIsUp(int id, @Nullable String text, int flag) {
         return intentManager.getPendingIntent(id, intentManager.getIntent(id, null, text), flag) != null;

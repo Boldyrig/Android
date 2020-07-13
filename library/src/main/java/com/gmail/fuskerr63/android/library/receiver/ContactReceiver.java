@@ -17,12 +17,10 @@ import javax.inject.Inject;
 import io.reactivex.annotations.NonNull;
 
 public class ContactReceiver extends BroadcastReceiver {
-    @SuppressWarnings({"WeakerAccess", "unused"})
     @Inject
-    transient NotificationInteractor notificationInteractor;
-    @SuppressWarnings({"WeakerAccess", "unused"})
+    NotificationInteractor notificationInteractor;
     @Inject
-    transient NotifyNotificationManager notificationManager;
+    NotifyNotificationManager notificationManager;
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {

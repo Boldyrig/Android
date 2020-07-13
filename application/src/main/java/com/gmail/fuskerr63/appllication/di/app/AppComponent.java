@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import io.reactivex.annotations.NonNull;
 
-@SuppressWarnings("unused")
+
 @Singleton
 @Component(modules = {
         RepositoryModule.class,

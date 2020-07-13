@@ -10,7 +10,7 @@ import io.reactivex.annotations.Nullable;
 @ContactMapScope
 @Subcomponent(modules = {ContactsMapModule.class})
 public interface ContactsMapComponent extends ContactsMapComponentContainer {
-    @SuppressWarnings("unused")
+
     @Override
     void inject(@Nullable ContactsMapFragment contactsMapFragment);
 }

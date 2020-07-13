@@ -26,9 +26,9 @@ import io.reactivex.annotations.Nullable;
 public class ContactsMapDelegate {
     private static final int PADDING = 100;
     private static final float DEFAULT_WIDTH = 10F;
-    private final transient List<Polyline> polylines = new ArrayList<>();
+    private final List<Polyline> polylines = new ArrayList<>();
 
-    private transient ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     public ContactsMapDelegate(@Nullable View view) {
         if (view != null) {

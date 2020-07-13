@@ -10,7 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.reactivex.annotations.NonNull;
 
-@SuppressWarnings("unused")
+
 @Module
 public class ContactInteractorModule {
     @NonNull

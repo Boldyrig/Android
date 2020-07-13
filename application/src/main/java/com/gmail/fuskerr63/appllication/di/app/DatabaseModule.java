@@ -14,7 +14,7 @@ import io.reactivex.annotations.NonNull;
 
 @Module
 public class DatabaseModule {
-    @SuppressWarnings("unused")
+
     @NonNull
     @Singleton
     @Provides

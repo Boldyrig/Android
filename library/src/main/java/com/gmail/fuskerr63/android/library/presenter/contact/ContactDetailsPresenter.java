@@ -21,11 +21,14 @@ import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
-    private final transient ContactInteractor contactInteractor;
-    private final transient DatabaseInteractor databaseInteractor;
-    private final transient NotificationInteractor notificationInteractor;
+    @Nullable
+    private final ContactInteractor contactInteractor;
+    @Nullable
+    private final DatabaseInteractor databaseInteractor;
+    @Nullable
+    private final NotificationInteractor notificationInteractor;
 
-    private final transient CompositeDisposable disposable = new CompositeDisposable();
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
     public ContactDetailsPresenter(
@@ -38,43 +41,46 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     }
 
     public void showDetails(int id) {
-        disposable.add(contactInteractor.getContactById(id)
-                .subscribeOn(Schedulers.io())
-                .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
-                        .map(user -> {
-                            ContactInfo contactInfo = new ContactInfo(
-                                    contact.getName(),
-                                    contact.getNumber(),
-                                    contact.getNumber2(),
-                                    contact.getEmail(),
-                                    contact.getEmail2()
-                            );
-                            return new Contact(
-                                    contact.getId(),
-                                    contact.getImage(),
-                                    contactInfo,
-                                    contact.getBirthday(),
-                                    user.getAddress()
-                            );
-                        }))
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> getViewState().loadingStatus(true))
-                .doFinally(() -> getViewState().loadingStatus(false))
-                .subscribe(
-                        contact -> getViewState().updateDetails(contact),
-                        error -> {
-                            if (BuildConfig.DEBUG) {
-                                Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+        if (contactInteractor != null) {
+            disposable.add(contactInteractor.getContactById(id)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
+                            .map(user -> {
+                                ContactInfo contactInfo = new ContactInfo(
+                                        contact.getName(),
+                                        contact.getNumber(),
+                                        contact.getNumber2(),
+                                        contact.getEmail(),
+                                        contact.getEmail2()
+                                );
+                                return new Contact(
+                                        contact.getId(),
+                                        contact.getImage(),
+                                        contactInfo,
+                                        contact.getBirthday(),
+                                        user.getAddress()
+                                );
+                            }))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(d -> getViewState().loadingStatus(true))
+                    .doFinally(() -> getViewState().loadingStatus(false))
+                    .subscribe(
+                            contact -> getViewState().updateDetails(contact),
+                            error -> {
+                                if (BuildConfig.DEBUG) {
+                                    Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                                }
                             }
-                        }
-                ));
+                    ));
+        }
     }
 
     public void onClickBirthday(
             @Nullable Contact contact,
             @Nullable String notificationCancel,
             @Nullable String notificationSend) {
-        if (notificationInteractor.toggleNotificationForContact(contact).isAlarmUp()) {
+        if (notificationInteractor != null
+                && notificationInteractor.toggleNotificationForContact(contact).isAlarmUp()) {
             getViewState().setTextButton(notificationCancel);
         } else {
             getViewState().setTextButton(notificationSend);

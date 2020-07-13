@@ -13,15 +13,14 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotifyNotificationManagerModule {
-    private final transient int flagUpdateCurrent;
-    private final transient int priority;
+    private final int flagUpdateCurrent;
+    private final int priority;
 
     public NotifyNotificationManagerModule(int flagUpdateCurrent, int priority) {
         this.flagUpdateCurrent = flagUpdateCurrent;
         this.priority = priority;
     }
 
-    @SuppressWarnings({"unused"})
     @NonNull
     @Singleton
     @Provides

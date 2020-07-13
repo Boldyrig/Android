@@ -7,11 +7,13 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 
 public class DatabaseModel implements DatabaseInteractor {
-    private final transient LocationRepository locationRepository;
+    @NonNull
+    private final LocationRepository locationRepository;
 
-    public DatabaseModel(LocationRepository locationRepository) {
+    public DatabaseModel(@NonNull LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 

@@ -22,10 +22,11 @@ import moxy.MvpPresenter;
 
 @InjectViewState
 public class ContactListPresenter extends MvpPresenter<ContactListView> {
-    private final transient ContactInteractor interactor;
+    @NonNull
+    private final ContactInteractor interactor;
 
-    private final transient CompositeDisposable disposable = new CompositeDisposable();
-    private final transient PublishSubject<String> publishSubject = PublishSubject.create();
+    private final CompositeDisposable disposable = new CompositeDisposable();
+    private final PublishSubject<String> publishSubject = PublishSubject.create();
 
     @Inject
     public ContactListPresenter(@NonNull ContactInteractor interactor) {

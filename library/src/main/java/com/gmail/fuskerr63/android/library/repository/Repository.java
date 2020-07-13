@@ -24,20 +24,21 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class Repository implements ContactRepository {
-    private final transient WeakReference<ContentResolver> weakContentResolver;
-    private transient ContentResolver contentResolver;
+    @NonNull
+    private final WeakReference<ContentResolver> weakContentResolver;
+    private ContentResolver contentResolver;
     private static final String SELECTION_SYMBOL = " = ?";
 
-    private final transient String[] projection = {
+    private final String[] projection = {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.PHOTO_URI,
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.Contacts.HAS_PHONE_NUMBER
     };
 
-    @SuppressWarnings("unused")
-    public Repository(@Nullable ContentResolver contentResolver) {
-        weakContentResolver = new WeakReference<>(contentResolver);
+
+    public Repository(@NonNull ContentResolver contentResolver) {
+        this.weakContentResolver = new WeakReference<>(contentResolver);
     }
 
     @NonNull
@@ -46,7 +47,7 @@ public class Repository implements ContactRepository {
         return Single.fromCallable(() -> loadContacts(selector));
     }
 
-    @SuppressWarnings("unused")
+
     @NonNull
     @Override
     public Single<Contact> getContactById(final int id) {

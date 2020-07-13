@@ -9,9 +9,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GeoCodeRetrofit {
-    private final transient GeoCodeService service;
+    private final GeoCodeService service;
 
-    @SuppressWarnings("unused")
     public GeoCodeRetrofit() {
         String url = "https://geocode-maps.yandex.ru/1.x/";
         Retrofit retrofit = new Retrofit.Builder()

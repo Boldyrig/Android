@@ -33,22 +33,20 @@ import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 
-@SuppressWarnings("unused")
+
 public class ContactDetailsFragment extends MvpAppCompatFragment implements ContactDetailsView {
-    private transient OnMenuItemClickDetails menuItemClickListener;
-    private transient ContactDetailsDelegate contactDetailsDelegate;
+    private OnMenuItemClickDetails menuItemClickListener;
+    private ContactDetailsDelegate contactDetailsDelegate;
 
-    private transient String name;
-    private transient String notificatinCancel;
-    private transient String notificationSend;
+    private String name;
+    private String notificatinCancel;
+    private String notificationSend;
 
-    @SuppressWarnings("WeakerAccess")
     @InjectPresenter
     ContactDetailsPresenter detailsPresenter;
 
-    @SuppressWarnings("WeakerAccess")
     @Inject
-    transient Provider<ContactDetailsPresenter> presenterProvider;
+    Provider<ContactDetailsPresenter> presenterProvider;
 
     @ProvidePresenter
     ContactDetailsPresenter provideDetailsPresenter() {

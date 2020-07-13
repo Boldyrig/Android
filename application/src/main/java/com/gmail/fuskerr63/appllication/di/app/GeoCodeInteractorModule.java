@@ -12,7 +12,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class GeoCodeInteractorModule {
-    @SuppressWarnings("unused")
+
     @Nullable
     @Singleton
     @Provides

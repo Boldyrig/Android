@@ -13,7 +13,7 @@ import io.reactivex.annotations.NonNull;
 
 @Module
 public class RepositoryModule {
-    @SuppressWarnings("unused")
+
     @NonNull
     @Singleton
     @Provides

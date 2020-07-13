@@ -10,13 +10,14 @@ import io.reactivex.annotations.NonNull;
 
 @Module
 public class ContextModule {
-    private final transient Context context;
+    @NonNull
+    private final Context context;
 
     public ContextModule(@NonNull Context context) {
         this.context = context;
     }
 
-    @SuppressWarnings("unused")
+
     @NonNull
     @Singleton
     @Provides

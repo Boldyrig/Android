@@ -10,7 +10,7 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class GeoCodeRetrofitModule {
-    @SuppressWarnings("unused")
+
     @Nullable
     @Singleton
     @Provides

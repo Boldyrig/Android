@@ -38,21 +38,18 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
         ContactsMapView,
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
-    private transient MapView mapView;
-    private transient ContactsMapDelegate contactsMapDelegate;
-    private static final String UNUSED = "unused";
+    private MapView mapView;
+    private ContactsMapDelegate contactsMapDelegate;
 
-    @SuppressWarnings({"WeakerAccess", UNUSED})
     @Inject
-    transient Provider<ContactsMapPresenter> presenterProvider;
+    Provider<ContactsMapPresenter> presenterProvider;
 
-    @SuppressWarnings({"WeakerAccess", UNUSED})
     @InjectPresenter
     ContactsMapPresenter contactsMapPresenter;
 
-    private transient GoogleMap googleMap;
+    private GoogleMap googleMap;
 
-    @SuppressWarnings(UNUSED)
+
     @ProvidePresenter
     ContactsMapPresenter provideMapPresenter() {
         return presenterProvider.get();
@@ -136,7 +133,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
         contactsMapDelegate.setProgressStatus(show);
     }
 
-    @SuppressWarnings(UNUSED)
+
     @Override
     public void clearDirection() {
         contactsMapDelegate.clearDirection();
