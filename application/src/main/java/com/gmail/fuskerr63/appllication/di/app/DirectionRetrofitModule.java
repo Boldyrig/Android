@@ -6,9 +6,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class DirectionRetrofitModule {
+
+    @Nullable
     @Singleton
     @Provides
     public DirectionRetrofit provideDirectionRetrofit() {

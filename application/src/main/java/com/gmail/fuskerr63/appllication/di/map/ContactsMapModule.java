@@ -7,12 +7,16 @@ import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class ContactsMapModule {
+    @Nullable
     @ContactMapScope
     @Provides
-    public ContactsMapPresenter provideContactsPresenter(DatabaseInteractor databaseInteractor, DirectionInteractor directionInteractor) {
+    public ContactsMapPresenter provideContactsPresenter(
+            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable DirectionInteractor directionInteractor) {
         return new ContactsMapPresenter(databaseInteractor, directionInteractor);
     }
 }

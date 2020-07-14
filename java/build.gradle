@@ -1,5 +1,8 @@
 apply plugin: 'java'
 
+apply from: '../etc/checkstyle/style-script.gradle'
+apply from: '../etc/pmd/pmd-script.gradle'
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

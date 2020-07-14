@@ -6,9 +6,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class GeoCodeRetrofitModule {
+
+    @Nullable
     @Singleton
     @Provides
     public GeoCodeRetrofit provideRetrofit() {

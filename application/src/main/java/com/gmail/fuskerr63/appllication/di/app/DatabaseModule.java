@@ -10,14 +10,16 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class DatabaseModule {
-    private final String DATABASE_NAME = "user_address";
 
+    @NonNull
     @Singleton
     @Provides
-    public AppDatabase provideAppDatabase(Context applicationContext) {
-        return Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME).build();
+    public AppDatabase provideAppDatabase(@NonNull Context applicationContext) {
+        String databaseName = "user_address";
+        return Room.databaseBuilder(applicationContext, AppDatabase.class, databaseName).build();
     }
 }

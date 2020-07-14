@@ -6,21 +6,26 @@ import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
+import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
 public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
-    private DatabaseInteractor databaseInteractor;
-    private DirectionInteractor directionInteractor;
+    @NonNull
+    private final DatabaseInteractor databaseInteractor;
+    @NonNull
+    private final DirectionInteractor directionInteractor;
 
     private Position latLngFrom;
     private Position latLngTo;
@@ -28,10 +33,13 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactsMapPresenter(DatabaseInteractor databaseInteractor, DirectionInteractor directionInteractor) {
+    public ContactsMapPresenter(
+            @NonNull DatabaseInteractor databaseInteractor,
+            @NonNull DirectionInteractor directionInteractor) {
         this.databaseInteractor = databaseInteractor;
         this.directionInteractor = directionInteractor;
     }
+
 
     public void onMapReady() {
         disposable.add(databaseInteractor.getAll()
@@ -41,13 +49,18 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                 .doFinally(() -> getViewState().setProgressStatus(false))
                 .subscribe(
                         contactLocations -> getViewState().printMarkers(contactLocations),
-                        error -> Log.d("TAG", error.getMessage())));
+                        error -> {
+                            if (BuildConfig.DEBUG) {
+                                Log.d("TAG", Objects.requireNonNull(error.getMessage()));
+                            }
+                        }));
     }
 
-    public void onMarkerClick(LatLng latLng) {
-        if(latLngFrom == null) {
+
+    public void onMarkerClick(@NonNull LatLng latLng) {
+        if (latLngFrom == null) {
             latLngFrom = new Position(latLng.latitude, latLng.longitude);
-        } else if(latLngTo == null) {
+        } else if (latLngTo == null) {
             latLngTo = new Position(latLng.latitude, latLng.longitude);
             disposable.add(directionInteractor.loadDirection(latLngFrom, latLngTo)
                     .subscribeOn(Schedulers.io())
@@ -56,12 +69,15 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     .doFinally(() -> getViewState().setProgressStatus(false))
                     .subscribe(
                             directionStatus -> {
-                                List<LatLng> pointsLatLng = new ArrayList<LatLng>();
-                                for(Position position : directionStatus.getPoints()) {
-                                    pointsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
+                                List<LatLng> pointsLatLng = new ArrayList<>();
+                                for (int i = 0; i < directionStatus.getPoints().size(); i++) {
+                                    pointsLatLng.add(new LatLng(
+                                            directionStatus.getPoints().get(i).getLatitude(),
+                                            directionStatus.getPoints().get(i).getLongitude())
+                                    );
                                 }
-                                List<LatLng> boundsLatLng = new ArrayList<LatLng>();
-                                for(Position position : directionStatus.getBounds()) {
+                                List<LatLng> boundsLatLng = new ArrayList<>();
+                                for (Position position : directionStatus.getBounds()) {
                                     boundsLatLng.add(new LatLng(position.getLatitude(), position.getLongitude()));
                                 }
                                 getViewState().printDirection(pointsLatLng, boundsLatLng);
@@ -70,7 +86,6 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                     ));
         } else {
             latLngFrom = new Position(latLng.latitude, latLng.longitude);
-            latLngTo = null;
             getViewState().clearDirection();
         }
     }

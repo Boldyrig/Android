@@ -5,11 +5,14 @@ import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.repository.GeoCodeRepository;
 
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 
 public class GeoCodeModel implements GeoCodeInteractor {
-    GeoCodeRepository geoCodeRepository;
+    @NonNull
+    private final GeoCodeRepository geoCodeRepository;
 
-    public GeoCodeModel(GeoCodeRepository geoCodeRepository) {
+
+    public GeoCodeModel(@NonNull GeoCodeRepository geoCodeRepository) {
         this.geoCodeRepository = geoCodeRepository;
     }
 

@@ -6,14 +6,19 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class ContextModule {
-    private Context context;
+    @NonNull
+    private final Context context;
 
-    public ContextModule(Context context) {
+    public ContextModule(@NonNull Context context) {
         this.context = context;
     }
+
+
+    @NonNull
     @Singleton
     @Provides
     public Context provideContext() {

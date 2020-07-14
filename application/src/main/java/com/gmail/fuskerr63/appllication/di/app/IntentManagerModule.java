@@ -9,18 +9,22 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.Nullable;
 
 @Module
 public class IntentManagerModule {
-    private Class<MainActivity> mainActivityClass;
+    @Nullable
+    private final Class<MainActivity> mainActivityClass;
 
-    public IntentManagerModule(Class<MainActivity> mainActivityClass) {
+    public IntentManagerModule(@Nullable Class<MainActivity> mainActivityClass) {
         this.mainActivityClass = mainActivityClass;
     }
 
+
+    @Nullable
     @Singleton
     @Provides
-    public IntentManager provideBirthdayNorification(Context context) {
+    public IntentManager provideBirthdayNorification(@Nullable Context context) {
         return new IntentManager(mainActivityClass, context);
     }
 }

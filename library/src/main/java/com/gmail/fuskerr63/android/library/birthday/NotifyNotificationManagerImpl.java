@@ -3,21 +3,29 @@ package com.gmail.fuskerr63.android.library.birthday;
 import com.gmail.fuskerr63.java.interactor.NotifyNotificationManager;
 import com.gmail.fuskerr63.java.interactor.NotificationRepository;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
+
 public class NotifyNotificationManagerImpl implements NotifyNotificationManager {
-    private NotificationRepository notificationRepository;
+    @NonNull
+    private final NotificationRepository notificationRepository;
 
-    private final String CHANNEL_ID = "CHANNEL_ID";
-    private final int FLAG_UPDATE_CURRENT;
-    private final int PRIORTY;
+    private static final String CHANNEL_ID = "CHANNEL_ID";
+    private final int flagUpdateCurrent;
+    private final int priority;
 
-    public NotifyNotificationManagerImpl(NotificationRepository notificationRepository, int FLAG_UPDATE_CURRENT, int PRIORTY) {
+    public NotifyNotificationManagerImpl(
+            @NonNull NotificationRepository notificationRepository,
+            int flagUpdateCurrent,
+            int priority) {
         this.notificationRepository = notificationRepository;
-        this.FLAG_UPDATE_CURRENT = FLAG_UPDATE_CURRENT;
-        this.PRIORTY = PRIORTY;
+        this.flagUpdateCurrent = flagUpdateCurrent;
+        this.priority = priority;
     }
 
+
     @Override
-    public void notifyNotification(int id, String text) {
-        notificationRepository.notifyNotification(id, text, FLAG_UPDATE_CURRENT, CHANNEL_ID, PRIORTY);
+    public void notifyNotification(int id, @Nullable String text) {
+        notificationRepository.notifyNotification(id, text, flagUpdateCurrent, CHANNEL_ID, priority);
     }
 }

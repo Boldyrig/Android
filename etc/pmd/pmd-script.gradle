@@ -1,0 +1,18 @@
+apply plugin: 'pmd'
+
+task pmd(type: Pmd, group: 'Verification') {
+    ruleSetFiles = files("$project.rootDir/etc/pmd/pmd-rules.xml")
+    source = fileTree('src/main/java')
+    include '**/*.java'
+    exclude '**/gen/**'
+    ruleSets = []
+
+    reports {
+        xml {
+            destination file("$reportsDir/pmd/pmd.xml")
+        }
+        html {
+            destination file("$reportsDir/pmd/pmd.html")
+        }
+    }
+}

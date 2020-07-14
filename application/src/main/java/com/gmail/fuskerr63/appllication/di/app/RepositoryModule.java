@@ -9,12 +9,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class RepositoryModule {
+
+    @NonNull
     @Singleton
     @Provides
-    public ContactRepository provideRepository(Context context) {
+    public ContactRepository provideRepository(@NonNull Context context) {
         return new Repository(context.getContentResolver());
     }
 }

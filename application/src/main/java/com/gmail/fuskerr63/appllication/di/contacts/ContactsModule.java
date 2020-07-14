@@ -6,12 +6,14 @@ import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
 
 @Module
 public class ContactsModule {
     @ContactsListScope
+    @NonNull
     @Provides
-    ContactListPresenter provideContactListPresenter(ContactInteractor interactor) {
+    ContactListPresenter provideContactListPresenter(@NonNull ContactInteractor interactor) {
         return new ContactListPresenter(interactor);
     }
 }

@@ -5,10 +5,12 @@ import com.gmail.fuskerr63.android.library.fragment.map.ContactMapFragment;
 import com.gmail.fuskerr63.appllication.di.scope.ContactMapScope;
 
 import dagger.Subcomponent;
+import io.reactivex.annotations.Nullable;
 
 @ContactMapScope
 @Subcomponent(modules = {ContactMapModule.class})
 public interface ContactMapComponent extends ContactMapComponentContainer {
+
     @Override
-    void inject(ContactMapFragment contactMapFragment);
+    void inject(@Nullable ContactMapFragment contactMapFragment);
 }

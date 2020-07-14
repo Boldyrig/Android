@@ -8,12 +8,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
+
 
 @Module
 public class ContactInteractorModule {
+    @NonNull
     @Singleton
     @Provides
-    public ContactInteractor provideContactModel(ContactRepository repository) {
+    public ContactInteractor provideContactModel(@NonNull ContactRepository repository) {
         return new ContactModel(repository);
     }
 }

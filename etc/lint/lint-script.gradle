@@ -1,0 +1,12 @@
+repositories {
+    jcenter()
+}
+
+android {
+    lintOptions {
+        lintConfig file("$project.rootDir/etc/lint/lint.xml")
+        abortOnError false
+        checkAllWarnings true
+        warningsAsErrors true
+    }
+}

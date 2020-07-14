@@ -1,12 +1,16 @@
 apply plugin: 'com.android.library'
 
+apply from: '../etc/checkstyle/style-script.gradle'
+apply from: '../etc/lint/lint-script.gradle'
+apply from: '../etc/pmd/pmd-script.gradle'
+
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
@@ -33,7 +37,7 @@ dependencies {
     implementation project(':java')
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.savedstate:savedstate:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
@@ -43,15 +47,15 @@ dependencies {
     implementation "com.github.moxy-community:moxy-app-compat:2.1.2"
 
     // RxJava
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.19'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
 
     // Google Maps
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.libraries.places:places:2.3.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:2.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:2.0.3'
 
     // Room
     def room_version = "2.2.5"
@@ -60,24 +64,24 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$room_version"// RxJava support for Room
 
     // Dagger2
-    implementation 'com.google.dagger:dagger-android:2.20'
-    implementation 'com.google.dagger:dagger-android-support:2.20'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.20'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.20'
+    implementation 'com.google.dagger:dagger-android:2.28.1'
+    implementation 'com.google.dagger:dagger-android-support:2.28.1'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.28.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.28.1'
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
     // Test
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     //noinspection GradleCompatible
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    implementation 'androidx.work:work-runtime:2.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.work:work-runtime:2.3.4'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.android.support:multidex:1.0.3'
 }

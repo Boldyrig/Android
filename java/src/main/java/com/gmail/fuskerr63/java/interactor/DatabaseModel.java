@@ -7,11 +7,13 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 
 public class DatabaseModel implements DatabaseInteractor {
-    private LocationRepository locationRepository;
+    @NonNull
+    private final LocationRepository locationRepository;
 
-    public DatabaseModel(LocationRepository locationRepository) {
+    public DatabaseModel(@NonNull LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
@@ -22,7 +24,8 @@ public class DatabaseModel implements DatabaseInteractor {
 
     @Override
     public Single<ContactLocation> getUserByContactId(int contactId) {
-        return locationRepository.getUserByContactId(contactId);
+        return locationRepository.getUserByContactId(contactId)
+                .onErrorReturnItem(new ContactLocation(-1, "", null, ""));
     }
 
     @Override

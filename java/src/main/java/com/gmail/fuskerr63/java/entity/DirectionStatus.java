@@ -3,8 +3,9 @@ package com.gmail.fuskerr63.java.entity;
 import java.util.List;
 
 public class DirectionStatus {
-    private List<Position> bounds;
-    private List<Position> points;
+    private final List<Position> bounds;
+    private final List<Position> points;
+
 
     public DirectionStatus(List<Position> bounds, List<Position> points) {
         this.bounds = bounds;

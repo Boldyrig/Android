@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
+
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
@@ -16,10 +18,11 @@ import java.net.URI;
 import java.util.List;
 
 public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
-    private View.OnClickListener onClickListener;
+    @Nullable
+    private final View.OnClickListener onClickListener;
 
 
-    public ContactAdapter(View.OnClickListener onClickListener) {
+    public ContactAdapter(@Nullable View.OnClickListener onClickListener) {
         super(DIFF_CALLBACK);
         this.onClickListener = onClickListener;
     }
@@ -30,7 +33,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.contact, parent, false);
         ContactViewHolder contactViewHolder = new ContactViewHolder(view);
-        if(onClickListener != null){
+        if (onClickListener != null) {
             contactViewHolder.itemView.setOnClickListener(onClickListener);
         }
         return contactViewHolder;
@@ -41,11 +44,11 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
         holder.bind(getItem(position));
     }
 
-    public void setContacts(List<Contact> contacts) {
+    public void setContacts(@Nullable List<Contact> contacts) {
         submitList(contacts);
     }
 
-    public static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
+    private static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
         @Override
         public boolean areItemsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
             return oldItem.getId() == newItem.getId();
@@ -53,17 +56,17 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
-            final String oldNumber = oldItem.getNumber();
-            final String newNumber = newItem.getNumber();
-            final String oldName = oldItem.getName();
-            final String newName = newItem.getName();
+            final String oldNumber = oldItem.getContactInfo().getNumber();
+            final String newNumber = newItem.getContactInfo().getNumber();
+            final String oldName = oldItem.getContactInfo().getName();
+            final String newName = newItem.getContactInfo().getName();
             final URI oldImage = oldItem.getImage();
             final URI newImage = newItem.getImage();
             final boolean oldImageIsNull = oldImage == null;
             final boolean newImageIsNull = newImage == null;
-            return oldNumber.equals(newNumber) &&
-                    oldName.equals(newName) &&
-                    !oldImageIsNull ? oldImage.equals(newImage) : newImageIsNull ? true : false;
+            return oldNumber.equals(newNumber)
+                    && oldName.equals(newName)
+                    && !oldImageIsNull ? oldImage.equals(newImage) : newImageIsNull;
         }
     };
 }

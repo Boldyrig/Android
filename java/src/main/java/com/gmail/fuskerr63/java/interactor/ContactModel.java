@@ -11,15 +11,20 @@ import io.reactivex.annotations.Nullable;
 
 
 public class ContactModel implements ContactInteractor {
+    @Nullable
     private final ContactRepository repository;
 
-    public ContactModel(@NonNull ContactRepository repository) {
+    public ContactModel(@Nullable ContactRepository repository) {
         this.repository = repository;
     }
 
+    @Nullable
     @Override
-    public Single<List<Contact>> getContacts(@Nullable String selector) {
-        return repository.getContacts(selector);
+    public Single<List<Contact>> getContacts(@NonNull String selector) {
+        if (repository != null) {
+            return repository.getContacts(selector);
+        }
+        return null;
     }
 
     @Override
