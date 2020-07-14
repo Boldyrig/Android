@@ -99,11 +99,9 @@ public class Repository implements ContactRepository {
             int hasPhoneNumber = cursorContact.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
             if (cursorContact.getCount() > 0) {
                 cursorContact.moveToFirst();
-                URI image = null;
+                URI image = URI.create("");
                 String name = cursorContact.getString(displayName);
                 List<String> numbers = new ArrayList<>();
-                List<String> emails = new ArrayList<>();
-                Calendar birthday = null;
                 // собираем картинку
                 String imageString = cursorContact.getString(photoUri);
                 if (imageString != null) {
@@ -129,7 +127,7 @@ public class Repository implements ContactRepository {
                         new String[]{String.valueOf(id)},
                         null
                 );
-                emails = loadEmailsFromCursor(cursorEmail);
+                List<String> emails = loadEmailsFromCursor(cursorEmail);
                 // собираем день рождения
                 Cursor cursorBirthday = contentResolver.query(
                         ContactsContract.Data.CONTENT_URI,
@@ -140,13 +138,13 @@ public class Repository implements ContactRepository {
                         new String[]{String.valueOf(id)},
                         null
                 );
-                birthday = loadBirthdayFromCursor(cursorBirthday);
+                Calendar birthday = loadBirthdayFromCursor(cursorBirthday);
 
-                String number1 = !numbers.isEmpty() ? numbers.get(0) : null;
-                String number2 = numbers.size() > 1 ? numbers.get(1) : null;
+                String number1 = !numbers.isEmpty() ? numbers.get(0) : "";
+                String number2 = numbers.size() > 1 ? numbers.get(1) : "";
 
-                String email1 = !emails.isEmpty() ? emails.get(0) : null;
-                String email2 = emails.size() > 1 ? emails.get(1) : null;
+                String email1 = !emails.isEmpty() ? emails.get(0) : "";
+                String email2 = emails.size() > 1 ? emails.get(1) : "";
                 contact = new Contact(
                         id,
                         image,
@@ -161,7 +159,7 @@ public class Repository implements ContactRepository {
     }
 
     private List<Contact> loadContactsFromCursor(Cursor cursorContact, ContentResolver contentResolver) {
-        List<Contact> contacts = new ArrayList();
+        List<Contact> contacts = new ArrayList<>();
         try {
             int displayName = cursorContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
             int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
@@ -171,7 +169,7 @@ public class Repository implements ContactRepository {
             if (cursorContact.getCount() > 0) {
                 cursorContact.moveToFirst();
                 while (!cursorContact.isAfterLast()) {
-                    URI image = null;
+                    URI image = URI.create("");
                     String name = cursorContact.getString(displayName);
                     List<String> numbers = new ArrayList<>();
                     // собираем картинку
@@ -193,7 +191,7 @@ public class Repository implements ContactRepository {
                         );
                         numbers = loadNumbersFromCursor(cursorPhone);
                     }
-                    String number = !numbers.isEmpty() ? numbers.get(0) : null;
+                    String number = !numbers.isEmpty() ? numbers.get(0) : "";
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.YEAR, 1);
                     Contact contact = new Contact(
