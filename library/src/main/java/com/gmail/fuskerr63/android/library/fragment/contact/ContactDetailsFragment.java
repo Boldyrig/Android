@@ -117,7 +117,7 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void updateDetails(@Nullable final Contact contact) {
         if (contact != null) {
-            name = contact.getName();
+            name = contact.getContactInfo().getName();
         }
         if (contactDetailsDelegate != null) {
             contactDetailsDelegate.showDetails(contact);

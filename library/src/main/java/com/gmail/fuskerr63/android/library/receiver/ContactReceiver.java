@@ -7,9 +7,11 @@ import android.os.Bundle;
 
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotifyNotificationManager;
 
+import java.net.URI;
 import java.util.GregorianCalendar;
 
 import javax.inject.Inject;
@@ -37,7 +39,20 @@ public class ContactReceiver extends BroadcastReceiver {
             String extraName = "NAME";
             String name = extras.getString(extraName);
             notificationManager.notifyNotification(id, text);
-            notificationInteractor.toggleNotificationForContact(new Contact(id, name, new GregorianCalendar()));
+            notificationInteractor.toggleNotificationForContact(
+                    new Contact(
+                            id,
+                            URI.create(""),
+                            new ContactInfo(
+                                    name,
+                                    "",
+                                    "",
+                                    "",
+                                    ""
+                                    ),
+                            new GregorianCalendar(),
+                            "")
+            );
         }
     }
 }

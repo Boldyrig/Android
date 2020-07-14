@@ -30,11 +30,11 @@ public class ContactDetailsDelegate {
             } else {
                 ((ImageView) view.findViewById(R.id.image)).setImageURI(Uri.parse(image.toString()));
             }
-            ((TextView) view.findViewById(R.id.name)).setText(contact.getName());
-            ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getNumber());
-            ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getNumber2());
-            ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getEmail());
-            ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getEmail2());
+            ((TextView) view.findViewById(R.id.name)).setText(contact.getContactInfo().getName());
+            ((TextView) view.findViewById(R.id.number1_contact)).setText(contact.getContactInfo().getNumber());
+            ((TextView) view.findViewById(R.id.number2_contact)).setText(contact.getContactInfo().getNumber2());
+            ((TextView) view.findViewById(R.id.email1_contact)).setText(contact.getContactInfo().getEmail());
+            ((TextView) view.findViewById(R.id.email2_contact)).setText(contact.getContactInfo().getEmail2());
             ((TextView) view.findViewById(R.id.address_contact)).setText(contact.getAddress());
             Calendar birthday = contact.getBirthday();
             if (birthday != null && contact.getBirthday().get(Calendar.YEAR) != 1) {

@@ -56,10 +56,10 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
-            final String oldNumber = oldItem.getNumber();
-            final String newNumber = newItem.getNumber();
-            final String oldName = oldItem.getName();
-            final String newName = newItem.getName();
+            final String oldNumber = oldItem.getContactInfo().getNumber();
+            final String newNumber = newItem.getContactInfo().getNumber();
+            final String oldName = oldItem.getContactInfo().getName();
+            final String newName = newItem.getContactInfo().getName();
             final URI oldImage = oldItem.getImage();
             final URI newImage = newItem.getImage();
             final boolean oldImageIsNull = oldImage == null;

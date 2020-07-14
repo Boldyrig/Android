@@ -2,63 +2,30 @@ package com.gmail.fuskerr63.java.entity;
 
 import java.net.URI;
 import java.util.Calendar;
+import java.util.Objects;
 
-public class Contact {
+import io.reactivex.annotations.NonNull;
+
+public final class Contact {
     private final int id;
+    @NonNull
     private final URI image;
-    private final String name;
-    private final String number;
-    private final String number2;
-    private final String email;
-    private final String email2;
+    @NonNull
+    private final ContactInfo contactInfo;
+    @NonNull
     private final Calendar birthday;
+    @NonNull
     private final String address;
 
-    public Contact(int id, String name, Calendar birthday) {
-        this.id = id;
-        this.image = URI.create("");
-        this.name = name;
-        this.number = "";
-        this.number2 = "";
-        this.email = "";
-        this.email2 = "";
-        this.birthday = birthday;
-        this.address = "";
-    }
-
-    public Contact(int id, URI image, String name, String number) {
+    public Contact(
+            int id,
+            @NonNull URI image,
+            @NonNull ContactInfo contactInfo,
+            @NonNull Calendar birthday,
+            @NonNull String address) {
         this.id = id;
         this.image = image;
-        this.name = name;
-        this.number = number;
-        this.number2 = "";
-        this.email = "";
-        this.email2 = "";
-        this.birthday = Calendar.getInstance();
-        birthday.set(Calendar.YEAR, 0);
-        this.address = "";
-    }
-
-    public Contact(int id, URI image, ContactInfo contactInfo, Calendar birthday) {
-        this.id = id;
-        this.image = image;
-        this.name = contactInfo.getName();
-        this.number = contactInfo.getNumber();
-        this.number2 = contactInfo.getNumber2();
-        this.email = contactInfo.getEmail();
-        this.email2 = contactInfo.getEmail2();
-        this.birthday = birthday;
-        this.address = "";
-    }
-
-    public Contact(int id, URI image, ContactInfo contactInfo, Calendar birthday, String address) {
-        this.id = id;
-        this.image = image;
-        this.name = contactInfo.getName();
-        this.number = contactInfo.getNumber();
-        this.number2 = contactInfo.getNumber2();
-        this.email = contactInfo.getEmail();
-        this.email2 = contactInfo.getEmail2();
+        this.contactInfo = contactInfo;
         this.birthday = birthday;
         this.address = address;
     }
@@ -67,35 +34,68 @@ public class Contact {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
+    @NonNull
     public URI getImage() {
         return image;
     }
 
-    public String getNumber2() {
-        return number2;
+    @NonNull
+    public ContactInfo getContactInfo() {
+        return contactInfo;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getEmail2() {
-        return email2;
-    }
-
+    @NonNull
     public Calendar getBirthday() {
         return birthday;
     }
 
+    @NonNull
     public String getAddress() {
         return address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Contact contact = (Contact) o;
+        return id == contact.id
+                && image.equals(contact.image)
+                && contactInfo.equals(contact.contactInfo)
+                && birthday.equals(contact.birthday)
+                && address.equals(contact.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                id,
+                image,
+                contactInfo.getName(),
+                contactInfo.getNumber(),
+                contactInfo.getNumber2(),
+                contactInfo.getEmail(),
+                contactInfo.getEmail2(),
+                birthday,
+                address);
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{"
+                + "id=" + id
+                + ", image=" + image
+                + ", name='" + contactInfo.getName() + '\''
+                + ", number='" + contactInfo.getNumber() + '\''
+                + ", number2='" + contactInfo.getNumber2() + '\''
+                + ", email='" + contactInfo.getEmail() + '\''
+                + ", email2='" + contactInfo.getEmail2() + '\''
+                + ", birthday=" + birthday
+                + ", address='" + address + '\''
+                + '}';
     }
 }

@@ -100,7 +100,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
 
     @Override
     public NotificationStatus toggleNotificationForContact(Contact contact) {
-        String text = textNotification + contact.getName();
+        String text = textNotification + contact.getContactInfo().getName();
         if (alarmIsUp(contact.getId(), text)) {
             cancelAlarm(contact.getId(), text);
         } else {
@@ -111,7 +111,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
 
     @Override
     public NotificationStatus getNotificationStatusForContact(Contact contact) {
-        String text = textNotification + contact.getName();
+        String text = textNotification + contact.getContactInfo().getName();
         return new NotificationStatus(alarmIsUp(contact.getId(), text));
     }
 }

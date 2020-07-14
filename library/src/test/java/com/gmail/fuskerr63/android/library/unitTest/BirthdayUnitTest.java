@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.android.library.unitTest;
 
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl;
 import com.gmail.fuskerr63.java.interactor.NotificationRepository;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.net.URI;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -65,7 +67,17 @@ public class BirthdayUnitTest {
 
         // Установить день рождения на 1990 8 сентября
         Calendar birthday = new GregorianCalendar(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
         // Следующий день рождения
         Calendar nextBirthday = new GregorianCalendar(year2000, Calendar.SEPTEMBER, day8);
 
@@ -94,7 +106,17 @@ public class BirthdayUnitTest {
 
         // Установить день рождения на 1990 8 сентября
         Calendar birthday = new GregorianCalendar(year1990, Calendar.SEPTEMBER, day8);
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         // Следующий день рождения
         Calendar nextBirthday = new GregorianCalendar(year1999, Calendar.SEPTEMBER, day8);
@@ -123,7 +145,17 @@ public class BirthdayUnitTest {
                 flagNoCreate)).thenReturn(true);
 
         Calendar birthday = new GregorianCalendar(year1990, Calendar.SEPTEMBER, day8);
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         notificationInteractor.toggleNotificationForContact(contact);
         verify(notificationRepository).cancelAlarm(
@@ -140,7 +172,17 @@ public class BirthdayUnitTest {
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 
         Calendar birthday = new GregorianCalendar(year1988, Calendar.FEBRUARY, day29);
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         Calendar nextBirthday = new GregorianCalendar(year2000, Calendar.FEBRUARY, day29);
 
@@ -168,7 +210,17 @@ public class BirthdayUnitTest {
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 
         Calendar birthday = new GregorianCalendar(year1988, Calendar.FEBRUARY, day29);
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         final int year2004 = 2004;
         Calendar nextBirthday = new GregorianCalendar(year2004, Calendar.FEBRUARY, day29);

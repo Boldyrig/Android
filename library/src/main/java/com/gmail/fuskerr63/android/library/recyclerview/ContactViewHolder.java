@@ -39,8 +39,8 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
             } else {
                 image.setImageURI(Uri.parse(imageUri.toString()));
             }
-            name.setText(contact.getName());
-            number.setText(contact.getNumber());
+            name.setText(contact.getContactInfo().getName());
+            number.setText(contact.getContactInfo().getNumber());
         }
     }
 }

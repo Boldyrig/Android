@@ -48,11 +48,11 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
                     .flatMap(contact -> databaseInteractor.getUserByContactId(contact.getId())
                             .map(user -> {
                                 ContactInfo contactInfo = new ContactInfo(
-                                        contact.getName(),
-                                        contact.getNumber(),
-                                        contact.getNumber2(),
-                                        contact.getEmail(),
-                                        contact.getEmail2()
+                                        contact.getContactInfo().getName(),
+                                        contact.getContactInfo().getNumber(),
+                                        contact.getContactInfo().getNumber2(),
+                                        contact.getContactInfo().getEmail(),
+                                        contact.getContactInfo().getEmail2()
                                 );
                                 return new Contact(
                                         contact.getId(),

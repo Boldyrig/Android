@@ -3,6 +3,7 @@ package com.gmail.fuskerr63.android.library.instrumentedTest;
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
+import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.ContactModel;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
@@ -23,6 +24,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.net.URI;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -84,7 +86,17 @@ public class BirthdayInstrumentedTest {
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day9);
         nextBirthday.set(year2000, Calendar.SEPTEMBER, day8, 0, 0, 0);
 
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         BirthdayCalendar birthdayCalendar = new BirthdayCalendar(
@@ -108,7 +120,17 @@ public class BirthdayInstrumentedTest {
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
         nextBirthday.set(year1999, Calendar.SEPTEMBER, day8, 0, 0, 0);
 
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         BirthdayCalendar birthdayCalendar = new BirthdayCalendar(
@@ -136,7 +158,17 @@ public class BirthdayInstrumentedTest {
         birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0);
         currentCalendar.set(year1999, Calendar.SEPTEMBER, day7);
 
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         verify(notificationRepository).cancelAlarm(
@@ -152,7 +184,17 @@ public class BirthdayInstrumentedTest {
         currentCalendar.set(year1999, Calendar.MARCH, day2);
         nextBirthday.set(year2000, Calendar.FEBRUARY, day29, 0, 0, 0);
 
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         BirthdayCalendar birthdayCalendar = new BirthdayCalendar(
@@ -178,7 +220,17 @@ public class BirthdayInstrumentedTest {
         final int year2004 = 2004;
         nextBirthday.set(year2004, Calendar.FEBRUARY, day29, 0, 0, 0);
 
-        contact = new Contact(contactId, contactName, birthday);
+        contact = new Contact(
+                contactId,
+                URI.create(""),
+                new ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""),
+                birthday,
+                "");
 
         presenter.onClickBirthday(contact, cancelNotification, sendNotification);
         BirthdayCalendar birthdayCalendar = new BirthdayCalendar(

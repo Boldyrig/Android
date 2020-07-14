@@ -4,10 +4,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 import io.reactivex.annotations.Nullable;
 
 @Entity
-public class User {
+public final class User {
     @PrimaryKey
     @ColumnInfo(name = "contact_id")
     private final int contactId;
@@ -54,5 +56,37 @@ public class User {
     @Nullable
     public String getAddress() {
         return address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return contactId == user.contactId
+                && Double.compare(user.latitude, latitude) == 0
+                && Double.compare(user.longitude, longitude) == 0
+                && Objects.equals(name, user.name)
+                && Objects.equals(address, user.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contactId, name, latitude, longitude, address);
+    }
+
+    @Override
+    public String toString() {
+        return "User{"
+                + "contactId=" + contactId
+                + ", name='" + name + '\''
+                + ", latitude=" + latitude
+                + ", longitude=" + longitude
+                + ", address='" + address + '\''
+                + '}';
     }
 }

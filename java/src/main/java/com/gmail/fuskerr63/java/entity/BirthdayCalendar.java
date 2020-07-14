@@ -1,31 +1,14 @@
 package com.gmail.fuskerr63.java.entity;
 
-public class BirthdayCalendar {
+import java.util.Objects;
+
+public final class BirthdayCalendar implements Cloneable {
     private final int year;
     private final int month;
     private final int day;
     private final int hour;
     private final int minute;
     private final int second;
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BirthdayCalendar) {
-            BirthdayCalendar birthdayCalendar = (BirthdayCalendar) obj;
-            return birthdayCalendar.getYear() == year
-                    && birthdayCalendar.getMonth() == month
-                    && birthdayCalendar.getDay() == day
-                    && birthdayCalendar.getHour() == hour
-                    && birthdayCalendar.getMinute() == minute
-                    && birthdayCalendar.getSecond() == second;
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return year * month * day * hour * minute * second;
-    }
 
     public BirthdayCalendar(int year, int month, int day, int hour, int minute, int second) {
         this.year = year;
@@ -58,5 +41,44 @@ public class BirthdayCalendar {
 
     public int getSecond() {
         return second;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BirthdayCalendar that = (BirthdayCalendar) o;
+        return year == that.year
+                && month == that.month
+                && day == that.day
+                && hour == that.hour
+                && minute == that.minute
+                && second == that.second;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year, month, day, hour, minute, second);
+    }
+
+    @Override
+    public String toString() {
+        return "BirthdayCalendar{"
+                + "year=" + year
+                + ", month=" + month
+                + ", day=" + day
+                + ", hour=" + hour
+                + ", minute=" + minute
+                + ", second=" + second
+                + '}';
+    }
+
+    @Override
+    public BirthdayCalendar clone() throws CloneNotSupportedException {
+        return (BirthdayCalendar) super.clone();
     }
 }

@@ -84,7 +84,15 @@ public class Repository implements ContactRepository {
     }
 
     private Contact loadContactFromCursor(Cursor cursorContact, int id, ContentResolver contentResolver) {
-        Contact contact = new Contact(-1, URI.create(""), "", ""); // пустой контакт
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 1);
+        Contact contact = new Contact(
+                -1,
+                URI.create(""),
+                new ContactInfo("", "", "", "", ""),
+                calendar,
+                ""
+        ); // пустой контакт
         try {
             int displayName = cursorContact.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
             int photoUri = cursorContact.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
@@ -139,7 +147,12 @@ public class Repository implements ContactRepository {
 
                 String email1 = !emails.isEmpty() ? emails.get(0) : null;
                 String email2 = emails.size() > 1 ? emails.get(1) : null;
-                contact = new Contact(id, image, new ContactInfo(name, number1, number2, email1, email2), birthday);
+                contact = new Contact(
+                        id,
+                        image,
+                        new ContactInfo(name, number1, number2, email1, email2),
+                        birthday,
+                        "");
             }
         } finally {
             cursorContact.close();
@@ -181,7 +194,20 @@ public class Repository implements ContactRepository {
                         numbers = loadNumbersFromCursor(cursorPhone);
                     }
                     String number = !numbers.isEmpty() ? numbers.get(0) : null;
-                    Contact contact = new Contact(idContact, image, name, number);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, 1);
+                    Contact contact = new Contact(
+                            idContact,
+                            image,
+                            new ContactInfo(
+                                    name,
+                                    number,
+                                    "",
+                                    "",
+                                    ""),
+                            calendar,
+                            ""
+                            );
                     contacts.add(contact);
                     cursorContact.moveToNext();
                 }
