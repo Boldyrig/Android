@@ -40,7 +40,15 @@ class DetailsRepository constructor(
         val contact: Contact = Contact(
                 -1,
                 URI.create(""),
-                ContactInfo()
+                ContactInfo("", "", "", "", ""),
+                calendar,
+                ""
         )
+        try {
+            val displayName: Int? = cursor?.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+            val photoUri: Int? = cursor?.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)
+            val hasPhoneNumber: Int? = cursor?.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
+            if (cursor?.count 0)
+        }
     }
 }
