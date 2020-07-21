@@ -2,8 +2,8 @@ package com.gmail.fuskerr63.appllication.di.app;
 
 import android.content.Context;
 
-import com.gmail.fuskerr63.android.library.repository.Repository;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.android.library.repository.ListRepository;
+import com.gmail.fuskerr63.java.repository.ContactListRepository;
 
 import javax.inject.Singleton;
 
@@ -17,7 +17,7 @@ public class RepositoryModule {
     @NonNull
     @Singleton
     @Provides
-    public ContactRepository provideRepository(@NonNull Context context) {
-        return new Repository(context.getContentResolver());
+    public ContactListRepository provideRepository(@NonNull Context context) {
+        return new ListRepository(context.getContentResolver());
     }
 }

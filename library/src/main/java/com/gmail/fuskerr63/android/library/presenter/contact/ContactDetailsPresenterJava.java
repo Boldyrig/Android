@@ -2,13 +2,14 @@ package com.gmail.fuskerr63.android.library.presenter.contact;
 
 import android.util.Log;
 
+import androidx.multidex.BuildConfig;
+
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
-import com.gmail.fuskerr63.library.BuildConfig;
 
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import moxy.MvpPresenter;
 
-public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
+public class ContactDetailsPresenterJava extends MvpPresenter<ContactDetailsView> {
     @Nullable
     private final ContactInteractor contactInteractor;
     @Nullable
@@ -32,7 +33,7 @@ public class ContactDetailsPresenter extends MvpPresenter<ContactDetailsView> {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Inject
-    public ContactDetailsPresenter(
+    public ContactDetailsPresenterJava(
             @Nullable ContactInteractor contactInteractor,
             @Nullable DatabaseInteractor databaseInteractor,
             @Nullable NotificationInteractor notificationInteractor) {

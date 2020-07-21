@@ -6,7 +6,7 @@ import android.provider.ContactsContract;
 
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.entity.ContactInfo;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.java.repository.ContactListRepository;
 
 import java.lang.ref.WeakReference;
 import java.text.ParseException;
@@ -22,7 +22,7 @@ import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
-public class Repository implements ContactRepository {
+public class ListRepository implements ContactListRepository {
     @NonNull
     private final WeakReference<ContentResolver> weakContentResolver;
 
@@ -35,7 +35,7 @@ public class Repository implements ContactRepository {
             ContactsContract.Contacts.HAS_PHONE_NUMBER
     };
 
-    public Repository(@NonNull ContentResolver contentResolver) {
+    public ListRepository(@NonNull ContentResolver contentResolver) {
         weakContentResolver = new WeakReference(contentResolver);
     }
 

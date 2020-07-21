@@ -1,7 +1,7 @@
 package com.gmail.fuskerr63.java.interactor;
 
 import com.gmail.fuskerr63.java.entity.Contact;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.java.repository.ContactListRepository;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import io.reactivex.annotations.Nullable;
 
 public class ContactModel implements ContactInteractor {
     @Nullable
-    private final ContactRepository repository;
+    private final ContactListRepository repository;
 
-    public ContactModel(@Nullable ContactRepository repository) {
+    public ContactModel(@Nullable ContactListRepository repository) {
         this.repository = repository;
     }
 

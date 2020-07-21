@@ -16,7 +16,7 @@ import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelega
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactComponentContainer;
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
+import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenterJava;
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
@@ -43,13 +43,13 @@ public class ContactDetailsFragment extends MvpAppCompatFragment implements Cont
     private String notificationSend;
 
     @InjectPresenter
-    ContactDetailsPresenter detailsPresenter;
+    ContactDetailsPresenterJava detailsPresenter;
 
     @Inject
-    Provider<ContactDetailsPresenter> presenterProvider;
+    Provider<ContactDetailsPresenterJava> presenterProvider;
 
     @ProvidePresenter
-    ContactDetailsPresenter provideDetailsPresenter() {
+    ContactDetailsPresenterJava provideDetailsPresenter() {
         return presenterProvider.get();
     }
 

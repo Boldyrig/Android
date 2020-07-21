@@ -1,6 +1,6 @@
 package com.gmail.fuskerr63.android.library.instrumentedTest;
 
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
+import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenterJava;
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.java.entity.ContactInfo;
@@ -12,7 +12,7 @@ import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl;
 import com.gmail.fuskerr63.java.interactor.NotificationRepository;
 import com.gmail.fuskerr63.java.interactor.NotificationTime;
-import com.gmail.fuskerr63.java.repository.ContactRepository;
+import com.gmail.fuskerr63.java.repository.ContactListRepository;
 import com.gmail.fuskerr63.java.repository.LocationRepository;
 
 import org.junit.Before;
@@ -30,14 +30,14 @@ import java.util.GregorianCalendar;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BirthdayInstrumentedTest {
-    private ContactDetailsPresenter presenter;
+    private ContactDetailsPresenterJava presenter;
     private Contact contact;
     @Mock
     private NotificationTime notificationTime;
     @Mock
     private NotificationRepository notificationRepository;
     @Mock
-    private ContactRepository contactRepository;
+    private ContactListRepository contactRepository;
     @Mock
     private LocationRepository locationRepository;
 
@@ -76,7 +76,7 @@ public class BirthdayInstrumentedTest {
 
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 
-        presenter = new ContactDetailsPresenter(contactInteractor, databaseInteractor, notificationInteractor);
+        presenter = new ContactDetailsPresenterJava(contactInteractor, databaseInteractor, notificationInteractor);
     }
 
     @Test
