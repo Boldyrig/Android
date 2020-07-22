@@ -7,7 +7,7 @@ import com.gmail.fuskerr63.java.entity.ContactInfo;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.ContactModel;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
-import com.gmail.fuskerr63.java.interactor.DatabaseModel;
+import com.gmail.fuskerr63.java.interactor.DatabaseModelAdapter;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl;
 import com.gmail.fuskerr63.java.interactor.NotificationRepository;
@@ -72,7 +72,7 @@ public class BirthdayInstrumentedTest {
                 flagNoCreate,
                 flagUpdateCurrent);
         ContactInteractor contactInteractor = new ContactModel(contactRepository);
-        DatabaseInteractor databaseInteractor = new DatabaseModel(locationRepository);
+        DatabaseInteractor databaseInteractor = new DatabaseModelAdapter(locationRepository);
 
         when(notificationTime.getCurrentTimeCalendar()).thenReturn(currentCalendar);
 

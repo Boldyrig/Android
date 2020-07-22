@@ -38,7 +38,6 @@ public class LocationRepositoryImpl implements LocationRepository {
                 });
     }
 
-
     @NonNull
     @Override
     public Single<ContactLocation> getUserByContactId(int contactId) {

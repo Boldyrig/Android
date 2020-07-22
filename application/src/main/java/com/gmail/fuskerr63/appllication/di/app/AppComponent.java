@@ -15,7 +15,8 @@ import io.reactivex.annotations.NonNull;
 
 @Singleton
 @Component(modules = {
-        RepositoryModule.class,
+        ContactListRepositoryModule.class,
+        ContactDetailsRepositoryModule.class,
         ContactInteractorModule.class,
         NotificationTimeModule.class,
         NotificationInteractorModule.class,
@@ -30,6 +31,7 @@ import io.reactivex.annotations.NonNull;
         GeoCodeRepositoryModule.class,
         DatabaseModule.class,
         DatabaseInteractorModule.class,
+        DatabaseAdapterModule.class,
         LocationRepositoryModule.class,
         DirectionRetrofitModule.class,
         DirectionInteractorModule.class,

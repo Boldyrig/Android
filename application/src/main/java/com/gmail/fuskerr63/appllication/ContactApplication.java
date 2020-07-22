@@ -9,9 +9,12 @@ import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.appllication.di.app.AlarmManagerModule;
 import com.gmail.fuskerr63.appllication.di.app.AppComponent;
+import com.gmail.fuskerr63.appllication.di.app.ContactDetailsRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.ContactInteractorModule;
+import com.gmail.fuskerr63.appllication.di.app.ContactListRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.ContextModule;
 import com.gmail.fuskerr63.appllication.di.app.DaggerAppComponent;
+import com.gmail.fuskerr63.appllication.di.app.DatabaseAdapterModule;
 import com.gmail.fuskerr63.appllication.di.app.IntentManagerModule;
 import com.gmail.fuskerr63.appllication.di.app.NotificationInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.NotificationManagerModule;
@@ -27,7 +30,6 @@ import com.gmail.fuskerr63.appllication.di.app.GeoCodeInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
-import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 
 import io.reactivex.annotations.NonNull;
 
@@ -42,7 +44,8 @@ public class ContactApplication extends Application implements ContactApplicatio
 
     private void initDependencies() {
         appComponent = DaggerAppComponent.builder()
-                .repositoryModule(new RepositoryModule())
+                .contactListRepositoryModule(new ContactListRepositoryModule())
+                .contactDetailsRepositoryModule(new ContactDetailsRepositoryModule())
                 .contactInteractorModule(new ContactInteractorModule())
                 .notificationTimeModule(new NotificationTimeModule())
                 .notificationRepositoryModule(new NotificationRepositoryModule())
@@ -68,6 +71,7 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .locationRepositoryModule(new LocationRepositoryModule())
                 .databaseModule(new DatabaseModule())
                 .databaseInteractorModule(new DatabaseInteractorModule())
+                .databaseAdapterModule(new DatabaseAdapterModule())
                 .contactInteractorModule(new ContactInteractorModule())
                 .build();
     }

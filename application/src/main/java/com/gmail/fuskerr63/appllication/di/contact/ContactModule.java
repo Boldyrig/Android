@@ -1,7 +1,8 @@
 package com.gmail.fuskerr63.appllication.di.contact;
 
+import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter;
+import com.gmail.fuskerr63.java.interactor.DatabaseAdapter;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenterJava;
 import com.gmail.fuskerr63.appllication.di.scope.ContactDetailsScope;
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor;
@@ -15,10 +16,10 @@ public class ContactModule {
     @ContactDetailsScope
     @Nullable
     @Provides
-    ContactDetailsPresenterJava provideDetailsPresenter(
+    ContactDetailsPresenter provideDetailsPresenter(
             @Nullable ContactInteractor contactInteractor,
-            @Nullable DatabaseInteractor databaseInteractor,
+            @Nullable DatabaseAdapter databaseAdapter,
             @Nullable NotificationInteractor notificationInteractor) {
-        return new ContactDetailsPresenterJava(contactInteractor, databaseInteractor, notificationInteractor);
+        return new ContactDetailsPresenter(contactInteractor, databaseAdapter, notificationInteractor);
     }
 }

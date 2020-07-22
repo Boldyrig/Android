@@ -80,6 +80,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         contactListDelegate = new ContactListDelegate(view);
         contactListDelegate.onCreateView(getContext(), pxFromDp(DP_10));
         setHasOptionsMenu(true);
+        contactPresenter.updateList("");
         return view;
     }
 

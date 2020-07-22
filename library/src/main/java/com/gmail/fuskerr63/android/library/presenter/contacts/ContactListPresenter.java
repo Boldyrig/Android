@@ -47,7 +47,6 @@ public class ContactListPresenter extends MvpPresenter<ContactListView> {
                                     }
                                 })
         );
-        updateList("");
     }
 
     public void updateList(@Nullable String selector) {

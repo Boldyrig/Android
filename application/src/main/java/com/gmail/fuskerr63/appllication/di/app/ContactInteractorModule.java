@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.appllication.di.app;
 
 import com.gmail.fuskerr63.java.interactor.ContactInteractor;
 import com.gmail.fuskerr63.java.interactor.ContactModel;
+import com.gmail.fuskerr63.java.repository.ContactDetailsRepository;
 import com.gmail.fuskerr63.java.repository.ContactListRepository;
 
 import javax.inject.Singleton;
@@ -16,7 +17,9 @@ public class ContactInteractorModule {
     @NonNull
     @Singleton
     @Provides
-    public ContactInteractor provideContactModel(@NonNull ContactListRepository repository) {
-        return new ContactModel(repository);
+    public ContactInteractor provideContactModel(
+            @NonNull ContactListRepository listRepository,
+            @NonNull ContactDetailsRepository detailsRepository) {
+        return new ContactModel(listRepository, detailsRepository);
     }
 }

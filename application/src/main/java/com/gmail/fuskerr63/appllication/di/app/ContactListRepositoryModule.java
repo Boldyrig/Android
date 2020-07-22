@@ -12,12 +12,11 @@ import dagger.Provides;
 import io.reactivex.annotations.NonNull;
 
 @Module
-public class RepositoryModule {
-
+public class ContactListRepositoryModule {
     @NonNull
     @Singleton
     @Provides
-    public ContactListRepository provideRepository(@NonNull Context context) {
+    public ContactListRepository provideListRepository(@NonNull Context context) {
         return new ListRepository(context.getContentResolver());
     }
 }

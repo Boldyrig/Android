@@ -56,7 +56,7 @@ class DetailsRepository constructor(
                         cursor.moveToFirst();
                         var image = URI.create("")
                         val name = cursor.getString(displayName)
-                        var numbers = arrayOf<String>()
+                        var numbers = ArrayList<String>()
 
                         val imageString = cursor.getString(photoUri)
                         if (imageString != null) {
@@ -113,20 +113,19 @@ class DetailsRepository constructor(
             } finally {
                 cursor?.close()
             }
-            emit(contact);
+            emit(contact)
         }
     }
 
-    fun loadNumbersFromCursor(cursorPhone: Cursor?): Array<String> {
-        val numbers = emptyArray<String>()
+    fun loadNumbersFromCursor(cursorPhone: Cursor?): ArrayList<String> {
+        val numbers = ArrayList<String>()
         try {
             if (cursorPhone != null) {
-                val number = cursorPhone?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                var i = 0
+                val number = cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
                 if (cursorPhone.count > 0) {
                     cursorPhone.moveToFirst()
                     while (!cursorPhone.isAfterLast) {
-                        numbers[i++] = cursorPhone.getString(number)
+                        numbers.add(cursorPhone.getString(number))
                         cursorPhone.moveToNext()
                     }
                 }
@@ -144,9 +143,8 @@ class DetailsRepository constructor(
                 val address = cursorEmail.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)
                 if (cursorEmail.count > 0) {
                     cursorEmail.moveToFirst()
-                    var i = 0
                     while (!cursorEmail.isAfterLast) {
-                        emails[i++] = cursorEmail.getString(address)
+                        emails.plus(cursorEmail.getString(address))
                         cursorEmail.moveToNext()
                     }
                 }
@@ -169,7 +167,10 @@ class DetailsRepository constructor(
                     while (!cursorBirthday.isAfterLast) {
                         val date = cursorBirthday.getString(startDate)
                         try {
-                            birthday.time = format.parse(date)
+                            val time = format.parse(date)
+                            if (time != null) {
+                                birthday.time = time
+                            }
                         } catch (e: ParseException) {
                             birthday.set(Calendar.YEAR, 1)
                         }
