@@ -25,6 +25,6 @@ public class IntentManagerModule {
     @Singleton
     @Provides
     public IntentManager provideBirthdayNorification(@Nullable Context context) {
-        return new IntentManager(mainActivityClass, context);
+        return new IntentManager(context, mainActivityClass);
     }
 }

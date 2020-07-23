@@ -25,8 +25,7 @@ class ContactDetailsPresenter @Inject constructor(
             CoroutineScope(Dispatchers.Main).launch {
                 try {
                     contactInteractor.getContactById(id)
-                            .flatMapMerge { contact: Contact ->
-                                flow<Contact> {
+                            .map { contact: Contact ->
                                     var newContact = Contact(
                                             contact.id,
                                             contact.image,
@@ -44,11 +43,17 @@ class ContactDetailsPresenter @Inject constructor(
                                                     location.address
                                             )
                                         }
-                                    emit(newContact)
-                                }
+                                    newContact
                             }
                             .flowOn(Dispatchers.IO)
-                            .collect { contact: Contact? -> viewState?.updateDetails(contact) }
+                            .collect { contact: Contact? ->
+                                viewState?.updateDetails(contact)
+                                if (notificationInteractor!!.getNotificationStatusForContact(contact).isAlarmUp) {
+                                    viewState?.setTextButton(notificationCancel)
+                                } else {
+                                    viewState?.setTextButton(notificationSend)
+                                }
+                            }
                 } catch (error: Exception) {
                     viewState?.showMessageToast(error.message)
                 }

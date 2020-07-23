@@ -96,10 +96,10 @@ class DetailsRepository constructor(
                         val birthday = loadBirthdayFromCursor(cursorBirthday)
 
                         val number1 = if (!numbers.isEmpty()) numbers[0] else ""
-                        val number2 = if (numbers.count() > 0) numbers[1] else ""
+                        val number2 = if (numbers.count() > 1) numbers[1] else ""
 
                         val email1 = if (!emails.isEmpty()) emails[0] else ""
-                        val email2 = if (emails.count() > 0) emails[1] else ""
+                        val email2 = if (emails.count() > 1) emails[1] else ""
 
                         contact = Contact(
                                 id,
