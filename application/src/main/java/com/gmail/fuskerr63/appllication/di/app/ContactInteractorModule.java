@@ -18,8 +18,8 @@ public class ContactInteractorModule {
     @Singleton
     @Provides
     public ContactInteractor provideContactModel(
-            @NonNull ContactListRepository listRepository,
-            @NonNull ContactDetailsRepository detailsRepository) {
+            @NonNull ContactDetailsRepository detailsRepository,
+            @NonNull ContactListRepository listRepository) {
         return new ContactModel(listRepository, detailsRepository);
     }
 }

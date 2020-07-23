@@ -14,7 +14,7 @@ public class DatabaseAdapterModule {
     @NonNull
     @Singleton
     @Provides
-    public DatabaseAdapter provideDatabaseAdapter(DatabaseInteractor databaseInteractor) {
+    public DatabaseAdapter provideDatabaseAdapter(@NonNull DatabaseInteractor databaseInteractor) {
         return new DatabaseAdapter(databaseInteractor);
     }
 }
