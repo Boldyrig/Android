@@ -155,4 +155,3 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
         return false;
     }
 }
-
