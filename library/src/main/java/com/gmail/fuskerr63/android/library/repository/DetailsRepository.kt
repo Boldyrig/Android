@@ -12,6 +12,7 @@ import java.net.URI
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DetailsRepository constructor(
         private val contentResolver: ContentResolver?
@@ -136,15 +137,15 @@ class DetailsRepository constructor(
         return numbers
     }
 
-    fun loadEmailFromCursor(cursorEmail: Cursor?): Array<String> {
-        val emails = emptyArray<String>()
+    fun loadEmailFromCursor(cursorEmail: Cursor?): ArrayList<String> {
+        val emails = ArrayList<String>()
         try {
             if (cursorEmail != null) {
                 val address = cursorEmail.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)
                 if (cursorEmail.count > 0) {
                     cursorEmail.moveToFirst()
                     while (!cursorEmail.isAfterLast) {
-                        emails.plus(cursorEmail.getString(address))
+                        emails.add(cursorEmail.getString(address))
                         cursorEmail.moveToNext()
                     }
                 }
