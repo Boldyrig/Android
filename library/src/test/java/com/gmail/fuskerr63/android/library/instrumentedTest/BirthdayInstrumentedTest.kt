@@ -10,36 +10,31 @@ import com.gmail.fuskerr63.java.repository.ContactListRepository
 import com.gmail.fuskerr63.java.repository.LocationRepository
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.net.URI
 import java.util.*
 
-class BirthdayInstrumentedTest : Spek ({
+class BirthdayInstrumentedTest : Spek({
     lateinit var contactDetailsPresenter: ContactDetailsPresenter
     lateinit var contact: Contact
 
     @MockK
-    var notificationTime = mockk<NotificationTime>()
+    val notificationTime = mockk<NotificationTime>()
     @MockK
-    var notificationRepository = mockk<NotificationRepository>()
+    val notificationRepository = mockk<NotificationRepository>()
     @MockK
-    var contactListRepository = mockk<ContactListRepository>()
+    val contactListRepository = mockk<ContactListRepository>()
     @MockK
-    var contactDetailsRepository = mockk<ContactDetailsRepository>()
+    val contactDetailsRepository = mockk<ContactDetailsRepository>()
     @MockK
-    var locationRepository = mockk<LocationRepository>()
+    val locationRepository = mockk<LocationRepository>()
 
     val textNotification = "Today is the birthday of"
     val sendNotification = "Send notification"
     val cancelNotification = "Сancel notification"
     val contactId = 1
     val contactName = "Иван"
-    val flagNoCreate = 536870912
-    val flagUpdateCurrent = 134217728
 
     val year1988 = 1988
     val year1990 = 1990
@@ -56,26 +51,23 @@ class BirthdayInstrumentedTest : Spek ({
 
     Feature("#Тестируется NotificationInteractor") {
         val notificationInteractor = NotificationInteractorImpl(
-                notificationTime,
-                notificationRepository,
-                textNotification,
-                flagNoCreate,
-                flagUpdateCurrent
+            notificationTime,
+            notificationRepository,
+            textNotification
         )
         val contactInteractor = ContactModel(
-                    contactListRepository,
-                    contactDetailsRepository
-            )
-        val databaseInteractor = DatabaseModel(locationRepository)
-        val databaseAdapter = DatabaseAdapter(databaseInteractor)
+            contactListRepository,
+            contactDetailsRepository
+        )
+        val databaseModel = DatabaseModel(locationRepository)
 
         every { notificationTime.currentTimeCalendar } returns currentCalendar
 
         contactDetailsPresenter = ContactDetailsPresenter(
-                contactInteractor,
-                databaseAdapter,
-                notificationInteractor
-                )
+            contactInteractor,
+            databaseModel,
+            notificationInteractor
+        )
 
         Scenario("Успешное добавление напоминания, День Рождения в текущем году был") {
             Given("Текущий год - 1999(не високосный) 9 сентября") {
@@ -86,57 +78,60 @@ class BirthdayInstrumentedTest : Spek ({
             And("Есть контакт Иван с датой рождения 8 сентября") {
                 birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0)
                 contact = Contact(
-                        contactId,
-                        URI.create(""),
-                        ContactInfo(
-                                contactName,
-                                "",
-                                "",
-                                "",
-                                ""
-                        ),
-                        birthday,
+                    contactId,
+                    URI.create(""),
+                    ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
                         ""
+                    ),
+                    birthday,
+                    ""
                 )
             }
 
             And("И напоминание для этого контакта отсутствует") {
-                every { notificationRepository.alarmIsUp(
+                every {
+                    notificationRepository.alarmIsUp(
                         contactId,
-                        textNotification + contactName,
-                        flagNoCreate
-                ) } returns false
+                        textNotification + contactName
+                    )
+                } returns false
             }
 
             nextBirthday.set(year2000, Calendar.SEPTEMBER, day8, 0, 0, 0)
 
             val birthdayCalendar = BirthdayCalendar(
-                    nextBirthday[Calendar.YEAR],
-                    nextBirthday[Calendar.MONTH],
-                    nextBirthday[Calendar.DATE],
-                    nextBirthday[Calendar.HOUR],
-                    nextBirthday[Calendar.MINUTE],
-                    nextBirthday[Calendar.SECOND]
+                nextBirthday[Calendar.YEAR],
+                nextBirthday[Calendar.MONTH],
+                nextBirthday[Calendar.DATE],
+                nextBirthday[Calendar.HOUR],
+                nextBirthday[Calendar.MINUTE],
+                nextBirthday[Calendar.SECOND]
             )
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта Иван") {
-                every { notificationRepository.setAlarm(
+                every {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) } just Runs
+                        textNotification + contactName
+                    )
+                } just Runs
 
                 contactDetailsPresenter.onClickBirthday(contact, cancelNotification, sendNotification)
             }
 
             Then("Тогда  происходит успешное добавление напоминания на 2000 год 8 сентября") {
-                verify { notificationRepository.setAlarm(
+                verify {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) }
+                        textNotification + contactName
+                    )
+                }
             }
         }
 
@@ -148,55 +143,60 @@ class BirthdayInstrumentedTest : Spek ({
             And("Есть контакт Иван с датой рождения 8 сентября") {
                 birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0)
                 contact = Contact(
-                        contactId,
-                        URI.create(""),
-                        ContactInfo(
-                                contactName,
-                                "",
-                                "",
-                                "",
-                                ""),
-                        birthday,
-                        "")
+                    contactId,
+                    URI.create(""),
+                    ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""
+                    ),
+                    birthday,
+                    ""
+                )
             }
 
             And("И напоминание для этого контакта отсутствует") {
-                every { notificationRepository.alarmIsUp(
+                every {
+                    notificationRepository.alarmIsUp(
                         contactId,
-                        textNotification + contactName,
-                        flagNoCreate
-                ) } returns false
+                        textNotification + contactName
+                    )
+                } returns false
             }
 
             nextBirthday.set(year1999, Calendar.SEPTEMBER, day8, 0, 0, 0)
 
             val birthdayCalendar = BirthdayCalendar(
-                    nextBirthday[Calendar.YEAR],
-                    nextBirthday[Calendar.MONTH],
-                    nextBirthday[Calendar.DATE],
-                    nextBirthday[Calendar.HOUR],
-                    nextBirthday[Calendar.MINUTE],
-                    nextBirthday[Calendar.SECOND]
+                nextBirthday[Calendar.YEAR],
+                nextBirthday[Calendar.MONTH],
+                nextBirthday[Calendar.DATE],
+                nextBirthday[Calendar.HOUR],
+                nextBirthday[Calendar.MINUTE],
+                nextBirthday[Calendar.SECOND]
             )
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта Иван") {
-                every { notificationRepository.setAlarm(
+                every {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) } just Runs
+                        textNotification + contactName
+                    )
+                } just Runs
 
                 contactDetailsPresenter.onClickBirthday(contact, cancelNotification, sendNotification)
             }
 
             Then("Тогда  происходит успешное добавление напоминания на 1999 год 8 сентября") {
-                verify { notificationRepository.setAlarm(
+                verify {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) }
+                        textNotification + contactName
+                    )
+                }
             }
         }
 
@@ -209,40 +209,43 @@ class BirthdayInstrumentedTest : Spek ({
                 birthday.set(year1990, Calendar.SEPTEMBER, day8, 0, 0, 0)
 
                 contact = Contact(
-                        contactId,
-                        URI.create(""),
-                        ContactInfo(
-                                contactName,
-                                "",
-                                "",
-                                "",
-                                ""),
-                        birthday,
-                        "")
+                    contactId,
+                    URI.create(""),
+                    ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""
+                    ),
+                    birthday,
+                    ""
+                )
             }
 
             And("И для него включено напоминание на 2000 год 8 сентября") {
-                every { notificationRepository.alarmIsUp(
+                every {
+                    notificationRepository.alarmIsUp(
                         contactId,
-                        textNotification + contactName,
-                        flagNoCreate
-                ) } returns true
+                        textNotification + contactName
+                    )
+                } returns true
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта Иван") {
-                every { notificationRepository.cancelAlarm(
+                every {
+                    notificationRepository.cancelAlarm(
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) } just Runs
+                        textNotification + contactName
+                    )
+                } just Runs
                 contactDetailsPresenter.onClickBirthday(contact, cancelNotification, sendNotification)
             }
 
             Then("Тогда  происходит успешное удаление напоминания") {
                 notificationRepository.cancelAlarm(
-                        contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
+                    contactId,
+                    textNotification + contactName
                 )
             }
         }
@@ -257,55 +260,60 @@ class BirthdayInstrumentedTest : Spek ({
                 birthday.set(year1988, Calendar.FEBRUARY, day29, 0, 0, 0)
 
                 contact = Contact(
-                        contactId,
-                        URI.create(""),
-                        ContactInfo(
-                                contactName,
-                                "",
-                                "",
-                                "",
-                                ""),
-                        birthday,
-                        "")
+                    contactId,
+                    URI.create(""),
+                    ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""
+                    ),
+                    birthday,
+                    ""
+                )
             }
 
             And("И напоминание для этого контакта отсутствует") {
-                every { notificationRepository.alarmIsUp(
+                every {
+                    notificationRepository.alarmIsUp(
                         contactId,
-                        textNotification + contactName,
-                        flagNoCreate
-                ) } returns false
+                        textNotification + contactName
+                    )
+                } returns false
             }
 
             nextBirthday.set(year2000, Calendar.FEBRUARY, day29, 0, 0, 0)
 
             val birthdayCalendar = BirthdayCalendar(
-                    nextBirthday[Calendar.YEAR],
-                    nextBirthday[Calendar.MONTH],
-                    nextBirthday[Calendar.DATE],
-                    nextBirthday[Calendar.HOUR],
-                    nextBirthday[Calendar.MINUTE],
-                    nextBirthday[Calendar.SECOND]
+                nextBirthday[Calendar.YEAR],
+                nextBirthday[Calendar.MONTH],
+                nextBirthday[Calendar.DATE],
+                nextBirthday[Calendar.HOUR],
+                nextBirthday[Calendar.MINUTE],
+                nextBirthday[Calendar.SECOND]
             )
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта Иван") {
-                every { notificationRepository.setAlarm(
+                every {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) } just Runs
+                        textNotification + contactName
+                    )
+                } just Runs
 
                 contactDetailsPresenter.onClickBirthday(contact, cancelNotification, sendNotification)
             }
 
             Then("Тогда  происходит успешное добавление напоминания на 2000 год 29 февраля") {
-                verify { notificationRepository.setAlarm(
+                verify {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) }
+                        textNotification + contactName
+                    )
+                }
             }
         }
 
@@ -319,56 +327,61 @@ class BirthdayInstrumentedTest : Spek ({
                 birthday.set(year1988, Calendar.FEBRUARY, day29, 0, 0, 0)
 
                 contact = Contact(
-                        contactId,
-                        URI.create(""),
-                        ContactInfo(
-                                contactName,
-                                "",
-                                "",
-                                "",
-                                ""),
-                        birthday,
-                        "")
+                    contactId,
+                    URI.create(""),
+                    ContactInfo(
+                        contactName,
+                        "",
+                        "",
+                        "",
+                        ""
+                    ),
+                    birthday,
+                    ""
+                )
             }
 
             And("И напоминание для этого контакта отсутствует") {
-                every { notificationRepository.alarmIsUp(
+                every {
+                    notificationRepository.alarmIsUp(
                         contactId,
-                        textNotification + contactName,
-                        flagNoCreate
-                ) } returns false
+                        textNotification + contactName
+                    )
+                } returns false
             }
 
             val year2004 = 2004
             nextBirthday.set(year2004, Calendar.FEBRUARY, day29, 0, 0, 0)
 
             val birthdayCalendar = BirthdayCalendar(
-                    nextBirthday[Calendar.YEAR],
-                    nextBirthday[Calendar.MONTH],
-                    nextBirthday[Calendar.DATE],
-                    nextBirthday[Calendar.HOUR],
-                    nextBirthday[Calendar.MINUTE],
-                    nextBirthday[Calendar.SECOND]
+                nextBirthday[Calendar.YEAR],
+                nextBirthday[Calendar.MONTH],
+                nextBirthday[Calendar.DATE],
+                nextBirthday[Calendar.HOUR],
+                nextBirthday[Calendar.MINUTE],
+                nextBirthday[Calendar.SECOND]
             )
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта Иван") {
-                every { notificationRepository.setAlarm(
+                every {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) } just Runs
+                        textNotification + contactName
+                    )
+                } just Runs
 
                 contactDetailsPresenter.onClickBirthday(contact, cancelNotification, sendNotification)
             }
 
             Then("Тогда  происходит успешное добавление напоминания на 2004 год 29 февраля") {
-                verify { notificationRepository.setAlarm(
+                verify {
+                    notificationRepository.setAlarm(
                         birthdayCalendar,
                         contactId,
-                        textNotification + contactName,
-                        flagUpdateCurrent
-                ) }
+                        textNotification + contactName
+                    )
+                }
             }
         }
     }

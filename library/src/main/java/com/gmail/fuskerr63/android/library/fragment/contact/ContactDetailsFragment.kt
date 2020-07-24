@@ -13,6 +13,7 @@ import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPrese
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.library.R
+import kotlinx.android.synthetic.main.fragment_contact_details.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -24,9 +25,9 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     private lateinit var clickListener: OnMenuItemClickDetails
     private lateinit var contactDetailsDelegate: ContactDetailsDelegate
 
-    private lateinit var name: String
-    private lateinit var cancelString: String
-    private lateinit var sendString: String
+    private var name: String? = null
+    private var cancelString: String? = null
+    private var sendString: String? = null
 
     @InjectPresenter
     lateinit var detailsPresenter: ContactDetailsPresenter
@@ -35,37 +36,40 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     lateinit var detailsPresenterProvider: Provider<ContactDetailsPresenter>
 
     @ProvidePresenter
-    fun providePresenter() : ContactDetailsPresenter = detailsPresenterProvider.get()
+    fun providePresenter() = detailsPresenterProvider.get()
 
     override fun updateDetails(contact: Contact?) {
         if (contact != null) {
             name = contact.contactInfo.name
             contactDetailsDelegate.showDetails(contact)
-            if (view != null
-                    && contact.birthday.get(Calendar.YEAR) != 1) {
-                val button = view?.findViewById<Button>(R.id.birthday_button)
-                button?.visibility = View.VISIBLE
-                button?.setOnClickListener { _ -> detailsPresenter.onClickBirthday(
-                        contact,
-                        cancelString,
-                        sendString
-                ) }
+            if (view != null &&
+                contact.birthday.get(Calendar.YEAR) != 1
+            ) {
+                with (birthday_button) {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        detailsPresenter.onClickBirthday(
+                                contact,
+                                cancelString,
+                                sendString
+                        )
+                    }
+                }
             }
         }
-
     }
 
     override fun loadingStatus(show: Boolean) {
         val status = if (show) View.VISIBLE else View.GONE
-        view?.findViewById<ProgressBar>(R.id.progress_bar_details)?.visibility = status
+        progress_bar_details.visibility = status
     }
 
     override fun setTextButton(text: String?) {
-        view?.findViewById<Button>(R.id.birthday_button)?.text = text
+        birthday_button.text = text ?: ""
     }
 
     override fun showMessageToast(text: CharSequence?) =
-            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +83,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.app_bar_map_details) {
-            clickListener.onMenuItemClickDetails(arguments!!.getInt("ID"), name)
+            clickListener.onMenuItemClickDetails(arguments?.getInt("ID") ?: -1, name)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -101,9 +105,10 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_contact_details, container, false)
         val title = activity?.findViewById<TextView>(R.id.title)
         title?.setText(R.string.contact_details_title)
@@ -113,17 +118,15 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        detailsPresenter.showDetails(arguments!!.getInt("ID"), cancelString, sendString)
+        detailsPresenter.showDetails(arguments?.getInt("ID") ?: -1, cancelString, sendString)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(id: Int) : ContactDetailsFragment {
-            val contactDetailsFragment = ContactDetailsFragment()
-            val bundle = Bundle()
-            bundle.putInt("ID", id)
-            contactDetailsFragment.arguments = bundle
-            return contactDetailsFragment
+        fun newInstance(id: Int) = ContactDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putInt("ID", id)
+            }
         }
     }
 }

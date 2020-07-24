@@ -14,7 +14,6 @@ import com.gmail.fuskerr63.appllication.di.app.ContactInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.ContactListRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.ContextModule;
 import com.gmail.fuskerr63.appllication.di.app.DaggerAppComponent;
-import com.gmail.fuskerr63.appllication.di.app.DatabaseAdapterModule;
 import com.gmail.fuskerr63.appllication.di.app.IntentManagerModule;
 import com.gmail.fuskerr63.appllication.di.app.NotificationInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.NotificationManagerModule;
@@ -71,7 +70,6 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .locationRepositoryModule(new LocationRepositoryModule())
                 .databaseModule(new DatabaseModule())
                 .databaseInteractorModule(new DatabaseInteractorModule())
-                .databaseAdapterModule(new DatabaseAdapterModule())
                 .contactInteractorModule(new ContactInteractorModule())
                 .build();
     }

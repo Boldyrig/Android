@@ -34,8 +34,6 @@ public class NotificationInteractorModule {
         return new NotificationInteractorImpl(
                 notificationTime,
                 notificationRepository,
-                notificationText,
-                flagNoCreate,
-                flagUpdateCurrent);
+                notificationText);
     }
 }

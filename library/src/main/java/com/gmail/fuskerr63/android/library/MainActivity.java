@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
                     PERMISSIONS_REQUEST);
         }
         Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
+        if (intent != null && intent.getExtras() != null && !intent.getExtras().isEmpty()) {
             showDetails(intent.getExtras().getInt(EXTRA_ID));
         } else {
             if (savedInstanceState == null) {
@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onMenuItemClickDetails(int id, @Nullable String name) {
-        showContactMap(id, name);
+        if (id != -1) {
+            showContactMap(id, name);
+        }
     }
 
 

@@ -31,7 +31,6 @@ import io.reactivex.annotations.NonNull;
         GeoCodeRepositoryModule.class,
         DatabaseModule.class,
         DatabaseInteractorModule.class,
-        DatabaseAdapterModule.class,
         LocationRepositoryModule.class,
         DirectionRetrofitModule.class,
         DirectionInteractorModule.class,
