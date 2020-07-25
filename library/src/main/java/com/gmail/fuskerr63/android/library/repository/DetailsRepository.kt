@@ -6,13 +6,14 @@ import android.provider.ContactsContract
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
 import com.gmail.fuskerr63.java.repository.ContactDetailsRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.net.URI
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Calendar
+import java.util.GregorianCalendar
+import java.util.Locale
+import java.util.Date
 
 class DetailsRepository(private val contentResolver: ContentResolver?) : ContactDetailsRepository {
     val projection: Array<String> = arrayOf(
@@ -66,8 +67,8 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
                         createCursor(
                             arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE),
                             ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                                    ContactsContract.CommonDataKinds.Event.TYPE + " = " +
-                                    ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
+                                ContactsContract.CommonDataKinds.Event.TYPE + " = " +
+                                ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
                             arrayOf(id.toString())
                         )
                     )
@@ -110,15 +111,15 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
     }
 
     private fun loadEmailFromCursor(cursorEmail: Cursor?) =
-            mutableListOf<String>().apply {
-                cursorEmail.use {
-                    it?.moveToFirst()
-                    while (it != null &&!it.isAfterLast) {
-                        add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)))
-                        it.moveToNext()
-                    }
+        mutableListOf<String>().apply {
+            cursorEmail.use {
+                it?.moveToFirst()
+                while (it != null && !it.isAfterLast) {
+                    add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)))
+                    it.moveToNext()
                 }
             }
+        }
 
     private fun loadBirthdayFromCursor(cursorBirthday: Cursor?) =
         GregorianCalendar().apply {

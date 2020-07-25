@@ -35,15 +35,15 @@ class ContactDetailsPresenter @Inject constructor(
                     contactInteractor.getContactById(id)
                         .flatMapMerge { contact: Contact ->
                             databaseModel.getFlowUserById(contact.id)
-                                    .map { value: ContactLocation ->
-                                        Contact(
-                                                contact.id,
-                                                contact.image,
-                                                contact.contactInfo,
-                                                contact.birthday,
-                                                value.address
-                                        )
-                                    }
+                                .map { value: ContactLocation ->
+                                    Contact(
+                                        contact.id,
+                                        contact.image,
+                                        contact.contactInfo,
+                                        contact.birthday,
+                                        value.address
+                                    )
+                                }
                         }
                         .flowOn(Dispatchers.IO)
                         .collect { contact: Contact? ->

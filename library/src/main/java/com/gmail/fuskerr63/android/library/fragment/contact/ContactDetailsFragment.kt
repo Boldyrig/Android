@@ -9,7 +9,6 @@ import android.view.MenuInflater
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
@@ -70,7 +69,6 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     override fun setTextButton(text: String?) {
         birthday_button.text = text ?: ""
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
