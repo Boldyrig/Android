@@ -6,11 +6,11 @@ import com.gmail.fuskerr63.java.entity.ContactInfo
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl
 import com.gmail.fuskerr63.java.interactor.NotificationRepository
 import com.gmail.fuskerr63.java.interactor.NotificationTime
-import io.mockk.mockk
 import io.mockk.every
-import io.mockk.verify
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.net.URI

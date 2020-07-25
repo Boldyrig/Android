@@ -4,9 +4,16 @@ import android.net.Uri
 import android.view.View
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.library.R
+import kotlinx.android.synthetic.main.fragment_contact_details.view.address_contact
+import kotlinx.android.synthetic.main.fragment_contact_details.view.birthday_contact
+import kotlinx.android.synthetic.main.fragment_contact_details.view.email1_contact
+import kotlinx.android.synthetic.main.fragment_contact_details.view.email2_contact
+import kotlinx.android.synthetic.main.fragment_contact_details.view.image
+import kotlinx.android.synthetic.main.fragment_contact_details.view.name
+import kotlinx.android.synthetic.main.fragment_contact_details.view.number1_contact
+import kotlinx.android.synthetic.main.fragment_contact_details.view.number2_contact
 import java.util.Calendar
 import java.util.Locale
-import kotlinx.android.synthetic.main.fragment_contact_details.view.*
 
 class ContactDetailsDelegate(private val view: View?) {
     fun showDetails(contact: Contact?) {

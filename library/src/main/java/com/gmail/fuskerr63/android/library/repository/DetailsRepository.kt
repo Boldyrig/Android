@@ -11,9 +11,9 @@ import java.net.URI
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
-import java.util.Date
 
 class DetailsRepository(private val contentResolver: ContentResolver?) : ContactDetailsRepository {
     val projection: Array<String> = arrayOf(

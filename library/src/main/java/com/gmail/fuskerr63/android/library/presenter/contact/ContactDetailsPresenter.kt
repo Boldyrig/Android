@@ -8,17 +8,17 @@ import com.gmail.fuskerr63.java.interactor.ContactInteractor
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import moxy.MvpPresenter
 import javax.inject.Inject
-import kotlin.Exception
 import kotlin.coroutines.CoroutineContext
 
 class ContactDetailsPresenter @Inject constructor(
@@ -28,6 +28,7 @@ class ContactDetailsPresenter @Inject constructor(
 ) : MvpPresenter<ContactDetailsView?>(), CoroutineScope {
     override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
 
+    @FlowPreview
     fun showDetails(id: Int, notificationCancel: String?, notificationSend: String?) {
         if (id != -1) {
             try {
