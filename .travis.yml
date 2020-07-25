@@ -20,4 +20,4 @@ script:
   - ./gradlew pmd
   - ./gradlew test
   - ./gradlew ktlint
-  - ./gradlwe detekt
+  - ./gradlew detekt
