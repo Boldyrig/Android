@@ -13,19 +13,11 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotifyNotificationManagerModule {
-    private final int flagUpdateCurrent;
-    private final int priority;
-
-    public NotifyNotificationManagerModule(int flagUpdateCurrent, int priority) {
-        this.flagUpdateCurrent = flagUpdateCurrent;
-        this.priority = priority;
-    }
-
     @NonNull
     @Singleton
     @Provides
     public NotifyNotificationManager provideNotifyNotificationManager(
             @Nullable NotificationRepository notificationRepository) {
-        return new NotifyNotificationManagerImpl(notificationRepository, flagUpdateCurrent, priority);
+        return new NotifyNotificationManagerImpl(notificationRepository);
     }
 }

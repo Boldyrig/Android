@@ -19,3 +19,5 @@ script:
   - ./gradlew lint
   - ./gradlew pmd
   - ./gradlew test
+  - ./gradlew ktlint
+  - ./gradlwe detekt

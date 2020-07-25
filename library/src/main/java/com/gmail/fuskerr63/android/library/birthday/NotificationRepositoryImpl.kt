@@ -5,7 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.interactor.NotificationRepository
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 class NotificationRepositoryImpl(
     private val alarmManager: AlarmManager,
@@ -35,15 +36,15 @@ class NotificationRepositoryImpl(
     override fun cancelAlarm(id: Int, text: String) {
         alarmManager.cancel(
             intentManager.getPendingIntent(
-                    id,
-                    intentManager.getIntent(id, "", text),
-                    PendingIntent.FLAG_NO_CREATE
-            )
-        )
-        val pIntent = intentManager.getPendingIntent(
                 id,
                 intentManager.getIntent(id, "", text),
                 PendingIntent.FLAG_NO_CREATE
+            )
+        )
+        val pIntent = intentManager.getPendingIntent(
+            id,
+            intentManager.getIntent(id, "", text),
+            PendingIntent.FLAG_NO_CREATE
         )
         pIntent?.cancel()
     }
@@ -62,8 +63,13 @@ class NotificationRepositoryImpl(
     }
 
     override fun alarmIsUp(id: Int, text: String) =
-            intentManager.getPendingIntent(
+        intentManager.getPendingIntent(
+            id,
+            intentManager.getIntent(
                 id,
-                intentManager.getIntent(id, "", text),
-                PendingIntent.FLAG_NO_CREATE) != null
+                "",
+                text
+            ),
+            PendingIntent.FLAG_NO_CREATE
+        ) != null
 }

@@ -9,6 +9,7 @@ apply from: '../etc/checkstyle/style-script.gradle'
 apply from: '../etc/lint/lint-script.gradle'
 apply from: '../etc/pmd/pmd-script.gradle'
 apply from: '../etc/ktlint/ktlint-script.gradle'
+apply from: '../etc/detekt/detekt-script.gradle'
 
 android {
     compileSdkVersion 29

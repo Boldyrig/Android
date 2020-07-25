@@ -2,9 +2,12 @@ package com.gmail.fuskerr63.android.library.fragment.contact
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
-import android.widget.Button
-import android.widget.ProgressBar
+import android.view.View
+import android.view.MenuItem
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
@@ -13,11 +16,12 @@ import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPrese
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.library.R
-import kotlinx.android.synthetic.main.fragment_contact_details.*
+import kotlinx.android.synthetic.main.fragment_contact_details.birthday_button
+import kotlinx.android.synthetic.main.fragment_contact_details.progress_bar_details
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -42,16 +46,15 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         if (contact != null) {
             name = contact.contactInfo.name
             contactDetailsDelegate.showDetails(contact)
-            if (view != null &&
-                contact.birthday.get(Calendar.YEAR) != 1
+            if (view != null && contact.birthday.get(Calendar.YEAR) != 1
             ) {
-                with (birthday_button) {
+                with(birthday_button) {
                     visibility = View.VISIBLE
                     setOnClickListener {
                         detailsPresenter.onClickBirthday(
-                                contact,
-                                cancelString,
-                                sendString
+                            contact,
+                            cancelString,
+                            sendString
                         )
                     }
                 }
@@ -68,8 +71,6 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         birthday_button.text = text ?: ""
     }
 
-    override fun showMessageToast(text: CharSequence?) =
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

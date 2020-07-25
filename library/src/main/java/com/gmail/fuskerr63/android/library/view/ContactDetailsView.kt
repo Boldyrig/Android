@@ -10,5 +10,4 @@ interface ContactDetailsView : MvpView {
     fun updateDetails(contact: Contact?)
     fun loadingStatus(show: Boolean)
     fun setTextButton(text: String?)
-    fun showMessageToast(text: CharSequence?)
 }

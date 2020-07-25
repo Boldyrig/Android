@@ -4,14 +4,14 @@ import android.net.Uri
 import android.view.View
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.library.R
-import java.util.*
-
+import java.util.Calendar
+import java.util.Locale
 import kotlinx.android.synthetic.main.fragment_contact_details.view.*
 
 class ContactDetailsDelegate(private val view: View?) {
     fun showDetails(contact: Contact?) {
         if (view != null && contact != null) {
-            with (view) {
+            with(view) {
                 if (contact.image.toString() != "") {
                     image.setImageURI(Uri.parse(contact.image.toString()))
                 } else {

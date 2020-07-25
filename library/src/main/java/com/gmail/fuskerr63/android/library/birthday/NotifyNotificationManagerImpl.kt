@@ -1,12 +1,12 @@
 package com.gmail.fuskerr63.android.library.birthday
 
+import android.app.PendingIntent
+import androidx.core.app.NotificationCompat
 import com.gmail.fuskerr63.java.interactor.NotificationRepository
 import com.gmail.fuskerr63.java.interactor.NotifyNotificationManager
 
 class NotifyNotificationManagerImpl(
-    private val notificationRepository: NotificationRepository,
-    private val flagUpdateCurrent: Int,
-    private val priority: Int
+    private val notificationRepository: NotificationRepository
 ) : NotifyNotificationManager {
     companion object {
         const val CHANNEL_ID: String = "CHANNEL_ID"
@@ -16,9 +16,9 @@ class NotifyNotificationManagerImpl(
         notificationRepository.notifyNotification(
             id,
             text,
-            flagUpdateCurrent,
+            PendingIntent.FLAG_UPDATE_CURRENT,
             CHANNEL_ID,
-            priority
+            NotificationCompat.PRIORITY_DEFAULT
         )
     }
 }

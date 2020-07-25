@@ -2,8 +2,6 @@ package com.gmail.fuskerr63.java.interactor
 
 import com.gmail.fuskerr63.java.entity.ContactLocation
 import com.gmail.fuskerr63.java.repository.LocationRepository
-import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 
 class DatabaseModel(private val locationRepository: LocationRepository) : DatabaseInteractor {
     override fun getAll() = locationRepository.getAll()

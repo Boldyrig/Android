@@ -33,13 +33,14 @@ class IntentManager(
         text: String?,
         flag: Int,
         channeId: String,
-        priority: Int) = NotificationCompat.Builder(context, channeId).apply {
-            setSmallIcon(R.mipmap.android_icon)
-            setContentText(text)
-            setContentTitle(context.getString(R.string.notification_title))
-            setPriority(priority)
-            setContentIntent(getPendingIntent(id, getIntent(context, id), flag))
-            setAutoCancel(true)
+        priority: Int
+    ) = NotificationCompat.Builder(context, channeId).apply {
+        setSmallIcon(R.mipmap.android_icon)
+        setContentText(text)
+        setContentTitle(context.getString(R.string.notification_title))
+        setPriority(priority)
+        setContentIntent(getPendingIntent(id, getIntent(context, id), flag))
+        setAutoCancel(true)
     }.build()
 
     fun getPendingIntent(id: Int, intent: Intent?, flag: Int) = PendingIntent.getBroadcast(context, id, intent, flag)

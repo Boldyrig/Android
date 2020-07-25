@@ -1,9 +1,6 @@
 package com.gmail.fuskerr63.appllication;
 
 import android.app.Application;
-import android.app.PendingIntent;
-
-import androidx.core.app.NotificationCompat;
 
 import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
@@ -49,14 +46,9 @@ public class ContactApplication extends Application implements ContactApplicatio
                 .notificationTimeModule(new NotificationTimeModule())
                 .notificationRepositoryModule(new NotificationRepositoryModule())
                 .notificationInteractorModule(new NotificationInteractorModule(
-                        PendingIntent.FLAG_NO_CREATE,
-                        PendingIntent.FLAG_UPDATE_CURRENT,
                         getString(R.string.notification_text)
                 ))
-                .notifyNotificationManagerModule(new NotifyNotificationManagerModule(
-                        PendingIntent.FLAG_UPDATE_CURRENT,
-                        NotificationCompat.PRIORITY_DEFAULT
-                ))
+                .notifyNotificationManagerModule(new NotifyNotificationManagerModule())
                 .intentManagerModule(new IntentManagerModule(MainActivity.class))
                 .contextModule(new ContextModule(getApplicationContext()))
                 .alarmManagerModule(new AlarmManagerModule())

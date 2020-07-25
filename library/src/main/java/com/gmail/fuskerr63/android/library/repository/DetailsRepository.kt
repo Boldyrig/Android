@@ -26,77 +26,51 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
         const val DB_STRING: String = " = ?"
     }
 
-    override fun getContactById(id: Int): Flow<Contact> {
-        val cursorContact: Cursor? = contentResolver?.query(
-                ContactsContract.Contacts.CONTENT_URI,
+    override fun getContactById(id: Int) =
+        loadContactFromCursor(
+            id,
+            createCursor(
                 projection,
                 ContactsContract.Contacts._ID + DB_STRING,
-                arrayOf(id.toString()),
-                ContactsContract.Contacts.DISPLAY_NAME + " ASC"
+                arrayOf(id.toString())
+            )
         )
-        return loadContactFromCursor(id, cursorContact)
-    }
 
-    private fun loadContactFromCursor(
-        id: Int,
-        cursor: Cursor?
-    ): Flow<Contact> {
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, 1)
-        var contact = Contact(
-            -1,
-            URI.create(""),
-            ContactInfo("", "", "", "", ""),
-            calendar,
-            ""
-        )
-        return flow {
+    private fun loadContactFromCursor(id: Int, cursor: Cursor?) =
+        flow {
             cursor?.use {
-                val displayName: Int = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-                val photoUri: Int = it.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)
-                val hasPhoneNumber: Int = it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
                 if (it.count > 0) {
                     it.moveToFirst()
-                    var image = URI.create("")
-                    val name = it.getString(displayName)
+                    var image = URI.create(it.getString(it.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)))
+                    val name = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
                     lateinit var numbers: List<String>
 
-                    val imageString = it.getString(photoUri)
-                    if (imageString != null) {
-                        image = URI.create(imageString)
-                    }
-
-                    val hasNumber = it.getInt(hasPhoneNumber)
+                    val hasNumber = it.getInt(it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                     if (hasNumber > 0) {
-                        val cursorPhone = contentResolver?.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            arrayOf<String>(ContactsContract.CommonDataKinds.Phone.NUMBER),
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + DB_STRING,
-                            arrayOf(id.toString()),
-                            null
+                        numbers = loadNumbersFromCursor(
+                            createCursor(
+                                arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + DB_STRING,
+                                arrayOf(id.toString())
+                            )
                         )
-                        numbers = loadNumbersFromCursor(cursorPhone)
                     }
-
-                    val cursorEmail = contentResolver?.query(
-                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                        arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + DB_STRING,
-                        arrayOf(id.toString()),
-                        null
+                    val emails = loadEmailFromCursor(
+                        createCursor(
+                            arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + DB_STRING,
+                            arrayOf(id.toString())
+                        )
                     )
-                    val emails = loadEmailFromCursor(cursorEmail)
-
-                    val cursorBirthday = contentResolver?.query(
-                        ContactsContract.Data.CONTENT_URI,
-                        arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE),
-                        ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                            ContactsContract.CommonDataKinds.Event.TYPE + " = " +
-                            ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
-                        arrayOf(id.toString()),
-                        null
+                    val birthday = loadBirthdayFromCursor(
+                        createCursor(
+                            arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE),
+                            ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                                    ContactsContract.CommonDataKinds.Event.TYPE + " = " +
+                                    ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
+                            arrayOf(id.toString())
+                        )
                     )
-                    val birthday = loadBirthdayFromCursor(cursorBirthday)
 
                     val number1 = if (numbers.isNotEmpty()) numbers[0] else ""
                     val number2 = if (numbers.count() > 1) numbers[1] else ""
@@ -104,76 +78,61 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
                     val email1 = if (emails.isNotEmpty()) emails[0] else ""
                     val email2 = if (emails.count() > 1) emails[1] else ""
 
-                    contact = Contact(
+                    val contact = Contact(
                         id,
                         image,
                         ContactInfo(name, number1, number2, email1, email2),
                         birthday,
                         ""
                     )
+                    emit(contact)
                 }
             }
-            emit(contact)
+        }
+
+    private fun createCursor(fields: Array<String>, selection: String, args: Array<String>) =
+        contentResolver?.query(
+            ContactsContract.Data.CONTENT_URI,
+            fields,
+            selection,
+            args,
+            null
+        )
+
+    private fun loadNumbersFromCursor(cursorPhone: Cursor?) = mutableListOf<String>().apply {
+        cursorPhone.use {
+            it?.moveToFirst()
+            while (it != null && !it.isAfterLast) {
+                add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)))
+                it.moveToNext()
+            }
         }
     }
 
-    private fun loadNumbersFromCursor(cursorPhone: Cursor?) =
+    private fun loadEmailFromCursor(cursorEmail: Cursor?) =
             mutableListOf<String>().apply {
-                cursorPhone.use { cursorPhone ->
-                    if (cursorPhone != null) {
-                        val number = cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                        if (cursorPhone.count > 0) {
-                            cursorPhone.moveToFirst()
-                            while (!cursorPhone.isAfterLast) {
-                                add(cursorPhone.getString(number))
-                                cursorPhone.moveToNext()
-                            }
-                        }
-                    }
-            }
-    }
-
-    private fun loadEmailFromCursor(cursorEmail: Cursor?): ArrayList<String> {
-        val emails = ArrayList<String>()
-        cursorEmail.use {
-            if (cursorEmail != null) {
-                val address = cursorEmail.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)
-                if (cursorEmail.count > 0) {
-                    cursorEmail.moveToFirst()
-                    while (!cursorEmail.isAfterLast) {
-                        emails.add(cursorEmail.getString(address))
-                        cursorEmail.moveToNext()
-                    }
-                }
-            }
-        }
-        return emails
-    }
-
-    private fun loadBirthdayFromCursor(cursorBirthday: Cursor?): Calendar {
-        val birthday = GregorianCalendar()
-        birthday.set(Calendar.YEAR, 1)
-        cursorBirthday.use {
-            if (it != null) {
-                val startDate = it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE)
-                val format = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
-                if (it.count > 0) {
-                    it.moveToFirst()
-                    while (!it.isAfterLast) {
-                        val date = it.getString(startDate)
-                        try {
-                            val time = format.parse(date)
-                            if (time != null) {
-                                birthday.time = time
-                            }
-                        } catch (e: ParseException) {
-                            birthday.set(Calendar.YEAR, 1)
-                        }
+                cursorEmail.use {
+                    it?.moveToFirst()
+                    while (it != null &&!it.isAfterLast) {
+                        add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)))
                         it.moveToNext()
                     }
                 }
             }
+
+    private fun loadBirthdayFromCursor(cursorBirthday: Cursor?) =
+        GregorianCalendar().apply {
+            set(Calendar.YEAR, 1)
+            cursorBirthday.use {
+                val format = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
+                it?.moveToFirst()
+                val dateString = it?.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+                try {
+                    val date = format.parse(dateString ?: "")
+                    time = date ?: Date()
+                } catch (e: ParseException) {
+                    set(Calendar.YEAR, 1)
+                }
+            }
         }
-        return birthday
-    }
 }

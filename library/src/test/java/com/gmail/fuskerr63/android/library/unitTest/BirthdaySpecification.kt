@@ -6,13 +6,16 @@ import com.gmail.fuskerr63.java.entity.ContactInfo
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl
 import com.gmail.fuskerr63.java.interactor.NotificationRepository
 import com.gmail.fuskerr63.java.interactor.NotificationTime
-import io.mockk.*
+import io.mockk.mockk
+import io.mockk.every
+import io.mockk.verify
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.net.URI
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 const val TEXT_NOTIFICATION = "Today is the birthday of"
 const val CONTACT_ID = 1
@@ -52,37 +55,37 @@ class BirthdaySpecification : Spek({
     fun setupBirthdayAndContact(year: Int, month: Int, day: Int) {
         birthday.set(year, month, day, 0, 0, 0)
         contact = Contact(
-                CONTACT_ID,
-                URI.create(""),
-                ContactInfo(
-                        CONTACT_NAME,
-                        "",
-                        "",
-                        "",
-                        ""
-                ),
-                birthday,
+            CONTACT_ID,
+            URI.create(""),
+            ContactInfo(
+                CONTACT_NAME,
+                "",
+                "",
+                "",
                 ""
+            ),
+            birthday,
+            ""
         )
     }
 
     fun setupNextBirthday(year: Int, month: Int, day: Int) {
         nextBirthday.set(year, month, day, 0, 0, 0)
         birthdayCalendar = BirthdayCalendar(
-                nextBirthday[Calendar.YEAR],
-                nextBirthday[Calendar.MONTH],
-                nextBirthday[Calendar.DATE],
-                nextBirthday[Calendar.HOUR],
-                nextBirthday[Calendar.MINUTE],
-                nextBirthday[Calendar.SECOND]
+            nextBirthday[Calendar.YEAR],
+            nextBirthday[Calendar.MONTH],
+            nextBirthday[Calendar.DATE],
+            nextBirthday[Calendar.HOUR],
+            nextBirthday[Calendar.MINUTE],
+            nextBirthday[Calendar.SECOND]
         )
     }
 
     fun setupMockAlarmIsUp(answer: Boolean) {
         every {
             notificationRepository.alarmIsUp(
-                    CONTACT_ID,
-                    TEXT_NOTIFICATION + CONTACT_NAME
+                CONTACT_ID,
+                TEXT_NOTIFICATION + CONTACT_NAME
             )
         } returns answer
     }
@@ -117,9 +120,9 @@ class BirthdaySpecification : Spek({
             Then("Тогда  происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
                 verify {
                     notificationRepository.setAlarm(
-                            birthdayCalendar,
-                            CONTACT_ID,
-                            TEXT_NOTIFICATION + CONTACT_NAME
+                        birthdayCalendar,
+                        CONTACT_ID,
+                        TEXT_NOTIFICATION + CONTACT_NAME
                     )
                 }
             }
@@ -139,8 +142,6 @@ class BirthdaySpecification : Spek({
                 setupNextBirthday(YEAR_1999, Calendar.SEPTEMBER, DAY_8)
             }
 
-
-
             When("Когда переключается напоминание для контатка $CONTACT_NAME") {
                 notificationInteractor.toggleNotificationForContact(contact)
             }
@@ -148,9 +149,9 @@ class BirthdaySpecification : Spek({
             Then("Тогда  происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
                 verify {
                     notificationRepository.setAlarm(
-                            birthdayCalendar,
-                            CONTACT_ID,
-                            TEXT_NOTIFICATION + CONTACT_NAME
+                        birthdayCalendar,
+                        CONTACT_ID,
+                        TEXT_NOTIFICATION + CONTACT_NAME
                     )
                 }
             }
@@ -176,8 +177,8 @@ class BirthdaySpecification : Spek({
             Then("Тогда  происходит успешное удаление напоминания") {
                 verify {
                     notificationRepository.cancelAlarm(
-                            CONTACT_ID,
-                            TEXT_NOTIFICATION + CONTACT_NAME
+                        CONTACT_ID,
+                        TEXT_NOTIFICATION + CONTACT_NAME
                     )
                 }
             }
@@ -204,9 +205,9 @@ class BirthdaySpecification : Spek({
             Then("Тогда  происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
                 verify {
                     notificationRepository.setAlarm(
-                            birthdayCalendar,
-                            CONTACT_ID,
-                            TEXT_NOTIFICATION + CONTACT_NAME
+                        birthdayCalendar,
+                        CONTACT_ID,
+                        TEXT_NOTIFICATION + CONTACT_NAME
                     )
                 }
             }
@@ -233,9 +234,9 @@ class BirthdaySpecification : Spek({
             Then("Тогда  происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {
                 verify {
                     notificationRepository.setAlarm(
-                            birthdayCalendar,
-                            CONTACT_ID,
-                            TEXT_NOTIFICATION + CONTACT_NAME
+                        birthdayCalendar,
+                        CONTACT_ID,
+                        TEXT_NOTIFICATION + CONTACT_NAME
                     )
                 }
             }

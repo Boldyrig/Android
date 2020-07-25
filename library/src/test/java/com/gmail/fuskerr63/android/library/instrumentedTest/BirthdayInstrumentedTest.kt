@@ -4,16 +4,25 @@ import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPrese
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
-import com.gmail.fuskerr63.java.interactor.*
+import com.gmail.fuskerr63.java.interactor.NotificationTime
+import com.gmail.fuskerr63.java.interactor.NotificationRepository
+import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl
+import com.gmail.fuskerr63.java.interactor.ContactModel
+import com.gmail.fuskerr63.java.interactor.DatabaseModel
 import com.gmail.fuskerr63.java.repository.ContactDetailsRepository
 import com.gmail.fuskerr63.java.repository.ContactListRepository
 import com.gmail.fuskerr63.java.repository.LocationRepository
-import io.mockk.*
+import io.mockk.mockk
+import io.mockk.every
+import io.mockk.just
+import io.mockk.Runs
+import io.mockk.verify
 import io.mockk.impl.annotations.MockK
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.net.URI
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 
 class BirthdayInstrumentedTest : Spek({
     lateinit var contactDetailsPresenter: ContactDetailsPresenter
