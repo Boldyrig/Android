@@ -14,7 +14,7 @@ interface UserDao {
     fun getAll(): Single<List<User>>
 
     @Query("SELECT * FROM user WHERE contactId = :contactId")
-    fun getFlowUserById(contactId: Int): Flow<User>
+    fun getFlowUserById(contactId: Int): Flow<User?>
 
     @Query("SELECT * FROM user WHERE contactId = :contactId")
     fun getSingleUserById(contactId: Int): Single<User>

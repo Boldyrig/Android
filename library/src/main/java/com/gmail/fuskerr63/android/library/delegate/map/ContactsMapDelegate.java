@@ -66,12 +66,14 @@ public class ContactsMapDelegate {
                     .addAll(points);
             polylines.add(googleMap.addPolyline(polylineOptions));
             // Передвинуть камеру
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (int i = 0; i < bounds.size(); i++) {
-                builder.include(bounds.get(i));
+            if (!bounds.isEmpty()) {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (int i = 0; i < bounds.size(); i++) {
+                    builder.include(bounds.get(i));
+                }
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING);
+                googleMap.animateCamera(cameraUpdate);
             }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), PADDING);
-            googleMap.animateCamera(cameraUpdate);
         }
     }
 

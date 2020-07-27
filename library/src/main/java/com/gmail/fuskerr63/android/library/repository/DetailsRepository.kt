@@ -2,6 +2,7 @@ package com.gmail.fuskerr63.android.library.repository
 
 import android.content.ContentResolver
 import android.database.Cursor
+import android.net.Uri
 import android.provider.ContactsContract
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
@@ -31,6 +32,7 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
         loadContactFromCursor(
             id,
             createCursor(
+                ContactsContract.Contacts.CONTENT_URI,
                 projection,
                 ContactsContract.Contacts._ID + DB_STRING,
                 arrayOf(id.toString())
@@ -42,14 +44,15 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             cursor?.use {
                 if (it.count > 0) {
                     it.moveToFirst()
-                    var image = URI.create(it.getString(it.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)))
-                    val name = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+                    var image = URI.create(it.getString(it.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)) ?: "")
+                    val name = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)) ?: ""
                     lateinit var numbers: List<String>
 
                     val hasNumber = it.getInt(it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                     if (hasNumber > 0) {
                         numbers = loadNumbersFromCursor(
                             createCursor(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                 arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
                                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + DB_STRING,
                                 arrayOf(id.toString())
@@ -58,6 +61,7 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
                     }
                     val emails = loadEmailFromCursor(
                         createCursor(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                             arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
                             ContactsContract.CommonDataKinds.Email.CONTACT_ID + DB_STRING,
                             arrayOf(id.toString())
@@ -65,6 +69,7 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
                     )
                     val birthday = loadBirthdayFromCursor(
                         createCursor(
+                            ContactsContract.Data.CONTENT_URI,
                             arrayOf(ContactsContract.CommonDataKinds.Event.START_DATE),
                             ContactsContract.Data.CONTACT_ID + " = ? AND " +
                                 ContactsContract.CommonDataKinds.Event.TYPE + " = " +
@@ -91,9 +96,9 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             }
         }
 
-    private fun createCursor(fields: Array<String>, selection: String, args: Array<String>) =
+    private fun createCursor(uri: Uri, fields: Array<String>, selection: String, args: Array<String>) =
         contentResolver?.query(
-            ContactsContract.Data.CONTENT_URI,
+            uri,
             fields,
             selection,
             args,
@@ -101,10 +106,11 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
         )
 
     private fun loadNumbersFromCursor(cursorPhone: Cursor?) = mutableListOf<String>().apply {
-        cursorPhone.use {
-            it?.moveToFirst()
-            while (it != null && !it.isAfterLast) {
-                add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)))
+        cursorPhone?.use {
+            it.moveToFirst()
+            while (!it.isAfterLast) {
+                val number = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) ?: "")
                 it.moveToNext()
             }
         }
@@ -112,10 +118,10 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
 
     private fun loadEmailFromCursor(cursorEmail: Cursor?) =
         mutableListOf<String>().apply {
-            cursorEmail.use {
-                it?.moveToFirst()
-                while (it != null && !it.isAfterLast) {
-                    add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)))
+            cursorEmail?.use {
+                it.moveToFirst()
+                while (!it.isAfterLast) {
+                    add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)) ?: "")
                     it.moveToNext()
                 }
             }
@@ -124,10 +130,10 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
     private fun loadBirthdayFromCursor(cursorBirthday: Cursor?) =
         GregorianCalendar().apply {
             set(Calendar.YEAR, 1)
-            cursorBirthday.use {
+            cursorBirthday?.use {
                 val format = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
-                it?.moveToFirst()
-                val dateString = it?.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+                it.moveToFirst()
+                val dateString = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
                 try {
                     val date = format.parse(dateString ?: "")
                     time = date ?: Date()
