@@ -31,6 +31,7 @@ class ContactDetailsPresenter @Inject constructor(
     @FlowPreview
     fun showDetails(id: Int, notificationCancel: String?, notificationSend: String?) {
         if (id != -1) {
+            @Suppress("TooGenericExceptionCaught")
             try {
                 launch {
                     contactInteractor.getContactById(id)
