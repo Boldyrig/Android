@@ -12,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.gmail.fuskerr63.android.library.delegate.contacts.ContactListDelegate;
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;

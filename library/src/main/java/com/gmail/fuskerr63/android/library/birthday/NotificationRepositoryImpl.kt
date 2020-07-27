@@ -24,8 +24,7 @@ class NotificationRepositoryImpl(
         )
         alarmManager.set(
             AlarmManager.RTC,
-            //birthday.timeInMillis,
-            System.currentTimeMillis() + 3000,
+            birthday.timeInMillis,
             intentManager.getPendingIntent(
                 id,
                 intentManager.getIntent(id, "", text),
