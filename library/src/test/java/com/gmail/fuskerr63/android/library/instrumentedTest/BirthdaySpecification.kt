@@ -1,6 +1,5 @@
 package com.gmail.fuskerr63.android.library.instrumentedTest
 
-import com.gmail.fuskerr63.android.library.constants.CANCEL_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.CONTACT_ID
 import com.gmail.fuskerr63.android.library.constants.CONTACT_NAME
 import com.gmail.fuskerr63.android.library.constants.DAY_1
@@ -9,7 +8,6 @@ import com.gmail.fuskerr63.android.library.constants.DAY_29
 import com.gmail.fuskerr63.android.library.constants.DAY_7
 import com.gmail.fuskerr63.android.library.constants.DAY_8
 import com.gmail.fuskerr63.android.library.constants.DAY_9
-import com.gmail.fuskerr63.android.library.constants.SEND_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.TEXT_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.YEAR_1988
 import com.gmail.fuskerr63.android.library.constants.YEAR_1999
