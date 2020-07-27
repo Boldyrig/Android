@@ -14,3 +14,5 @@
 .cxx
 
 *.log
+
+.idea/codeStyles/codeStyleConfig.xml

@@ -12,32 +12,32 @@ class LocationRepositoryImpl(private val appDatabase: AppDatabase) : LocationRep
     override fun getAll(): Single<List<ContactLocation>> =
         appDatabase.userDao().getAll()
             .map { users: List<User> ->
-                val contactLocations = mutableListOf<ContactLocation>()
-                for (user: User in users) {
-                    contactLocations.add(
-                        with(user) {
-                            ContactLocation(
-                                contactId,
-                                name,
-                                Position(latitude, longitude),
-                                address
-                            )
-                        }
-                    )
+                users.map { user ->
+                    with(user) {
+                        ContactLocation(
+                            contactId,
+                            name,
+                            Position(latitude, longitude),
+                            address
+                        )
+                    }
                 }
-                contactLocations
             }
 
     override fun getFlowUserById(contactId: Int) =
         appDatabase.userDao().getFlowUserById(contactId)
-            .map { user: User ->
-                with(user) {
-                    ContactLocation(
-                        contactId,
-                        name,
-                        Position(latitude, longitude),
-                        address
-                    )
+            .map { user: User? ->
+                if (user != null) {
+                    with(user) {
+                        ContactLocation(
+                            contactId,
+                            name,
+                            Position(latitude, longitude),
+                            address
+                        )
+                    }
+                } else {
+                    ContactLocation()
                 }
             }
 

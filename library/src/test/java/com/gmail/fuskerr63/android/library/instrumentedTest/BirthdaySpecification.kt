@@ -1,5 +1,6 @@
-package com.gmail.fuskerr63.android.library.unitTest
+package com.gmail.fuskerr63.android.library.instrumentedTest
 
+import com.gmail.fuskerr63.android.library.constants.CANCEL_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.CONTACT_ID
 import com.gmail.fuskerr63.android.library.constants.CONTACT_NAME
 import com.gmail.fuskerr63.android.library.constants.DAY_1
@@ -8,17 +9,24 @@ import com.gmail.fuskerr63.android.library.constants.DAY_29
 import com.gmail.fuskerr63.android.library.constants.DAY_7
 import com.gmail.fuskerr63.android.library.constants.DAY_8
 import com.gmail.fuskerr63.android.library.constants.DAY_9
+import com.gmail.fuskerr63.android.library.constants.SEND_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.TEXT_NOTIFICATION
 import com.gmail.fuskerr63.android.library.constants.YEAR_1988
 import com.gmail.fuskerr63.android.library.constants.YEAR_1999
 import com.gmail.fuskerr63.android.library.constants.YEAR_2000
 import com.gmail.fuskerr63.android.library.constants.YEAR_2004
+import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
+import com.gmail.fuskerr63.java.interactor.ContactModel
+import com.gmail.fuskerr63.java.interactor.DatabaseModel
 import com.gmail.fuskerr63.java.interactor.NotificationInteractorImpl
 import com.gmail.fuskerr63.java.interactor.NotificationRepository
 import com.gmail.fuskerr63.java.interactor.NotificationTime
+import com.gmail.fuskerr63.java.repository.ContactDetailsRepository
+import com.gmail.fuskerr63.java.repository.ContactListRepository
+import com.gmail.fuskerr63.java.repository.LocationRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -31,6 +39,9 @@ import java.util.GregorianCalendar
 class BirthdaySpecification : Spek({
     val notificationTime = mockk<NotificationTime>()
     val notificationRepository = mockk<NotificationRepository>(relaxed = true)
+    val contactListRepository = mockk<ContactListRepository>()
+    val contactDetailsRepository = mockk<ContactDetailsRepository>()
+    val locationRepository = mockk<LocationRepository>()
 
     val birthday = GregorianCalendar()
     val currentCalendar = GregorianCalendar()
@@ -83,10 +94,20 @@ class BirthdaySpecification : Spek({
     }
 
     Feature("Я как пользователь хочу устанавливать напоминание о дне рождения контакта") {
+        val contactInteractor = ContactModel(
+            contactListRepository,
+            contactDetailsRepository
+        )
+        val databaseModel = DatabaseModel(locationRepository)
         val notificationInteractor = NotificationInteractorImpl(
             notificationTime,
             notificationRepository,
             TEXT_NOTIFICATION
+        )
+        val contactDetailsPresenter = ContactDetailsPresenter(
+            contactInteractor,
+            databaseModel,
+            notificationInteractor
         )
 
         every { notificationTime.currentTimeCalendar } returns currentCalendar
@@ -105,11 +126,11 @@ class BirthdaySpecification : Spek({
                 setupNextBirthday(YEAR_2000, Calendar.SEPTEMBER, DAY_8)
             }
 
-            When("Когда переключается напоминание для контатка $CONTACT_NAME") {
-                notificationInteractor.toggleNotificationForContact(contact)
+            When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
+                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
             }
 
-            Then("Тогда  происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
+            Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
                 verify {
                     notificationRepository.setAlarm(
                         birthdayCalendar,
@@ -134,11 +155,11 @@ class BirthdaySpecification : Spek({
                 setupNextBirthday(YEAR_1999, Calendar.SEPTEMBER, DAY_8)
             }
 
-            When("Когда переключается напоминание для контатка $CONTACT_NAME") {
-                notificationInteractor.toggleNotificationForContact(contact)
+            When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
+                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
             }
 
-            Then("Тогда  происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
+            Then("Тогда происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
                 verify {
                     notificationRepository.setAlarm(
                         birthdayCalendar,
@@ -151,7 +172,7 @@ class BirthdaySpecification : Spek({
 
         Scenario("Успешное удаление напоминания") {
             Given("Текущий год - $YEAR_1999(не високосный)") {
-                setupCurrentCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_7)
+                setupCurrentCalendar(YEAR_1999, Calendar.SEPTEMBER, DAY_9)
             }
 
             And("Есть контакт $CONTACT_NAME с датой рождения $DAY_8 сентября") {
@@ -162,11 +183,11 @@ class BirthdaySpecification : Spek({
                 setupMockAlarmIsUp(true)
             }
 
-            When("Когда переключается напоминание для контатка $CONTACT_NAME") {
-                notificationInteractor.toggleNotificationForContact(contact)
+            When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
+                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
             }
 
-            Then("Тогда  происходит успешное удаление напоминания") {
+            Then("Тогда происходит успешное удаление напоминания") {
                 verify {
                     notificationRepository.cancelAlarm(
                         CONTACT_ID,
@@ -176,7 +197,7 @@ class BirthdaySpecification : Spek({
             }
         }
 
-        Scenario("Добавление напоминания для контакта родившегося 2$DAY_29 февраля") {
+        Scenario("Добавление напоминания для контакта родившегося $DAY_29 февраля") {
             Given("Текущий год - $YEAR_1999(не високосный), следующий $YEAR_2000(високосный) $DAY_2 марта") {
                 setupCurrentCalendar(YEAR_1999, Calendar.MARCH, DAY_2)
             }
@@ -190,11 +211,11 @@ class BirthdaySpecification : Spek({
                 setupNextBirthday(YEAR_2000, Calendar.FEBRUARY, DAY_29)
             }
 
-            When("Когда переключается напоминание для контатка $CONTACT_NAME") {
-                notificationInteractor.toggleNotificationForContact(contact)
+            When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
+                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
             }
 
-            Then("Тогда  происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
+            Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
                 verify {
                     notificationRepository.setAlarm(
                         birthdayCalendar,
@@ -219,11 +240,11 @@ class BirthdaySpecification : Spek({
                 setupNextBirthday(YEAR_2004, Calendar.FEBRUARY, DAY_29)
             }
 
-            When("Когда переключается напоминание для контатка $CONTACT_NAME") {
-                notificationInteractor.toggleNotificationForContact(contact)
+            When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
+                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
             }
 
-            Then("Тогда  происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {
+            Then("Тогда происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {
                 verify {
                     notificationRepository.setAlarm(
                         birthdayCalendar,

@@ -10,7 +10,7 @@ import com.gmail.fuskerr63.java.interactor.NotificationInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
@@ -26,7 +26,7 @@ class ContactDetailsPresenter @Inject constructor(
     private val databaseModel: DatabaseInteractor,
     private val notificationInteractor: NotificationInteractor
 ) : MvpPresenter<ContactDetailsView?>(), CoroutineScope {
-    override val coroutineContext: CoroutineContext = Job() + Dispatchers.Main
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
 
     @FlowPreview
     fun showDetails(id: Int, notificationCancel: String?, notificationSend: String?) {
@@ -37,13 +37,13 @@ class ContactDetailsPresenter @Inject constructor(
                     contactInteractor.getContactById(id)
                         .flatMapMerge { contact: Contact ->
                             databaseModel.getFlowUserById(contact.id)
-                                .map { value: ContactLocation ->
+                                .map { value: ContactLocation? ->
                                     Contact(
                                         contact.id,
                                         contact.image,
                                         contact.contactInfo,
                                         contact.birthday,
-                                        value.address
+                                        value?.address ?: ""
                                     )
                                 }
                         }

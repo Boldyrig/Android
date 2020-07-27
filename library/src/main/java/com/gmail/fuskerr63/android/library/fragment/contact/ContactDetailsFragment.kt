@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
@@ -123,9 +124,9 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     companion object {
         @JvmStatic
         fun newInstance(id: Int) = ContactDetailsFragment().apply {
-            arguments = Bundle().apply {
-                putInt("ID", id)
-            }
+            arguments = bundleOf(
+                "ID" to id
+            )
         }
     }
 }
