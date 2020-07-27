@@ -5,11 +5,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.gmail.fuskerr63.android.library.MainActivity
+import com.gmail.fuskerr63.android.library.receiver.ContactReceiver
 import com.gmail.fuskerr63.library.R
 
 class IntentManager(
     private val context: Context,
-    private val mainActivityClass: Class<MainActivity>
+    private val mainActivityClass: Class<MainActivity>,
+    private val receiverClass: Class<ContactReceiver>
 ) {
     companion object {
         const val EXTRA_ID: String = "ID"
@@ -24,7 +26,11 @@ class IntentManager(
         putExtra(EXTRA_TEXT, text)
     }
 
-    private fun getIntent(context: Context, id: Int) = Intent(context, mainActivityClass).apply {
+    private fun getIntentToMainActivity(context: Context, id: Int) = Intent(context, mainActivityClass).apply {
+        putExtra(EXTRA_ID, id)
+    }
+
+    private fun getIntentToReceiver(context: Context, id: Int) = Intent(context, receiverClass).apply {
         putExtra(EXTRA_ID, id)
     }
 
@@ -39,7 +45,7 @@ class IntentManager(
         setContentText(text)
         setContentTitle(context.getString(R.string.notification_title))
         setPriority(priority)
-        setContentIntent(getPendingIntent(id, getIntent(context, id), flag))
+        setContentIntent(getPendingIntent(id, getIntentToReceiver(context, id), flag))
         setAutoCancel(true)
     }.build()
 

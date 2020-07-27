@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
@@ -17,8 +16,7 @@ import com.gmail.fuskerr63.android.library.view.ContactDetailsView
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import com.gmail.fuskerr63.library.R
-import kotlinx.android.synthetic.main.fragment_contact_details.birthday_button
-import kotlinx.android.synthetic.main.fragment_contact_details.progress_bar_details
+import kotlinx.android.synthetic.main.fragment_contact_details.*
 import kotlinx.coroutines.FlowPreview
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
@@ -106,8 +104,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_contact_details, container, false)
-        val title = activity?.findViewById<TextView>(R.id.title)
-        title?.setText(R.string.contact_details_title)
+        activity?.setTitle(R.string.contact_list_title)
         contactDetailsDelegate = ContactDetailsDelegate(view)
         return view
     }

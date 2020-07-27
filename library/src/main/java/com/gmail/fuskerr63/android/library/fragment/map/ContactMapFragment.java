@@ -49,7 +49,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     private ProgressBar progressBar;
 
     private static final String KEY_LOCATION = "LOCATION";
-    private static final int DEFAULT_ZOOM = 16;;
+    private static final float DEFAULT_ZOOM = 13.0F;
 
     @ProvidePresenter
     ContactMapPresenter provideMapPresenter() {
@@ -82,7 +82,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        ((TextView) Objects.requireNonNull(getActivity()).findViewById(R.id.title)).setText(R.string.map_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.map_title);
         progressBar = view.findViewById(R.id.progress_bar_map);
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);

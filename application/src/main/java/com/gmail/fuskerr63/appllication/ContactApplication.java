@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
+import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.app.AlarmManagerModule;
 import com.gmail.fuskerr63.appllication.di.app.AppComponent;
 import com.gmail.fuskerr63.appllication.di.app.ContactDetailsRepositoryModule;
@@ -49,7 +50,7 @@ public class ContactApplication extends Application implements ContactApplicatio
                         getString(R.string.notification_text)
                 ))
                 .notifyNotificationManagerModule(new NotifyNotificationManagerModule())
-                .intentManagerModule(new IntentManagerModule(MainActivity.class))
+                .intentManagerModule(new IntentManagerModule(MainActivity.class, ContactReceiver.class))
                 .contextModule(new ContextModule(getApplicationContext()))
                 .alarmManagerModule(new AlarmManagerModule())
                 .notificationManagerModule(new NotificationManagerModule())

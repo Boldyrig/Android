@@ -74,9 +74,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        ((TextView) Objects.requireNonNull(getActivity())
-                .findViewById(R.id.title))
-                .setText(R.string.contact_list_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.contact_list_title);
         contactListDelegate = new ContactListDelegate(view);
         contactListDelegate.onCreateView(getContext(), pxFromDp(DP_10));
         setHasOptionsMenu(true);
@@ -94,6 +92,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 return false;
             }
 

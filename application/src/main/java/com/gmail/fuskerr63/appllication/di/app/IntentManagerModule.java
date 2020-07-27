@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.android.library.birthday.IntentManager;
+import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 
 import javax.inject.Singleton;
 
@@ -16,8 +17,15 @@ public class IntentManagerModule {
     @Nullable
     private final Class<MainActivity> mainActivityClass;
 
-    public IntentManagerModule(@Nullable Class<MainActivity> mainActivityClass) {
+    @Nullable
+    private final Class<ContactReceiver> receiverClass;
+
+    public IntentManagerModule(
+            @Nullable Class<MainActivity> mainActivityClass,
+            @Nullable Class<ContactReceiver> receiverClass
+    ) {
         this.mainActivityClass = mainActivityClass;
+        this.receiverClass = receiverClass;
     }
 
 
@@ -25,6 +33,6 @@ public class IntentManagerModule {
     @Singleton
     @Provides
     public IntentManager provideBirthdayNorification(@Nullable Context context) {
-        return new IntentManager(context, mainActivityClass);
+        return new IntentManager(context, mainActivityClass, receiverClass);
     }
 }

@@ -44,7 +44,7 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             cursor?.use {
                 it.moveToFirst()
                 val name = it.getString(it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)) ?: ""
-                lateinit var numbers: List<String>
+                var numbers: List<String> = emptyList()
                 if (it.getInt(it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                     numbers = getNumbers(id)
                 }
@@ -106,15 +106,16 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             )
         )
 
-    private fun loadNumbersFromCursor(cursorPhone: Cursor?) = mutableListOf<String>().apply {
-        cursorPhone?.use {
-            it.moveToFirst()
-            while (!it.isAfterLast) {
-                add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) ?: "")
-                it.moveToNext()
+    private fun loadNumbersFromCursor(cursorPhone: Cursor?) =
+        mutableListOf<String>().apply {
+            cursorPhone?.use {
+                it.moveToFirst()
+                while (!it.isAfterLast) {
+                    add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) ?: "")
+                    it.moveToNext()
+                }
             }
         }
-    }
 
     private fun loadEmailFromCursor(cursorEmail: Cursor?) =
         mutableListOf<String>().apply {
@@ -133,7 +134,9 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             cursorBirthday?.use {
                 val format = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
                 it.moveToFirst()
-                val dateString = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+                val dateString =
+                    if (it.count > 0) it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+                    else ""
                 try {
                     val date = format.parse(dateString ?: "")
                     time = date ?: Date()

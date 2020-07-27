@@ -79,7 +79,7 @@ public class ContactsMapFragment extends MvpAppCompatFragment implements
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         contactsMapDelegate = new ContactsMapDelegate(view);
-        ((TextView) Objects.requireNonNull(getActivity()).findViewById(R.id.title)).setText(R.string.map_title);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.map_title);
         mapView = view.findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
