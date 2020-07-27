@@ -127,7 +127,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
+                contactDetailsPresenter.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
@@ -156,7 +156,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
+                contactDetailsPresenter.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
@@ -184,7 +184,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
+                contactDetailsPresenter.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное удаление напоминания") {
@@ -212,7 +212,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
+                contactDetailsPresenter.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
@@ -241,7 +241,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact, CANCEL_NOTIFICATION, SEND_NOTIFICATION)
+                contactDetailsPresenter.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {

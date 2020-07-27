@@ -15,6 +15,7 @@ import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationConta
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
 import com.gmail.fuskerr63.android.library.view.ContactDetailsView
 import com.gmail.fuskerr63.java.entity.Contact
+import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import com.gmail.fuskerr63.library.R
 import kotlinx.android.synthetic.main.fragment_contact_details.birthday_button
 import kotlinx.android.synthetic.main.fragment_contact_details.progress_bar_details
@@ -31,8 +32,6 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     private lateinit var contactDetailsDelegate: ContactDetailsDelegate
 
     private var name: String? = null
-    private var cancelString: String? = null
-    private var sendString: String? = null
 
     @InjectPresenter
     lateinit var detailsPresenter: ContactDetailsPresenter
@@ -52,11 +51,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
                 with(birthday_button) {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        detailsPresenter.onClickBirthday(
-                            contact,
-                            cancelString,
-                            sendString
-                        )
+                        detailsPresenter.onClickBirthday(contact)
                     }
                 }
             }
@@ -68,8 +63,10 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         progress_bar_details.visibility = status
     }
 
-    override fun setTextButton(text: String?) {
-        birthday_button.text = text ?: ""
+    override fun setTextButton(status: NotificationStatus) {
+        birthday_button.text =
+            if (status.isAlarmUp) getString(R.string.cancel_notification)
+            else getString(R.string.send_notification)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,8 +98,6 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
             val contactComponent = appContainer.plusContactComponent()
             contactComponent.inject(this)
         }
-        cancelString = context.getString(R.string.cancel_notification)
-        sendString = context.getString(R.string.send_notification)
     }
 
     override fun onCreateView(
@@ -120,7 +115,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        detailsPresenter.showDetails(arguments?.getInt("ID") ?: -1, cancelString, sendString)
+        detailsPresenter.showDetails(arguments?.getInt("ID") ?: -1)
     }
 
     companion object {

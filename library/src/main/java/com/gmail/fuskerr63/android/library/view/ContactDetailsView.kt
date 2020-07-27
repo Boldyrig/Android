@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.android.library.view
 
 import com.gmail.fuskerr63.java.entity.Contact
+import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import moxy.MvpView
 import moxy.viewstate.strategy.SingleStateStrategy
 import moxy.viewstate.strategy.StateStrategyType
@@ -9,5 +10,5 @@ import moxy.viewstate.strategy.StateStrategyType
 interface ContactDetailsView : MvpView {
     fun updateDetails(contact: Contact?)
     fun loadingStatus(show: Boolean)
-    fun setTextButton(text: String?)
+    fun setTextButton(status: NotificationStatus)
 }

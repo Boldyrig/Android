@@ -29,7 +29,7 @@ class ContactDetailsPresenter @Inject constructor(
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
 
     @FlowPreview
-    fun showDetails(id: Int, notificationCancel: String?, notificationSend: String?) {
+    fun showDetails(id: Int) {
         if (id != -1) {
             @Suppress("TooGenericExceptionCaught")
             try {
@@ -38,23 +38,13 @@ class ContactDetailsPresenter @Inject constructor(
                         .flatMapMerge { contact: Contact ->
                             databaseModel.getFlowUserById(contact.id)
                                 .map { value: ContactLocation? ->
-                                    Contact(
-                                        contact.id,
-                                        contact.image,
-                                        contact.contactInfo,
-                                        contact.birthday,
-                                        value?.address ?: ""
-                                    )
+                                    createContactWithLocation(contact, value)
                                 }
                         }
                         .flowOn(Dispatchers.IO)
                         .collect { contact: Contact? ->
                             viewState?.updateDetails(contact)
-                            if (notificationInteractor.getNotificationStatusForContact(contact).isAlarmUp) {
-                                viewState?.setTextButton(notificationCancel)
-                            } else {
-                                viewState?.setTextButton(notificationSend)
-                            }
+                            viewState?.setTextButton(notificationInteractor.getNotificationStatusForContact(contact))
                         }
                 }
             } catch (error: Exception) {
@@ -63,16 +53,18 @@ class ContactDetailsPresenter @Inject constructor(
         }
     }
 
-    fun onClickBirthday(
-        contact: Contact?,
-        notificationCancel: String?,
-        notificationSend: String?
-    ) {
-        if (notificationInteractor.toggleNotificationForContact(contact).isAlarmUp) {
-            viewState?.setTextButton(notificationCancel)
-        } else {
-            viewState?.setTextButton(notificationSend)
+    private fun createContactWithLocation(contact: Contact, location: ContactLocation?) =
+        with(contact) {
+            Contact(
+                id,
+                image,
+                contactInfo,
+                birthday,
+                location?.address ?: ""
+            )
         }
+    fun onClickBirthday(contact: Contact?) {
+        viewState?.setTextButton(notificationInteractor.toggleNotificationForContact(contact))
     }
 
     override fun onDestroy() {
