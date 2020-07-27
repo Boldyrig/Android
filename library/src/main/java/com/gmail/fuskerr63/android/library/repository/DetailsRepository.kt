@@ -109,7 +109,6 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
         cursorPhone?.use {
             it.moveToFirst()
             while (!it.isAfterLast) {
-                val number = it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
                 add(it.getString(it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)) ?: "")
                 it.moveToNext()
             }

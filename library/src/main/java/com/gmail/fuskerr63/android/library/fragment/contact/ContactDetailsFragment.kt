@@ -18,6 +18,7 @@ import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.library.R
 import kotlinx.android.synthetic.main.fragment_contact_details.birthday_button
 import kotlinx.android.synthetic.main.fragment_contact_details.progress_bar_details
+import kotlinx.coroutines.FlowPreview
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -116,6 +117,7 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
         return view
     }
 
+    @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         detailsPresenter.showDetails(arguments?.getInt("ID") ?: -1, cancelString, sendString)
