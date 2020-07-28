@@ -1,5 +1,6 @@
 package com.gmail.fuskerr63.android.library.birthday
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -40,7 +41,7 @@ class IntentManager(
         flag: Int,
         channeId: String,
         priority: Int
-    ) = NotificationCompat.Builder(context, channeId).apply {
+    ): Notification? = NotificationCompat.Builder(context, channeId).apply {
         setSmallIcon(R.mipmap.android_icon)
         setContentText(text)
         setContentTitle(context.getString(R.string.notification_title))
@@ -49,5 +50,5 @@ class IntentManager(
         setAutoCancel(true)
     }.build()
 
-    fun getPendingIntent(id: Int, intent: Intent?, flag: Int) = PendingIntent.getBroadcast(context, id, intent, flag)
+    fun getPendingIntent(id: Int, intent: Intent?, flag: Int): PendingIntent? = PendingIntent.getBroadcast(context, id, intent, flag)
 }

@@ -52,6 +52,7 @@ public interface AppComponent extends AppContainer {
     @Override
     @NonNull
     ContactsMapComponent plusContactsMapComponent();
+
     @Override
     void inject(@NonNull ContactReceiver contactReceiver);
 }

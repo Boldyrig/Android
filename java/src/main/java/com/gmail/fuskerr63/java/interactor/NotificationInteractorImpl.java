@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
 public class NotificationInteractorImpl implements NotificationInteractor {
     @NonNull
@@ -103,8 +104,12 @@ public class NotificationInteractorImpl implements NotificationInteractor {
     }
 
     @Override
-    public NotificationStatus getNotificationStatusForContact(Contact contact) {
-        String text = textNotification + contact.getContactInfo().getName();
-        return new NotificationStatus(alarmIsUp(contact.getId(), text));
+    @Nullable
+    public NotificationStatus getNotificationStatusForContact(@Nullable Contact contact) {
+        if (contact != null) {
+            String text = textNotification + contact.getContactInfo().getName();
+            return new NotificationStatus(alarmIsUp(contact.getId(), text));
+        }
+        return null;
     }
 }

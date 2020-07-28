@@ -9,67 +9,63 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
-import com.gmail.fuskerr63.android.library.view.ContactDetailsView
+import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
+import com.gmail.fuskerr63.android.library.viewmodel.factory.ContactViewModelFactory
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import com.gmail.fuskerr63.library.R
 import kotlinx.android.synthetic.main.fragment_contact_details.*
 import kotlinx.coroutines.FlowPreview
 import moxy.MvpAppCompatFragment
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import java.util.Calendar
 import javax.inject.Inject
-import javax.inject.Provider
 
-class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
+class ContactDetailsFragment : MvpAppCompatFragment() {
     private lateinit var clickListener: OnMenuItemClickDetails
     private lateinit var contactDetailsDelegate: ContactDetailsDelegate
+    private lateinit var contactViewModel: ContactViewModel
 
     private var name: String? = null
 
-    @InjectPresenter
-    lateinit var detailsPresenter: ContactDetailsPresenter
-
     @Inject
-    lateinit var detailsPresenterProvider: Provider<ContactDetailsPresenter>
+    lateinit var factory: ContactViewModelFactory
 
-    @ProvidePresenter
-    fun providePresenter() = detailsPresenterProvider.get()
-
-    override fun updateDetails(contact: Contact?) {
+    fun updateDetails(contact: Contact?) {
         if (contact != null) {
             name = contact.contactInfo.name
             contactDetailsDelegate.showDetails(contact)
-            if (view != null && contact.birthday.get(Calendar.YEAR) != 1
-            ) {
+            if (view != null && contact.birthday.get(Calendar.YEAR) != 1) {
                 with(birthday_button) {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        detailsPresenter.onClickBirthday(contact)
+                        contactViewModel.onClickBirthday(contact)
                     }
                 }
             }
         }
     }
 
-    override fun loadingStatus(show: Boolean) {
+    fun loadingStatus(show: Boolean) {
         val status = if (show) View.VISIBLE else View.GONE
         progress_bar_details.visibility = status
     }
 
-    override fun setTextButton(status: NotificationStatus) {
-        birthday_button.text =
-            if (status.isAlarmUp) getString(R.string.cancel_notification)
-            else getString(R.string.send_notification)
+    fun setTextButton(status: NotificationStatus?) {
+        if (status != null) {
+            birthday_button.text =
+                if (status.isAlarmUp) getString(R.string.cancel_notification)
+                else getString(R.string.send_notification)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        contactViewModel = ViewModelProviders.of(this, factory).get(ContactViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -112,7 +108,25 @@ class ContactDetailsFragment : MvpAppCompatFragment(), ContactDetailsView {
     @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        detailsPresenter.showDetails(arguments?.getInt("ID") ?: -1)
+        contactViewModel.getContact(requireArguments().getInt("ID"))
+            .observe(
+                viewLifecycleOwner,
+                Observer<Contact> { contact ->
+                    updateDetails(contact)
+                }
+            )
+        contactViewModel.getBirthdayStatus().observe(
+            viewLifecycleOwner,
+            Observer<NotificationStatus> { status ->
+                setTextButton(status)
+            }
+        )
+        contactViewModel.getLoadingStatus().observe(
+            viewLifecycleOwner,
+            Observer<Boolean> { status ->
+                loadingStatus(status)
+            }
+        )
     }
 
     companion object {

@@ -21,6 +21,7 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@Deprecated(message = "Используется ContactViewModel")
 class ContactDetailsPresenter @Inject constructor(
     private val contactInteractor: ContactInteractor,
     private val databaseModel: DatabaseInteractor,
