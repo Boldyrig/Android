@@ -14,6 +14,7 @@ import com.gmail.fuskerr63.android.library.constants.YEAR_1999
 import com.gmail.fuskerr63.android.library.constants.YEAR_2000
 import com.gmail.fuskerr63.android.library.constants.YEAR_2004
 import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
+import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
@@ -108,6 +109,12 @@ class BirthdaySpecification : Spek({
             notificationInteractor
         )
 
+        val contactViewModel = ContactViewModel(
+            contactInteractor,
+            databaseModel,
+            notificationInteractor
+        )
+
         every { notificationTime.currentTimeCalendar } returns currentCalendar
 
         Scenario("Успешное добавление напоминания, День Рождения в текущем году был") {
@@ -125,7 +132,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
@@ -154,7 +161,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
@@ -182,7 +189,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное удаление напоминания") {
@@ -210,7 +217,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
@@ -239,7 +246,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday(contact)
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {

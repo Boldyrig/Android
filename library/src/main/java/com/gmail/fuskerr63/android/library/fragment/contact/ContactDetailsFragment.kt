@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
@@ -20,11 +21,10 @@ import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import com.gmail.fuskerr63.library.R
 import kotlinx.android.synthetic.main.fragment_contact_details.*
 import kotlinx.coroutines.FlowPreview
-import moxy.MvpAppCompatFragment
 import java.util.Calendar
 import javax.inject.Inject
 
-class ContactDetailsFragment : MvpAppCompatFragment() {
+class ContactDetailsFragment : Fragment() {
     private lateinit var clickListener: OnMenuItemClickDetails
     private lateinit var contactDetailsDelegate: ContactDetailsDelegate
     private lateinit var contactViewModel: ContactViewModel
