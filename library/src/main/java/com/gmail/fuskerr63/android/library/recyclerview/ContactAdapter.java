@@ -70,4 +70,3 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
         }
     };
 }
-

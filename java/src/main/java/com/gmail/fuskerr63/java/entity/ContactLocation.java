@@ -6,6 +6,13 @@ public class ContactLocation {
     private final Position latLng;
     private final String address;
 
+    public ContactLocation() {
+        id = -1;
+        name = "";
+        latLng = null;
+        address = "";
+    }
+
     public ContactLocation(int id, String name, Position latLng, String address) {
         this.id = id;
         this.name = name;

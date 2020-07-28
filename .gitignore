@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+
+*.log
+
+.idea/codeStyles/codeStyleConfig.xml

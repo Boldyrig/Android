@@ -5,11 +5,4 @@
     android:layout_height="wrap_content"
     style="@style/ToolBarTheme">
 
-    <TextView
-        android:id="@+id/title"
-        android:textIsSelectable="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 </androidx.appcompat.widget.Toolbar>

@@ -14,14 +14,10 @@ import io.reactivex.annotations.Nullable;
 
 @Module
 public class NotificationInteractorModule {
-    private final int flagNoCreate;
-    private final int flagUpdateCurrent;
     @Nullable
     private final String notificationText;
 
-    public NotificationInteractorModule(int flagNoCreate, int flagUpdateCurrent, @Nullable String notificationText) {
-        this.flagNoCreate = flagNoCreate;
-        this.flagUpdateCurrent = flagUpdateCurrent;
+    public NotificationInteractorModule(@Nullable String notificationText) {
         this.notificationText = notificationText;
     }
 
@@ -34,8 +30,6 @@ public class NotificationInteractorModule {
         return new NotificationInteractorImpl(
                 notificationTime,
                 notificationRepository,
-                notificationText,
-                flagNoCreate,
-                flagUpdateCurrent);
+                notificationText);
     }
 }

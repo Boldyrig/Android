@@ -25,20 +25,14 @@ public class NotificationInteractorImpl implements NotificationInteractor {
 
     @NonNull
     private final String textNotification;
-    private final int flagNoCreate;
-    private final int flagUpdateCurrent;
 
     public NotificationInteractorImpl(
             @NonNull NotificationTime time,
             @NonNull NotificationRepository notificationRepository,
-            @NonNull String textNotification,
-            int flagNoCreate,
-            int flagUpdateCurrent) {
+            @NonNull String textNotification) {
         this.time = time;
         this.notificationRepository = notificationRepository;
         this.textNotification = textNotification;
-        this.flagNoCreate = flagNoCreate;
-        this.flagUpdateCurrent = flagUpdateCurrent;
     }
 
     private void setAlarm(Calendar birthday, int id, String text) {
@@ -52,16 +46,15 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         notificationRepository.setAlarm(
                 birthdayCalendar,
                 id,
-                text,
-                flagUpdateCurrent);
+                text);
     }
 
     private void cancelAlarm(int id, String text) {
-        notificationRepository.cancelAlarm(id, text, flagUpdateCurrent);
+        notificationRepository.cancelAlarm(id, text);
     }
 
     private boolean alarmIsUp(int id, String text) {
-        return notificationRepository.alarmIsUp(id, text, flagNoCreate);
+        return notificationRepository.alarmIsUp(id, text);
     }
 
     private Calendar getNextBirthday(Calendar birthday) {

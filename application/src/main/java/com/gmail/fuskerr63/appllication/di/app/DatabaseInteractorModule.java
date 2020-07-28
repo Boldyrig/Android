@@ -8,12 +8,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 @Module
 public class DatabaseInteractorModule {
 
-    @Nullable
+    @NonNull
     @Singleton
     @Provides
     public DatabaseInteractor provideDatabase(@Nullable LocationRepository locationRepository) {

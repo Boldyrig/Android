@@ -2,11 +2,12 @@ package com.gmail.fuskerr63.android.library.presenter.map;
 
 import android.util.Log;
 
+import androidx.multidex.BuildConfig;
+
 import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactsMapView;
 import com.gmail.fuskerr63.java.interactor.DirectionInteractor;
-import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;

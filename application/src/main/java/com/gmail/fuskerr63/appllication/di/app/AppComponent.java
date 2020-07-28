@@ -15,7 +15,8 @@ import io.reactivex.annotations.NonNull;
 
 @Singleton
 @Component(modules = {
-        RepositoryModule.class,
+        ContactListRepositoryModule.class,
+        ContactDetailsRepositoryModule.class,
         ContactInteractorModule.class,
         NotificationTimeModule.class,
         NotificationInteractorModule.class,

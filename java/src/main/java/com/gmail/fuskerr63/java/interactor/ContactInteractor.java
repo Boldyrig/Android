@@ -6,9 +6,10 @@ import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import kotlinx.coroutines.flow.Flow;
 
 public interface ContactInteractor {
     Single<List<Contact>> getContacts(@NonNull String selector);
 
-    Single<Contact> getContactById(int id);
+    Flow<Contact> getContactById(int id);
 }

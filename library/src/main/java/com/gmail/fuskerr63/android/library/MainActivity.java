@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.gmail.fuskerr63.android.library.fragment.contact.ContactDetailsFragment;
+import com.gmail.fuskerr63.android.library.fragment.contact.OnMenuItemClickDetails;
 import com.gmail.fuskerr63.android.library.fragment.contacts.ContactListFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactMapFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactsMapFragment;
@@ -25,7 +26,7 @@ import io.reactivex.annotations.Nullable;
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener,
         ContactListFragment.OnMenuItemClickContacts,
-        ContactDetailsFragment.OnMenuItemClickDetails {
+        OnMenuItemClickDetails {
 
     private static final String EXTRA_ID = "ID";
     private static final String CONTACT_LIST_FRAGMENT_TAG = "CONTACT_LIST_FRAGMENT_TAG";
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
                     PERMISSIONS_REQUEST);
         }
         Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
+        if (intent != null && intent.getExtras() != null && !intent.getExtras().isEmpty()) {
             showDetails(intent.getExtras().getInt(EXTRA_ID));
         } else {
             if (savedInstanceState == null) {
@@ -136,7 +137,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onMenuItemClickDetails(int id, @Nullable String name) {
-        showContactMap(id, name);
+        if (id != -1) {
+            showContactMap(id, name);
+        }
     }
 
 

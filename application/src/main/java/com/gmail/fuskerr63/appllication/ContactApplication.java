@@ -1,15 +1,15 @@
 package com.gmail.fuskerr63.appllication;
 
 import android.app.Application;
-import android.app.PendingIntent;
-
-import androidx.core.app.NotificationCompat;
 
 import com.gmail.fuskerr63.android.library.MainActivity;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
+import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.app.AlarmManagerModule;
 import com.gmail.fuskerr63.appllication.di.app.AppComponent;
+import com.gmail.fuskerr63.appllication.di.app.ContactDetailsRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.ContactInteractorModule;
+import com.gmail.fuskerr63.appllication.di.app.ContactListRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.ContextModule;
 import com.gmail.fuskerr63.appllication.di.app.DaggerAppComponent;
 import com.gmail.fuskerr63.appllication.di.app.IntentManagerModule;
@@ -27,7 +27,6 @@ import com.gmail.fuskerr63.appllication.di.app.GeoCodeInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
-import com.gmail.fuskerr63.appllication.di.app.RepositoryModule;
 
 import io.reactivex.annotations.NonNull;
 
@@ -42,20 +41,16 @@ public class ContactApplication extends Application implements ContactApplicatio
 
     private void initDependencies() {
         appComponent = DaggerAppComponent.builder()
-                .repositoryModule(new RepositoryModule())
+                .contactListRepositoryModule(new ContactListRepositoryModule())
+                .contactDetailsRepositoryModule(new ContactDetailsRepositoryModule())
                 .contactInteractorModule(new ContactInteractorModule())
                 .notificationTimeModule(new NotificationTimeModule())
                 .notificationRepositoryModule(new NotificationRepositoryModule())
                 .notificationInteractorModule(new NotificationInteractorModule(
-                        PendingIntent.FLAG_NO_CREATE,
-                        PendingIntent.FLAG_UPDATE_CURRENT,
                         getString(R.string.notification_text)
                 ))
-                .notifyNotificationManagerModule(new NotifyNotificationManagerModule(
-                        PendingIntent.FLAG_UPDATE_CURRENT,
-                        NotificationCompat.PRIORITY_DEFAULT
-                ))
-                .intentManagerModule(new IntentManagerModule(MainActivity.class))
+                .notifyNotificationManagerModule(new NotifyNotificationManagerModule())
+                .intentManagerModule(new IntentManagerModule(MainActivity.class, ContactReceiver.class))
                 .contextModule(new ContextModule(getApplicationContext()))
                 .alarmManagerModule(new AlarmManagerModule())
                 .notificationManagerModule(new NotificationManagerModule())

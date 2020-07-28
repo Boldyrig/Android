@@ -3,13 +3,13 @@ package com.gmail.fuskerr63.android.library.presenter.map;
 import android.util.Log;
 
 import androidx.core.util.Pair;
+import androidx.multidex.BuildConfig;
 
 import com.gmail.fuskerr63.java.entity.ContactLocation;
 import com.gmail.fuskerr63.java.entity.Position;
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor;
 import com.gmail.fuskerr63.android.library.view.ContactMapView;
 import com.gmail.fuskerr63.java.interactor.GeoCodeInteractor;
-import com.gmail.fuskerr63.library.BuildConfig;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Objects;
@@ -43,7 +43,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
 
 
     public void showCurrentLocation(int id) {
-        disposable.add(databaseInteractor.getUserByContactId(id)
+        disposable.add(databaseInteractor.getSingleUserById(id)
                 .subscribeOn(Schedulers.io())
                 .map(contactLocation -> {
                     LatLng latLng = new LatLng(

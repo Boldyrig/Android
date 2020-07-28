@@ -13,7 +13,7 @@ public class ContactsModule {
     @ContactsListScope
     @NonNull
     @Provides
-    ContactListPresenter provideContactListPresenter(@NonNull ContactInteractor interactor) {
+   ContactListPresenter provideContactListPresenter(@NonNull ContactInteractor interactor) {
         return new ContactListPresenter(interactor);
     }
 }
