@@ -50,5 +50,6 @@ class IntentManager(
         setAutoCancel(true)
     }.build()
 
-    fun getPendingIntent(id: Int, intent: Intent?, flag: Int): PendingIntent? = PendingIntent.getBroadcast(context, id, intent, flag)
+    fun getPendingIntent(id: Int, intent: Intent?, flag: Int): PendingIntent? =
+        PendingIntent.getBroadcast(context, id, intent, flag)
 }
