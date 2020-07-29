@@ -9,16 +9,11 @@ import com.gmail.fuskerr63.java.interactor.ContactInteractor
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationStatus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class ContactViewModel(

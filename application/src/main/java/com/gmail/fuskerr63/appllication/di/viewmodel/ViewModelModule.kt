@@ -10,6 +10,7 @@ import com.gmail.fuskerr63.java.interactor.DatabaseInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @Module
 class ViewModelModule {
@@ -23,10 +24,10 @@ class ViewModelModule {
     @ViewModelScope
     @Provides
     fun provideContactViewModel(
-        id: Int,
-        contactInteractor: ContactInteractor,
-        databaseInteractor: DatabaseInteractor,
-        notificationInteractor: NotificationInteractor) =
+            id: Int,
+            contactInteractor: ContactInteractor,
+            databaseInteractor: DatabaseInteractor,
+            notificationInteractor: NotificationInteractor) =
         ContactViewModelFactory(
             id,
             contactInteractor,

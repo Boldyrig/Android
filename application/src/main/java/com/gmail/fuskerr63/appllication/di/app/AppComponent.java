@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
+import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentFactory;
 import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
@@ -57,7 +58,7 @@ public interface AppComponent extends AppContainer {
 
     @NonNull
     @Override
-    ViewModelComponent.Factory getViewModelComponentFactory();
+    ViewModelComponent.Factory plusViewModelComponentFactory();
 
     @Override
     void inject(@NonNull ContactReceiver contactReceiver);

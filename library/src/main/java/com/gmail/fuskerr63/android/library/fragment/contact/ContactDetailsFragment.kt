@@ -66,7 +66,6 @@ class ContactDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        //contactViewModel = ViewModelProviders.of(this, factory).get(ContactViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -92,6 +91,7 @@ class ContactDetailsFragment : Fragment() {
             val appContainer = app.appComponent
             val contactComponent = appContainer.plusContactComponent()
             contactComponent.inject(this)
+            viewModel = appContainer.plusViewModelComponentFactory().create(this, 1).getViewModel()
         }
     }
 
