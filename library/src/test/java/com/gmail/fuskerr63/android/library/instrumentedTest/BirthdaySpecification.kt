@@ -1,5 +1,7 @@
 package com.gmail.fuskerr63.android.library.instrumentedTest
 
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import com.gmail.fuskerr63.android.library.constants.CONTACT_ID
 import com.gmail.fuskerr63.android.library.constants.CONTACT_NAME
 import com.gmail.fuskerr63.android.library.constants.DAY_1
@@ -13,7 +15,6 @@ import com.gmail.fuskerr63.android.library.constants.YEAR_1988
 import com.gmail.fuskerr63.android.library.constants.YEAR_1999
 import com.gmail.fuskerr63.android.library.constants.YEAR_2000
 import com.gmail.fuskerr63.android.library.constants.YEAR_2004
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
 import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.entity.Contact
@@ -92,6 +93,24 @@ class BirthdaySpecification : Spek({
         } returns answer
     }
 
+    beforeEachTest {
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) {
+                runnable.run()
+            }
+
+            override fun isMainThread(): Boolean {
+                return true
+            }
+
+            override fun postToMainThread(runnable: Runnable) {
+                runnable.run()
+            }
+        })
+    }
+
+    afterEachTest { ArchTaskExecutor.getInstance().setDelegate(null) }
+
     Feature("Я как пользователь хочу устанавливать напоминание о дне рождения контакта") {
         val contactInteractor = ContactModel(
             contactListRepository,
@@ -103,11 +122,6 @@ class BirthdaySpecification : Spek({
             notificationRepository,
             TEXT_NOTIFICATION
         )
-        val contactDetailsPresenter = ContactDetailsPresenter(
-            contactInteractor,
-            databaseModel,
-            notificationInteractor
-        )
 
         val contactViewModel = ContactViewModel(
             contactInteractor,
@@ -115,7 +129,9 @@ class BirthdaySpecification : Spek({
             notificationInteractor
         )
 
-        every { notificationTime.currentTimeCalendar } returns currentCalendar
+        beforeEachScenario {
+            every { notificationTime.currentTimeCalendar } returns currentCalendar
+        }
 
         Scenario("Успешное добавление напоминания, День Рождения в текущем году был") {
             Given("Текущий год - $YEAR_1999(не високосный) $DAY_9 сентября") {
