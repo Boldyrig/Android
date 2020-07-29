@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOn
@@ -73,6 +74,11 @@ class ContactViewModel(
                 location?.address ?: ""
             )
         }
+
+    override fun onCleared() {
+        cancel()
+        super.onCleared()
+    }
 
     fun onClickBirthday(contact: Contact) {
         birthdayStatus.value = notificationInteractor.toggleNotificationForContact(contact)
