@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class ContactViewModel(
+    private val id: Int,
     private val contactInteractor: ContactInteractor,
     private val databaseInteractor: DatabaseInteractor,
     private val notificationInteractor: NotificationInteractor

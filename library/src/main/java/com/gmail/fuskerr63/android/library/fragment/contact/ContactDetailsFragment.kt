@@ -14,6 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
+import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentContainer
+import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentFactory
 import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
 import com.gmail.fuskerr63.android.library.viewmodel.factory.ContactViewModelFactory
 import com.gmail.fuskerr63.java.entity.Contact
@@ -31,8 +33,7 @@ class ContactDetailsFragment : Fragment() {
 
     private var name: String? = null
 
-    @Inject
-    lateinit var factory: ContactViewModelFactory
+    lateinit var viewModel: ContactViewModel
 
     fun updateDetails(contact: Contact?) {
         if (contact != null) {
@@ -65,7 +66,7 @@ class ContactDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        contactViewModel = ViewModelProviders.of(this, factory).get(ContactViewModel::class.java)
+        //contactViewModel = ViewModelProviders.of(this, factory).get(ContactViewModel::class.java)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

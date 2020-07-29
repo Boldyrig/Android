@@ -10,5 +10,7 @@ public interface AppContainer {
     @NonNull ContactsMapComponentContainer plusContactsMapComponent();
     @NonNull ContactMapComponentContainer plusContactMapComponent();
 
+    @NonNull ViewModelComponentFactory getViewModelComponentFactory();
+
     void inject(@NonNull ContactReceiver contactReceiver);
 }

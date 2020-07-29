@@ -27,11 +27,13 @@ import com.gmail.fuskerr63.appllication.di.app.GeoCodeInteractorModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRepositoryModule;
 import com.gmail.fuskerr63.appllication.di.app.GeoCodeRetrofitModule;
 import com.gmail.fuskerr63.appllication.di.app.LocationRepositoryModule;
+import com.gmail.fuskerr63.appllication.di.viewmodel.ViewModelComponent;
 
 import io.reactivex.annotations.NonNull;
 
 public class ContactApplication extends Application implements ContactApplicationContainer {
     private AppComponent appComponent;
+    private ViewModelComponent viewModelComponent;
 
     @Override
     public void onCreate() {

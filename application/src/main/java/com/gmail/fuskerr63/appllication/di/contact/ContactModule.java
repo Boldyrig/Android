@@ -12,7 +12,7 @@ import io.reactivex.annotations.NonNull;
 
 @Module
 public class ContactModule {
-    @ContactDetailsScope
+    /*@ContactDetailsScope
     @NonNull
     @Provides
     ContactViewModelFactory provideContactViewModel(
@@ -20,5 +20,5 @@ public class ContactModule {
             @NonNull DatabaseInteractor databaseInteractor,
             @NonNull NotificationInteractor notificationInteractor) {
         return new ContactViewModelFactory(contactInteractor, databaseInteractor, notificationInteractor);
-    }
+    }*/
 }
