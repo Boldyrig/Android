@@ -28,18 +28,18 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
         const val DB_STRING: String = " = ?"
     }
 
-    override fun getContactById(id: Int) =
+    override fun getContactById(id: String) =
         loadContactFromCursor(
             id,
             createCursor(
                 ContactsContract.Contacts.CONTENT_URI,
                 projection,
                 ContactsContract.Contacts._ID + DB_STRING,
-                arrayOf(id.toString())
+                arrayOf(id)
             )
         )
 
-    private fun loadContactFromCursor(id: Int, cursor: Cursor?) =
+    private fun loadContactFromCursor(id: String, cursor: Cursor?) =
         flow {
             cursor?.use {
                 it.moveToFirst()
@@ -74,27 +74,27 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
             null
         )
 
-    private fun getNumbers(id: Int) =
+    private fun getNumbers(id: String) =
         loadNumbersFromCursor(
             createCursor(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + DB_STRING,
-                arrayOf(id.toString())
+                arrayOf(id)
             )
         )
 
-    private fun getEmails(id: Int) =
+    private fun getEmails(id: String) =
         loadEmailFromCursor(
             createCursor(
                 ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
                 ContactsContract.CommonDataKinds.Email.CONTACT_ID + DB_STRING,
-                arrayOf(id.toString())
+                arrayOf(id)
             )
         )
 
-    private fun getBirthday(id: Int) =
+    private fun getBirthday(id: String) =
         loadBirthdayFromCursor(
             createCursor(
                 ContactsContract.Data.CONTENT_URI,
@@ -102,7 +102,7 @@ class DetailsRepository(private val contentResolver: ContentResolver?) : Contact
                 ContactsContract.Data.CONTACT_ID + " = ? AND " +
                     ContactsContract.CommonDataKinds.Event.TYPE + " = " +
                     ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY,
-                arrayOf(id.toString())
+                arrayOf(id)
             )
         )
 

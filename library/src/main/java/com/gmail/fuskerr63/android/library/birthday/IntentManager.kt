@@ -21,22 +21,22 @@ class IntentManager(
         const val ACTION: String = "com.gmail.fuskerr63.action.notification"
     }
 
-    fun getIntent(id: Int, name: String, text: String) = Intent(ACTION).apply {
+    fun getIntent(id: String, name: String, text: String) = Intent(ACTION).apply {
         putExtra(EXTRA_ID, id)
         putExtra(EXTRA_NAME, name)
         putExtra(EXTRA_TEXT, text)
     }
 
-    private fun getIntentToMainActivity(context: Context, id: Int) = Intent(context, mainActivityClass).apply {
+    private fun getIntentToMainActivity(context: Context, id: String) = Intent(context, mainActivityClass).apply {
         putExtra(EXTRA_ID, id)
     }
 
-    private fun getIntentToReceiver(context: Context, id: Int) = Intent(context, receiverClass).apply {
+    private fun getIntentToReceiver(context: Context, id: String) = Intent(context, receiverClass).apply {
         putExtra(EXTRA_ID, id)
     }
 
     fun getNotification(
-        id: Int,
+        id: String,
         text: String?,
         flag: Int,
         channeId: String,
@@ -50,6 +50,6 @@ class IntentManager(
         setAutoCancel(true)
     }.build()
 
-    fun getPendingIntent(id: Int, intent: Intent?, flag: Int): PendingIntent? =
-        PendingIntent.getBroadcast(context, id, intent, flag)
+    fun getPendingIntent(id: String, intent: Intent?, flag: Int): PendingIntent? =
+        PendingIntent.getBroadcast(context, id.toInt(), intent, flag)
 }

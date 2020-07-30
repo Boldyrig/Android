@@ -14,10 +14,10 @@ interface UserDao {
     fun getAll(): Single<List<User>>
 
     @Query("SELECT * FROM user WHERE contactId = :contactId")
-    fun getFlowUserById(contactId: Int): Flow<User?>
+    fun getFlowUserById(contactId: String): Flow<User?>
 
     @Query("SELECT * FROM user WHERE contactId = :contactId")
-    fun getSingleUserById(contactId: Int): Single<User>
+    fun getSingleUserById(contactId: String): Single<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: User): Completable

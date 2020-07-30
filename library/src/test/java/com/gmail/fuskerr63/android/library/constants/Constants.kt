@@ -1,10 +1,8 @@
 package com.gmail.fuskerr63.android.library.constants
 
 const val TEXT_NOTIFICATION = "Today is the birthday of"
-const val SEND_NOTIFICATION = "Send notification"
-const val CANCEL_NOTIFICATION = "Сancel notification"
 
-const val CONTACT_ID = 1
+const val CONTACT_ID = "1"
 const val CONTACT_NAME = "Иван"
 
 const val YEAR_1988 = 1988

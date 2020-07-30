@@ -1,61 +1,82 @@
 package com.gmail.fuskerr63.android.library.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.multidex.BuildConfig
+import com.gmail.fuskerr63.android.library.viewmodel.dispatchers.ViewModelDispatcher
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactLocation
 import com.gmail.fuskerr63.java.interactor.ContactInteractor
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationInteractor
 import com.gmail.fuskerr63.java.interactor.NotificationStatus
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class ContactViewModel(
-    private val id: Int,
+    private val id: String,
     private val contactInteractor: ContactInteractor,
     private val databaseInteractor: DatabaseInteractor,
-    private val notificationInteractor: NotificationInteractor
+    private val notificationInteractor: NotificationInteractor,
+    private val viewModelDispatcher: ViewModelDispatcher
 ) : ViewModel(), CoroutineScope {
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
-
-    private val contact = MutableLiveData<Contact>()
-    private val birthdayStatus = MutableLiveData<NotificationStatus>()
-    private val loadingStatus = MutableLiveData<Boolean>(false)
+    override val coroutineContext: CoroutineContext = SupervisorJob() + viewModelDispatcher.getMainDispatcher()
 
     @FlowPreview
-    fun getContact(id: Int): LiveData<Contact> =
-        contact.also {
-            loadingStatus.value = true
-            loadContact(id)
-        }
-
-    fun getBirthdayStatus() = birthdayStatus
-
-    fun getLoadingStatus() = loadingStatus
+    private val contact by lazy(LazyThreadSafetyMode.NONE) {
+        MutableLiveData<Contact>()
+    }
+    private val birthdayStatus by lazy(LazyThreadSafetyMode.NONE) {
+        MutableLiveData<NotificationStatus>()
+    }
+    private val loadingStatus by lazy(LazyThreadSafetyMode.NONE) {
+        MutableLiveData<Boolean>(false)
+    }
 
     @FlowPreview
-    private fun loadContact(id: Int) {
-        if (id != -1) {
+    fun getContact(): LiveData<Contact> = run {
+        loadContact()
+        contact
+    }
+
+    fun getBirthdayStatus(): LiveData<NotificationStatus> = birthdayStatus
+
+    fun getLoadingStatus(): LiveData<Boolean> = loadingStatus
+
+    @FlowPreview
+    private fun loadContact() {
+        try {
             launch {
                 contactInteractor.getContactById(id)
                     .flatMapMerge { contact: Contact ->
                         databaseInteractor.getFlowUserById(id)
                             .map { contactLocation: ContactLocation? ->
-                                createContactWithLocation(contact, contactLocation)
+                                createContactWithLocation(
+                                    contact = contact,
+                                    location = contactLocation
+                                )
                             }
                     }
-                    .flowOn(Dispatchers.IO)
+                    .flowOn(viewModelDispatcher.getIODispatcher())
                     .collect { newContact: Contact? ->
                         contact.value = newContact
                         birthdayStatus.value = notificationInteractor.getNotificationStatusForContact(newContact)
                         loadingStatus.value = false
                     }
+            }
+        } catch (e: Exception) {
+            if (BuildConfig.DEBUG) {
+                Log.d("TAG", e.message)
             }
         }
     }
@@ -76,7 +97,7 @@ class ContactViewModel(
         super.onCleared()
     }
 
-    fun onClickBirthday(contact: Contact) {
-        birthdayStatus.value = notificationInteractor.toggleNotificationForContact(contact)
+    fun onClickBirthday() {
+        birthdayStatus.value = notificationInteractor.toggleNotificationForContact(contact.value)
     }
 }

@@ -29,20 +29,24 @@ class ContactDetailsFragment : Fragment() {
 
     private var name: String? = null
 
-    lateinit var appContainer: AppContainer
+    private lateinit var appContainer: AppContainer
 
     private val contactId by lazy(LazyThreadSafetyMode.NONE) {
-        requireArguments().getInt("ID")
+        requireArguments().getString("ID")
+            ?: throw IllegalArgumentException("ContactDetailsFragment required 'id' argument")
     }
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, ContactViewModelFactory(
+        ViewModelProvider(
+            this,
+            ContactViewModelFactory(
                 id = contactId,
                 container = appContainer
-        )).get(ContactViewModel::class.java)
+            )
+        ).get(ContactViewModel::class.java)
     }
 
-    fun updateDetails(contact: Contact?) {
+    private fun updateDetails(contact: Contact?) {
         if (contact != null) {
             name = contact.contactInfo.name
             contactDetailsDelegate.showDetails(contact)
@@ -50,19 +54,18 @@ class ContactDetailsFragment : Fragment() {
                 with(birthday_button) {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        viewModel.onClickBirthday(contact)
+                        viewModel.onClickBirthday()
                     }
                 }
             }
         }
     }
 
-    fun loadingStatus(show: Boolean) {
-        val status = if (show) View.VISIBLE else View.GONE
-        progress_bar_details.visibility = status
+    private fun loadingStatus(status: Boolean) {
+        progress_bar_details.visibility = if (status) View.VISIBLE else View.GONE
     }
 
-    fun setTextButton(status: NotificationStatus?) {
+    private fun setTextButton(status: NotificationStatus?) {
         if (status != null) {
             birthday_button.text =
                 if (status.isAlarmUp) getString(R.string.cancel_notification)
@@ -82,7 +85,7 @@ class ContactDetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.app_bar_map_details) {
-            clickListener.onMenuItemClickDetails(arguments?.getInt("ID") ?: -1, name)
+            clickListener.onMenuItemClickDetails(arguments?.getString("ID"), name)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -115,30 +118,30 @@ class ContactDetailsFragment : Fragment() {
     @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getContact(requireArguments().getInt("ID"))
+        viewModel.getContact()
             .observe(
                 viewLifecycleOwner,
                 Observer<Contact> { contact ->
-                    updateDetails(contact)
+                    updateDetails(contact = contact)
                 }
             )
         viewModel.getBirthdayStatus().observe(
             viewLifecycleOwner,
             Observer<NotificationStatus> { status ->
-                setTextButton(status)
+                setTextButton(status = status)
             }
         )
         viewModel.getLoadingStatus().observe(
             viewLifecycleOwner,
             Observer<Boolean> { status ->
-                loadingStatus(status)
+                loadingStatus(status = status)
             }
         )
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(id: Int) = ContactDetailsFragment().apply {
+        fun newInstance(id: String) = ContactDetailsFragment().apply {
             arguments = bundleOf(
                 "ID" to id
             )

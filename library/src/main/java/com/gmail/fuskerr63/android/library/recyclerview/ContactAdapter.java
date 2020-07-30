@@ -51,7 +51,7 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
     private static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
         @Override
         public boolean areItemsTheSame(@NonNull Contact oldItem, @NonNull Contact newItem) {
-            return oldItem.getId() == newItem.getId();
+            return oldItem.getId().equals(newItem.getId());
         }
 
         @Override
@@ -62,8 +62,8 @@ public class ContactAdapter extends ListAdapter<Contact, ContactViewHolder> {
             final String newName = newItem.getContactInfo().getName();
             final URI oldImage = oldItem.getImage();
             final URI newImage = newItem.getImage();
-            final boolean oldImageIsNull = oldImage == null;
-            final boolean newImageIsNull = newImage == null;
+            final boolean oldImageIsNull = oldImage.toString().equals("");
+            final boolean newImageIsNull = newImage.toString().equals("");
             return oldNumber.equals(newNumber)
                     && oldName.equals(newName)
                     && !oldImageIsNull ? oldImage.equals(newImage) : newImageIsNull;

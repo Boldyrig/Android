@@ -15,6 +15,6 @@ interface ViewModelComponent : ViewModelComponentContainer {
 
     @Subcomponent.Factory
     interface Factory : ViewModelComponentFactory {
-        override fun create(@BindsInstance id: Int): ViewModelComponent
+        override fun create(@BindsInstance id: String): ViewModelComponent
     }
 }

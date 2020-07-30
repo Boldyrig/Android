@@ -36,7 +36,7 @@ public class NotificationInteractorImpl implements NotificationInteractor {
         this.textNotification = textNotification;
     }
 
-    private void setAlarm(Calendar birthday, int id, String text) {
+    private void setAlarm(Calendar birthday, String id, String text) {
         BirthdayCalendar birthdayCalendar = new BirthdayCalendar(
                 birthday.get(YEAR),
                 birthday.get(MONTH),
@@ -50,11 +50,11 @@ public class NotificationInteractorImpl implements NotificationInteractor {
                 text);
     }
 
-    private void cancelAlarm(int id, String text) {
+    private void cancelAlarm(String id, String text) {
         notificationRepository.cancelAlarm(id, text);
     }
 
-    private boolean alarmIsUp(int id, String text) {
+    private boolean alarmIsUp(String id, String text) {
         return notificationRepository.alarmIsUp(id, text);
     }
 

@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && !intent.getExtras().isEmpty()) {
-            showDetails(intent.getExtras().getInt(EXTRA_ID));
+            showDetails(intent.getExtras().getString(EXTRA_ID));
         } else {
             if (savedInstanceState == null) {
                 FragmentManager manager = getSupportFragmentManager();
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void showDetails(int id) {
+    private void showDetails(String id) {
         FragmentManager manager = getSupportFragmentManager();
         ContactDetailsFragment contactDetailsFragment =
                 (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void showContactMap(int id, String name) {
+    private void showContactMap(String id, String name) {
         FragmentManager manager = getSupportFragmentManager();
         ContactMapFragment mapFragment =
                 (ContactMapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
@@ -131,15 +131,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(@NonNull View view) {
-        showDetails(view.getId());
+        showDetails(String.valueOf(view.getId()));
     }
 
 
     @Override
-    public void onMenuItemClickDetails(int id, @Nullable String name) {
-        if (id != -1) {
-            showContactMap(id, name);
-        }
+    public void onMenuItemClickDetails(@NonNull String id, @Nullable String name) {
+        showContactMap(id, name);
     }
 
 

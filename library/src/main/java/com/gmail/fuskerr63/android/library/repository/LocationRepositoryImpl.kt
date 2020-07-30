@@ -24,7 +24,7 @@ class LocationRepositoryImpl(private val appDatabase: AppDatabase) : LocationRep
                 }
             }
 
-    override fun getFlowUserById(contactId: Int) =
+    override fun getFlowUserById(contactId: String) =
         appDatabase.userDao().getFlowUserById(contactId)
             .map { user: User? ->
                 if (user != null) {
@@ -41,7 +41,7 @@ class LocationRepositoryImpl(private val appDatabase: AppDatabase) : LocationRep
                 }
             }
 
-    override fun getSingleUserById(contactId: Int) =
+    override fun getSingleUserById(contactId: String) =
         appDatabase.userDao().getSingleUserById(contactId)
             .map { user: User ->
                 with(user) {

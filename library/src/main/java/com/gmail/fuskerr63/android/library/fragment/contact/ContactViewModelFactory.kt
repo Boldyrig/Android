@@ -6,10 +6,10 @@ import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer
 
 @Suppress("UNCHECKED_CAST")
 class ContactViewModelFactory(
-    private val id: Int,
+    private val id: String,
     private val container: AppContainer
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-            container.viewModelComponentFactory().create(id).getViewModel() as T
+        container.viewModelComponentFactory().create(id).getViewModel() as T
 }

@@ -36,7 +36,8 @@ import io.reactivex.annotations.NonNull;
         DirectionRetrofitModule.class,
         DirectionInteractorModule.class,
         DirectionRepositoryModule.class,
-        ViewModelsModule.class
+        ViewModelsModule.class,
+        ViewModelDispatcherModule.class
 })
 public interface AppComponent extends AppContainer {
     @Override

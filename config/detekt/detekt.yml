@@ -189,19 +189,6 @@ exceptions:
      - IOException
   ThrowingNewInstanceOfSameException:
     active: false
-  TooGenericExceptionCaught:
-    active: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
-    exceptionNames:
-     - ArrayIndexOutOfBoundsException
-     - Error
-     - Exception
-     - IllegalMonitorStateException
-     - NullPointerException
-     - IndexOutOfBoundsException
-     - RuntimeException
-     - Throwable
-    allowedExceptionNameRegex: '_|(ignore|expected).*'
   TooGenericExceptionThrown:
     active: true
     exceptionNames:

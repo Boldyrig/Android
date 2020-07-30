@@ -1,6 +1,7 @@
 package com.gmail.fuskerr63.appllication.di.viewmodel
 
 import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
+import com.gmail.fuskerr63.android.library.viewmodel.dispatchers.ViewModelDispatcher
 import com.gmail.fuskerr63.appllication.di.scope.ViewModelScope
 import com.gmail.fuskerr63.java.interactor.ContactInteractor
 import com.gmail.fuskerr63.java.interactor.DatabaseInteractor
@@ -14,14 +15,16 @@ class ContactDetailViewModelModule {
     @ViewModelScope
     @Provides
     fun provideViewModel(
-            id: Int,
+            id: String,
             contactInteractor: ContactInteractor,
             databaseInteractor: DatabaseInteractor,
-            notificationInteractor: NotificationInteractor
+            notificationInteractor: NotificationInteractor,
+            viewModelDispatcher: ViewModelDispatcher
     ) = ContactViewModel(
             id = id,
             contactInteractor = contactInteractor,
             databaseInteractor = databaseInteractor,
-            notificationInteractor = notificationInteractor
+            notificationInteractor = notificationInteractor,
+            viewModelDispatcher = viewModelDispatcher
     )
 }

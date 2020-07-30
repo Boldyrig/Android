@@ -12,7 +12,7 @@ class NotifyNotificationManagerImpl(
         const val CHANNEL_ID: String = "CHANNEL_ID"
     }
 
-    override fun notifyNotification(id: Int, text: String) {
+    override fun notifyNotification(id: String, text: String) {
         notificationRepository.notifyNotification(
             id,
             text,

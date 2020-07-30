@@ -32,9 +32,9 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(@Nullable Contact contact) {
         if (contact != null) {
-            view.setId(contact.getId());
+            view.setId(Integer.parseInt(contact.getId()));
             URI imageUri = contact.getImage();
-            if (imageUri == null || imageUri.toString().equals("")) {
+            if (imageUri.toString().equals("")) {
                 image.setImageResource(R.mipmap.android_icon); // дефолтная картинка
             } else {
                 image.setImageURI(Uri.parse(imageUri.toString()));

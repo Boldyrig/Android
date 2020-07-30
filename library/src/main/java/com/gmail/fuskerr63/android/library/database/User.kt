@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-    @PrimaryKey val contactId: Int,
+    @PrimaryKey val contactId: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "latitude") val latitude: Double,
     @ColumnInfo(name = "longitute") val longitude: Double,

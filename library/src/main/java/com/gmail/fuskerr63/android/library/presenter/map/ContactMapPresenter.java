@@ -42,7 +42,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     }
 
 
-    public void showCurrentLocation(int id) {
+    public void showCurrentLocation(@NonNull String id) {
         disposable.add(databaseInteractor.getSingleUserById(id)
                 .subscribeOn(Schedulers.io())
                 .map(contactLocation -> {
@@ -63,7 +63,7 @@ public class ContactMapPresenter extends MvpPresenter<ContactMapView> {
     }
 
 
-    public void onMapClick(@NonNull LatLng position, int id, @Nullable String name) {
+    public void onMapClick(@NonNull LatLng position, @NonNull String id, @Nullable String name) {
         getViewState().replaceMarker(position, name);
         disposable.add(
                 Single.just(new ContactLocation(
