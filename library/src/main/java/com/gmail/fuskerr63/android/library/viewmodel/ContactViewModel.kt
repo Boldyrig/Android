@@ -59,13 +59,7 @@ class ContactViewModel(
             launch {
                 contactInteractor.getContactById(id)
                     .flatMapMerge { contact: Contact ->
-                        databaseInteractor.getFlowUserById(id)
-                            .map { contactLocation: ContactLocation? ->
-                                createContactWithLocation(
-                                    contact = contact,
-                                    location = contactLocation
-                                )
-                            }
+                        loadContactLocation(contact)
                     }
                     .flowOn(viewModelDispatcher.getIODispatcher())
                     .collect { newContact: Contact? ->
@@ -91,6 +85,15 @@ class ContactViewModel(
                 location?.address ?: ""
             )
         }
+
+    private fun loadContactLocation(contact: Contact) =
+        databaseInteractor.getFlowUserById(id)
+            .map { contactLocation: ContactLocation? ->
+                createContactWithLocation(
+                    contact = contact,
+                    location = contactLocation
+                )
+            }
 
     override fun onCleared() {
         cancel()
