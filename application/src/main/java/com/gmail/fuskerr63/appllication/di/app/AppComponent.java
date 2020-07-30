@@ -1,8 +1,6 @@
 package com.gmail.fuskerr63.appllication.di.app;
 
 import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
-import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentContainer;
-import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentFactory;
 import com.gmail.fuskerr63.android.library.receiver.ContactReceiver;
 import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
@@ -37,7 +35,8 @@ import io.reactivex.annotations.NonNull;
         LocationRepositoryModule.class,
         DirectionRetrofitModule.class,
         DirectionInteractorModule.class,
-        DirectionRepositoryModule.class
+        DirectionRepositoryModule.class,
+        ViewModelsModule.class
 })
 public interface AppComponent extends AppContainer {
     @Override
@@ -58,7 +57,7 @@ public interface AppComponent extends AppContainer {
 
     @NonNull
     @Override
-    ViewModelComponent.Factory plusViewModelComponentFactory();
+    ViewModelComponent.Factory viewModelComponentFactory();
 
     @Override
     void inject(@NonNull ContactReceiver contactReceiver);

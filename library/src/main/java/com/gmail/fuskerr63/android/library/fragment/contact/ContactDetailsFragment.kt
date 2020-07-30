@@ -11,29 +11,36 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.gmail.fuskerr63.android.library.delegate.contact.ContactDetailsDelegate
+import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer
-import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentContainer
-import com.gmail.fuskerr63.android.library.di.interfaces.ViewModelComponentFactory
 import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
-import com.gmail.fuskerr63.android.library.viewmodel.factory.ContactViewModelFactory
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.interactor.NotificationStatus
 import com.gmail.fuskerr63.library.R
 import kotlinx.android.synthetic.main.fragment_contact_details.*
 import kotlinx.coroutines.FlowPreview
 import java.util.Calendar
-import javax.inject.Inject
 
 class ContactDetailsFragment : Fragment() {
     private lateinit var clickListener: OnMenuItemClickDetails
     private lateinit var contactDetailsDelegate: ContactDetailsDelegate
-    private lateinit var contactViewModel: ContactViewModel
 
     private var name: String? = null
 
-    lateinit var viewModel: ContactViewModel
+    lateinit var appContainer: AppContainer
+
+    private val contactId by lazy(LazyThreadSafetyMode.NONE) {
+        requireArguments().getInt("ID")
+    }
+
+    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(this, ContactViewModelFactory(
+                id = contactId,
+                container = appContainer
+        )).get(ContactViewModel::class.java)
+    }
 
     fun updateDetails(contact: Contact?) {
         if (contact != null) {
@@ -43,7 +50,7 @@ class ContactDetailsFragment : Fragment() {
                 with(birthday_button) {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        contactViewModel.onClickBirthday(contact)
+                        viewModel.onClickBirthday(contact)
                     }
                 }
             }
@@ -88,10 +95,9 @@ class ContactDetailsFragment : Fragment() {
         }
         val app = activity?.application
         if (app is ContactApplicationContainer) {
-            val appContainer = app.appComponent
+            appContainer = app.appComponent
             val contactComponent = appContainer.plusContactComponent()
             contactComponent.inject(this)
-            viewModel = appContainer.plusViewModelComponentFactory().create(this, 1).getViewModel()
         }
     }
 
@@ -109,20 +115,20 @@ class ContactDetailsFragment : Fragment() {
     @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contactViewModel.getContact(requireArguments().getInt("ID"))
+        viewModel.getContact(requireArguments().getInt("ID"))
             .observe(
                 viewLifecycleOwner,
                 Observer<Contact> { contact ->
                     updateDetails(contact)
                 }
             )
-        contactViewModel.getBirthdayStatus().observe(
+        viewModel.getBirthdayStatus().observe(
             viewLifecycleOwner,
             Observer<NotificationStatus> { status ->
                 setTextButton(status)
             }
         )
-        contactViewModel.getLoadingStatus().observe(
+        viewModel.getLoadingStatus().observe(
             viewLifecycleOwner,
             Observer<Boolean> { status ->
                 loadingStatus(status)
