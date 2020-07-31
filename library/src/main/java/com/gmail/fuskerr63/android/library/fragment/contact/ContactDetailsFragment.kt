@@ -85,7 +85,7 @@ class ContactDetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.app_bar_map_details) {
-            clickListener.onMenuItemClickDetails(arguments?.getString("ID"), name)
+            clickListener.onMenuItemClickDetails(contactId, name)
             return true
         }
         return super.onOptionsItemSelected(item)

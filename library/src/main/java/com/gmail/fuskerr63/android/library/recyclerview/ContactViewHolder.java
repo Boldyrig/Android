@@ -15,24 +15,25 @@ import java.net.URI;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
-public class ContactViewHolder extends RecyclerView.ViewHolder {
+public class ContactViewHolder extends RecyclerView.ViewHolder{
     @NonNull
     private final View view;
     private final ImageView image;
     private final TextView name;
     private final TextView number;
 
-    public ContactViewHolder(@NonNull View itemView) {
+    public ContactViewHolder(@NonNull View itemView, @NonNull OnItemClickListener onClickListener) {
         super(itemView);
         view = itemView;
         image = itemView.findViewById(R.id.image);
         name = itemView.findViewById(R.id.name);
         number = itemView.findViewById(R.id.number);
+        itemView.setOnClickListener(v -> onClickListener.onItemClick(getAdapterPosition()));
     }
 
     public void bind(@Nullable Contact contact) {
         if (contact != null) {
-            view.setId(Integer.parseInt(contact.getId()));
+            view.setId(contact.getId().hashCode());
             URI imageUri = contact.getImage();
             if (imageUri.toString().equals("")) {
                 image.setImageResource(R.mipmap.android_icon); // дефолтная картинка

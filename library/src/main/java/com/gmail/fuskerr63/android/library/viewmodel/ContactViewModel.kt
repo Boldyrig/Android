@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+@FlowPreview
 class ContactViewModel(
     private val id: String,
     private val contactInteractor: ContactInteractor,
@@ -30,9 +31,9 @@ class ContactViewModel(
     private val notificationInteractor: NotificationInteractor,
     private val viewModelDispatcher: ViewModelDispatcher
 ) : ViewModel(), CoroutineScope {
+
     override val coroutineContext: CoroutineContext = SupervisorJob() + viewModelDispatcher.getMainDispatcher()
 
-    @FlowPreview
     private val contact by lazy(LazyThreadSafetyMode.NONE) {
         MutableLiveData<Contact>()
     }
@@ -43,11 +44,11 @@ class ContactViewModel(
         MutableLiveData<Boolean>(false)
     }
 
-    @FlowPreview
-    fun getContact(): LiveData<Contact> = run {
+    init {
         loadContact()
-        contact
     }
+
+    fun getContact(): LiveData<Contact> = contact
 
     fun getBirthdayStatus(): LiveData<NotificationStatus> = birthdayStatus
 
@@ -56,19 +57,21 @@ class ContactViewModel(
     @FlowPreview
     private fun loadContact() {
         try {
+            loadingStatus.value = true
             launch {
                 contactInteractor.getContactById(id)
                     .flatMapMerge { contact: Contact ->
                         loadContactLocation(contact)
                     }
                     .flowOn(viewModelDispatcher.getIODispatcher())
-                    .collect { newContact: Contact? ->
+                    .collect { newContact: Contact ->
                         contact.value = newContact
                         birthdayStatus.value = notificationInteractor.getNotificationStatusForContact(newContact)
                         loadingStatus.value = false
                     }
             }
         } catch (e: Exception) {
+            loadingStatus.value = false
             if (BuildConfig.DEBUG) {
                 Log.d("TAG", e.message)
             }

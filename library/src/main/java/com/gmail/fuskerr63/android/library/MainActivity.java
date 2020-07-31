@@ -10,7 +10,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.gmail.fuskerr63.android.library.fragment.contact.ContactDetailsFragment;
@@ -18,13 +17,14 @@ import com.gmail.fuskerr63.android.library.fragment.contact.OnMenuItemClickDetai
 import com.gmail.fuskerr63.android.library.fragment.contacts.ContactListFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactMapFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactsMapFragment;
+import com.gmail.fuskerr63.android.library.recyclerview.OnClickListener;
 import com.gmail.fuskerr63.library.R;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener,
+        OnClickListener,
         ContactListFragment.OnMenuItemClickContacts,
         OnMenuItemClickDetails {
 
@@ -130,19 +130,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(@NonNull View view) {
-        showDetails(String.valueOf(view.getId()));
-    }
-
-
-    @Override
     public void onMenuItemClickDetails(@NonNull String id, @Nullable String name) {
         showContactMap(id, name);
     }
 
-
     @Override
     public void onMenuItemClickContacts() {
         showContactsMap();
+    }
+
+    @Override
+    public void onClick(@NonNull String id) {
+        showDetails(id);
     }
 }

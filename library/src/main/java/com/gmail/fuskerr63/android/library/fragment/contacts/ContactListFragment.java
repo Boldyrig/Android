@@ -18,6 +18,7 @@ import com.gmail.fuskerr63.android.library.di.interfaces.AppContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactApplicationContainer;
 import com.gmail.fuskerr63.android.library.di.interfaces.ContactsComponentContainer;
 import com.gmail.fuskerr63.android.library.presenter.contacts.ContactListPresenter;
+import com.gmail.fuskerr63.android.library.recyclerview.OnClickListener;
 import com.gmail.fuskerr63.android.library.view.ContactListView;
 import com.gmail.fuskerr63.java.entity.Contact;
 import com.gmail.fuskerr63.library.R;
@@ -37,6 +38,7 @@ import moxy.presenter.ProvidePresenter;
 
 public class ContactListFragment extends MvpAppCompatFragment implements ContactListView {
     private OnMenuItemClickContacts onMenuItemClickListener;
+    private OnClickListener onClickListener;
     private ContactListDelegate contactListDelegate;
 
     private static final int DP_10 = 10;
@@ -58,6 +60,9 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
         if (context instanceof OnMenuItemClickContacts) {
             onMenuItemClickListener = (OnMenuItemClickContacts) context;
         }
+        if (context instanceof OnClickListener) {
+            onClickListener = (OnClickListener) context;
+        }
         Application app = Objects.requireNonNull(getActivity()).getApplication();
         if (app instanceof ContactApplicationContainer) {
             AppContainer appComponent = ((ContactApplicationContainer) app).getAppComponent();
@@ -74,7 +79,7 @@ public class ContactListFragment extends MvpAppCompatFragment implements Contact
             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
         Objects.requireNonNull(getActivity()).setTitle(R.string.contact_list_title);
-        contactListDelegate = new ContactListDelegate(view);
+        contactListDelegate = new ContactListDelegate(view, onClickListener);
         contactListDelegate.onCreateView(getContext(), pxFromDp(DP_10));
         setHasOptionsMenu(true);
         contactPresenter.updateList("");
