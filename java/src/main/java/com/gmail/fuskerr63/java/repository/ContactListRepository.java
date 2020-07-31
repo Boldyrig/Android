@@ -6,7 +6,9 @@ import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
 public interface ContactListRepository {
-    Single<List<Contact>> getContacts(@NonNull String selector);
+    @NonNull
+    Single<List<Contact>> getContacts(@Nullable String selector);
 }

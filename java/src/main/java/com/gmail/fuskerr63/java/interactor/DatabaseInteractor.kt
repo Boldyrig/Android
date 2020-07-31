@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DatabaseInteractor {
     fun getAll(): Single<List<ContactLocation>>
-    fun getFlowUserById(contactId: Int): Flow<ContactLocation?>
-    fun getSingleUserById(contactId: Int): Single<ContactLocation>
+    fun getFlowUserById(contactId: String): Flow<ContactLocation?>
+    fun getSingleUserById(contactId: String): Single<ContactLocation>
     fun insert(contactLocation: ContactLocation): Completable
 }

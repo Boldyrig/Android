@@ -13,7 +13,7 @@ class NotificationRepositoryImpl(
     private val notificationManager: NotificationManager,
     private val intentManager: IntentManager
 ) : NotificationRepository {
-    override fun setAlarm(birthdayCalendar: BirthdayCalendar, id: Int, text: String) {
+    override fun setAlarm(birthdayCalendar: BirthdayCalendar, id: String, text: String) {
         val birthday: Calendar = GregorianCalendar(
             birthdayCalendar.year,
             birthdayCalendar.month,
@@ -33,7 +33,7 @@ class NotificationRepositoryImpl(
         )
     }
 
-    override fun cancelAlarm(id: Int, text: String) {
+    override fun cancelAlarm(id: String, text: String) {
         alarmManager.cancel(
             intentManager.getPendingIntent(
                 id,
@@ -49,9 +49,9 @@ class NotificationRepositoryImpl(
         pIntent?.cancel()
     }
 
-    override fun notifyNotification(id: Int, text: String, flag: Int, channelId: String, priority: Int) {
+    override fun notifyNotification(id: String, text: String, flag: Int, channelId: String, priority: Int) {
         notificationManager.notify(
-            id,
+            id.toInt(),
             intentManager.getNotification(
                 id,
                 text,
@@ -62,7 +62,7 @@ class NotificationRepositoryImpl(
         )
     }
 
-    override fun alarmIsUp(id: Int, text: String) =
+    override fun alarmIsUp(id: String, text: String) =
         intentManager.getPendingIntent(
             id,
             intentManager.getIntent(

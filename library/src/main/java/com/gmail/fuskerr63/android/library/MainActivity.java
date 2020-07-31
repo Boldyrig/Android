@@ -10,7 +10,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.gmail.fuskerr63.android.library.fragment.contact.ContactDetailsFragment;
@@ -18,13 +17,14 @@ import com.gmail.fuskerr63.android.library.fragment.contact.OnMenuItemClickDetai
 import com.gmail.fuskerr63.android.library.fragment.contacts.ContactListFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactMapFragment;
 import com.gmail.fuskerr63.android.library.fragment.map.ContactsMapFragment;
+import com.gmail.fuskerr63.android.library.recyclerview.OnClickListener;
 import com.gmail.fuskerr63.library.R;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener,
+        OnClickListener,
         ContactListFragment.OnMenuItemClickContacts,
         OnMenuItemClickDetails {
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null && !intent.getExtras().isEmpty()) {
-            showDetails(intent.getExtras().getInt(EXTRA_ID));
+            showDetails(intent.getExtras().getString(EXTRA_ID));
         } else {
             if (savedInstanceState == null) {
                 FragmentManager manager = getSupportFragmentManager();
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void showDetails(int id) {
+    private void showDetails(String id) {
         FragmentManager manager = getSupportFragmentManager();
         ContactDetailsFragment contactDetailsFragment =
                 (ContactDetailsFragment) manager.findFragmentByTag(CONTACT_DETAILS_FRAGMENT_TAG);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void showContactMap(int id, String name) {
+    private void showContactMap(String id, String name) {
         FragmentManager manager = getSupportFragmentManager();
         ContactMapFragment mapFragment =
                 (ContactMapFragment) manager.findFragmentByTag(MAP_FRAGMENT_TAG);
@@ -130,21 +130,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(@NonNull View view) {
-        showDetails(view.getId());
+    public void onMenuItemClickDetails(@NonNull String id, @Nullable String name) {
+        showContactMap(id, name);
     }
-
-
-    @Override
-    public void onMenuItemClickDetails(int id, @Nullable String name) {
-        if (id != -1) {
-            showContactMap(id, name);
-        }
-    }
-
 
     @Override
     public void onMenuItemClickContacts() {
         showContactsMap();
+    }
+
+    @Override
+    public void onClick(@NonNull String id) {
+        showDetails(id);
     }
 }

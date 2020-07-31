@@ -6,6 +6,7 @@ import com.gmail.fuskerr63.appllication.di.contact.ContactComponent;
 import com.gmail.fuskerr63.appllication.di.contacts.ContactsComponent;
 import com.gmail.fuskerr63.appllication.di.map.ContactMapComponent;
 import com.gmail.fuskerr63.appllication.di.map.ContactsMapComponent;
+import com.gmail.fuskerr63.appllication.di.viewmodel.ViewModelComponent;
 
 import javax.inject.Singleton;
 
@@ -34,7 +35,9 @@ import io.reactivex.annotations.NonNull;
         LocationRepositoryModule.class,
         DirectionRetrofitModule.class,
         DirectionInteractorModule.class,
-        DirectionRepositoryModule.class
+        DirectionRepositoryModule.class,
+        ViewModelsModule.class,
+        ViewModelDispatcherModule.class
 })
 public interface AppComponent extends AppContainer {
     @Override
@@ -52,6 +55,11 @@ public interface AppComponent extends AppContainer {
     @Override
     @NonNull
     ContactsMapComponent plusContactsMapComponent();
+
+    @NonNull
+    @Override
+    ViewModelComponent.Factory viewModelComponentFactory();
+
     @Override
     void inject(@NonNull ContactReceiver contactReceiver);
 }

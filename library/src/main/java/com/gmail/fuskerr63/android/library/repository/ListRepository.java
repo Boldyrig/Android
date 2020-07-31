@@ -19,7 +19,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 public class ListRepository implements ContactListRepository {
-    @NonNull
     private final WeakReference<ContentResolver> weakContentResolver;
 
     private static final String DB_STRING = " = ?";
@@ -32,23 +31,24 @@ public class ListRepository implements ContactListRepository {
     };
 
     public ListRepository(@NonNull ContentResolver contentResolver) {
-        weakContentResolver = new WeakReference(contentResolver);
+        weakContentResolver = new WeakReference<>(contentResolver);
     }
 
     @NonNull
     @Override
     public Single<List<Contact>> getContacts(@Nullable final String selector) {
         return Single.fromCallable(() -> loadContacts(selector));
-    };
+    }
 
+    @Nullable
     private List<Contact> loadContacts(@Nullable final String selector) {
-        ContentResolver contentResolver = weakContentResolver.get();
+        ContentResolver contentResolver = (ContentResolver) weakContentResolver.get();
         if (contentResolver == null) {
             return null;
         }
         String selection = null;
         if (selector != null && !selector.equals("")) {
-            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE \'%" + selector + "%\'";
+            selection = ContactsContract.Contacts.DISPLAY_NAME + " LIKE '%" + selector + "%'";
         }
         Cursor cursorContact = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -56,6 +56,7 @@ public class ListRepository implements ContactListRepository {
                 selection,
                 null,
                 ContactsContract.Contacts.DISPLAY_NAME + " ASC");
+        assert cursorContact != null;
         return loadContactsFromCursor(cursorContact, contentResolver);
     }
 
@@ -79,7 +80,7 @@ public class ListRepository implements ContactListRepository {
                         image = URI.create(imageString);
                     }
                     // берем id контакта
-                    int idContact = cursorContact.getInt(id);
+                    String idContact = cursorContact.getString(id);
                     // собираем номера
                     int hasNumber = cursorContact.getInt(hasPhoneNumer);
                     if (hasNumber > 0) {
@@ -90,6 +91,7 @@ public class ListRepository implements ContactListRepository {
                                 new String[] {String.valueOf(idContact)},
                                 null
                         );
+                        assert cursorPhone != null;
                         numbers = loadNumbersFromCursor(cursorPhone);
                     }
                     String number = !numbers.isEmpty() ? numbers.get(0) : "";

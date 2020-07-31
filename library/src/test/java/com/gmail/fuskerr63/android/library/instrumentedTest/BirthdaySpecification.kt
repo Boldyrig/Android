@@ -1,5 +1,7 @@
 package com.gmail.fuskerr63.android.library.instrumentedTest
 
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import com.gmail.fuskerr63.android.library.constants.CONTACT_ID
 import com.gmail.fuskerr63.android.library.constants.CONTACT_NAME
 import com.gmail.fuskerr63.android.library.constants.DAY_1
@@ -13,7 +15,7 @@ import com.gmail.fuskerr63.android.library.constants.YEAR_1988
 import com.gmail.fuskerr63.android.library.constants.YEAR_1999
 import com.gmail.fuskerr63.android.library.constants.YEAR_2000
 import com.gmail.fuskerr63.android.library.constants.YEAR_2004
-import com.gmail.fuskerr63.android.library.presenter.contact.ContactDetailsPresenter
+import com.gmail.fuskerr63.android.library.viewmodel.ContactViewModel
 import com.gmail.fuskerr63.java.entity.BirthdayCalendar
 import com.gmail.fuskerr63.java.entity.Contact
 import com.gmail.fuskerr63.java.entity.ContactInfo
@@ -28,6 +30,7 @@ import com.gmail.fuskerr63.java.repository.LocationRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.flowOf
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import java.net.URI
@@ -40,14 +43,49 @@ class BirthdaySpecification : Spek({
     val contactListRepository = mockk<ContactListRepository>()
     val contactDetailsRepository = mockk<ContactDetailsRepository>()
     val locationRepository = mockk<LocationRepository>()
+    val viewModelDispatcherProvider = ViewModelDispatcherTest()
 
     val birthday = GregorianCalendar()
     val currentCalendar = GregorianCalendar()
     val nextBirthday = GregorianCalendar()
 
     lateinit var birthdayCalendar: BirthdayCalendar
+    lateinit var contactViewModel: ContactViewModel
 
-    lateinit var contact: Contact
+    var contact = Contact(
+        CONTACT_ID,
+        URI.create(""),
+        ContactInfo(
+            CONTACT_NAME,
+            "",
+            "",
+            "",
+            ""
+        ),
+        birthday,
+        ""
+    )
+
+    fun init() {
+        val contactInteractor = ContactModel(
+            contactListRepository,
+            contactDetailsRepository
+        )
+        val databaseModel = DatabaseModel(locationRepository)
+        val notificationInteractor = NotificationInteractorImpl(
+            notificationTime,
+            notificationRepository,
+            TEXT_NOTIFICATION
+        )
+
+        contactViewModel = ContactViewModel(
+            id = CONTACT_ID,
+            contactInteractor = contactInteractor,
+            databaseInteractor = databaseModel,
+            notificationInteractor = notificationInteractor,
+            viewModelDispatcher = viewModelDispatcherProvider
+        )
+    }
 
     fun setupCurrentCalendar(year: Int, month: Int, day: Int) {
         currentCalendar.set(year, month, day, 0, 0, 0)
@@ -91,23 +129,28 @@ class BirthdaySpecification : Spek({
         } returns answer
     }
 
-    Feature("Я как пользователь хочу устанавливать напоминание о дне рождения контакта") {
-        val contactInteractor = ContactModel(
-            contactListRepository,
-            contactDetailsRepository
-        )
-        val databaseModel = DatabaseModel(locationRepository)
-        val notificationInteractor = NotificationInteractorImpl(
-            notificationTime,
-            notificationRepository,
-            TEXT_NOTIFICATION
-        )
-        val contactDetailsPresenter = ContactDetailsPresenter(
-            contactInteractor,
-            databaseModel,
-            notificationInteractor
-        )
+    beforeEachTest {
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) {
+                runnable.run()
+            }
 
+            override fun isMainThread(): Boolean {
+                return true
+            }
+
+            override fun postToMainThread(runnable: Runnable) {
+                runnable.run()
+            }
+        })
+        init()
+    }
+
+    afterEachTest { ArchTaskExecutor.getInstance().setDelegate(null) }
+
+    Feature("Я как пользователь хочу устанавливать напоминание о дне рождения контакта") {
+        every { contactDetailsRepository.getContactById(CONTACT_ID) } returns flowOf(contact)
+        every { locationRepository.getFlowUserById(CONTACT_ID) } returns flowOf(null)
         every { notificationTime.currentTimeCalendar } returns currentCalendar
 
         Scenario("Успешное добавление напоминания, День Рождения в текущем году был") {
@@ -125,7 +168,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday()
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_8 сентября") {
@@ -154,7 +197,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday()
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_1999 год $DAY_8 сентября") {
@@ -182,7 +225,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday()
             }
 
             Then("Тогда происходит успешное удаление напоминания") {
@@ -210,7 +253,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday()
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2000 год $DAY_29 февраля") {
@@ -239,7 +282,7 @@ class BirthdaySpecification : Spek({
             }
 
             When("Когда пользователь кликает на кнопку напоминания в детальной информации контакта $CONTACT_NAME") {
-                contactDetailsPresenter.onClickBirthday(contact)
+                contactViewModel.onClickBirthday()
             }
 
             Then("Тогда происходит успешное добавление напоминания на $YEAR_2004 год $DAY_29 февраля") {

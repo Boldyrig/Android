@@ -11,5 +11,5 @@ import kotlinx.coroutines.flow.Flow;
 public interface ContactInteractor {
     Single<List<Contact>> getContacts(@NonNull String selector);
 
-    Flow<Contact> getContactById(int id);
+    Flow<Contact> getContactById(String id);
 }

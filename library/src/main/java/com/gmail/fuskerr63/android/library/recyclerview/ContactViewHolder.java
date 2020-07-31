@@ -22,19 +22,20 @@ public class ContactViewHolder extends RecyclerView.ViewHolder {
     private final TextView name;
     private final TextView number;
 
-    public ContactViewHolder(@NonNull View itemView) {
+    public ContactViewHolder(@NonNull View itemView, @NonNull OnItemClickListener onClickListener) {
         super(itemView);
         view = itemView;
         image = itemView.findViewById(R.id.image);
         name = itemView.findViewById(R.id.name);
         number = itemView.findViewById(R.id.number);
+        itemView.setOnClickListener(v -> onClickListener.onItemClick(getAdapterPosition()));
     }
 
     public void bind(@Nullable Contact contact) {
         if (contact != null) {
-            view.setId(contact.getId());
+            view.setId(contact.getId().hashCode());
             URI imageUri = contact.getImage();
-            if (imageUri == null || imageUri.toString().equals("")) {
+            if (imageUri.toString().equals("")) {
                 image.setImageResource(R.mipmap.android_icon); // дефолтная картинка
             } else {
                 image.setImageURI(Uri.parse(imageUri.toString()));

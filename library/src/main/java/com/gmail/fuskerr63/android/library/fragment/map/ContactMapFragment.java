@@ -123,10 +123,10 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     }
 
     @NonNull
-    public static ContactMapFragment newInstance(int id, @Nullable String name) {
+    public static ContactMapFragment newInstance(@NonNull String id, @Nullable String name) {
         ContactMapFragment mapFragment = new ContactMapFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("ID", id);
+        bundle.putString("ID", id);
         bundle.putString("NAME", name);
         mapFragment.setArguments(bundle);
         return mapFragment;
@@ -135,7 +135,7 @@ public class ContactMapFragment extends MvpAppCompatFragment implements ContactM
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
         googleMap = map;
-        int id = Objects.requireNonNull(getArguments()).getInt("ID");
+        String id = Objects.requireNonNull(getArguments()).getString("ID");
         googleMap.setOnMapClickListener(
                 click -> contactMapPresenter.onMapClick(click, id, getArguments().getString("NAME"))
         );

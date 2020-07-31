@@ -35,7 +35,7 @@ public class ContactReceiver extends BroadcastReceiver {
             String extraText = "TEXT";
             String text = extras.getString(extraText);
             String extraId = "ID";
-            int id = extras.getInt(extraId);
+            String id = extras.getString(extraId);
             String extraName = "NAME";
             String name = extras.getString(extraName);
             notificationManager.notifyNotification(id, text);

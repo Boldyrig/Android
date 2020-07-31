@@ -7,7 +7,7 @@ import java.util.Objects;
 import io.reactivex.annotations.NonNull;
 
 public final class Contact {
-    private final int id;
+    private final String id;
     @NonNull
     private final URI image;
     @NonNull
@@ -18,7 +18,7 @@ public final class Contact {
     private final String address;
 
     public Contact(
-            int id,
+            @NonNull String id,
             @NonNull URI image,
             @NonNull ContactInfo contactInfo,
             @NonNull Calendar birthday,
@@ -30,7 +30,8 @@ public final class Contact {
         this.address = address;
     }
 
-    public int getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
@@ -63,7 +64,7 @@ public final class Contact {
             return false;
         }
         Contact contact = (Contact) o;
-        return id == contact.id
+        return id.equals(contact.id)
                 && image.equals(contact.image)
                 && contactInfo.equals(contact.contactInfo)
                 && birthday.equals(contact.birthday)

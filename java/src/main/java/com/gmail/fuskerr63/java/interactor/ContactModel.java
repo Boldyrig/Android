@@ -36,7 +36,7 @@ public class ContactModel implements ContactInteractor {
     }
 
     @Override
-    public Flow<Contact> getContactById(int id) {
+    public Flow<Contact> getContactById(String id) {
         return detailsRepository.getContactById(id);
     }
 }
