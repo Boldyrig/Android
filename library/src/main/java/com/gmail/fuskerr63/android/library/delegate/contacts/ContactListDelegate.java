@@ -48,7 +48,7 @@ public class ContactListDelegate implements OnItemClickListener {
 
     @Override
     public void onItemClick(int position) {
-        if(onClickListener != null) {
+        if (onClickListener != null) {
             onClickListener.onClick(contacts.get(position).getId());
         }
     }

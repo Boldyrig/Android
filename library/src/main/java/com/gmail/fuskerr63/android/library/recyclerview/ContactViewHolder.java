@@ -15,7 +15,7 @@ import java.net.URI;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
-public class ContactViewHolder extends RecyclerView.ViewHolder{
+public class ContactViewHolder extends RecyclerView.ViewHolder {
     @NonNull
     private final View view;
     private final ImageView image;
